@@ -5,7 +5,7 @@ const User = require("../models/User");
 
 
 // Extract JWT auth token from header and put user into request object
-exports.protect = asyncHandler(async (req, res, next) => {
+exports.protectRoute = asyncHandler(async (req, res, next) => {
   let token;
 
   if (

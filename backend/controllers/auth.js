@@ -52,6 +52,59 @@ exports.login = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
+// @desc  Update user details (
+//@route  PUT /api/v1/auth/details
+//@access Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+  const toUpdate = {
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
+    experience: req.body.experience
+  }
+  // Only update fields which come in the request.
+  Object.keys(toUpdate).forEach(key => {
+    if (toUpdate[key] === undefined) {
+      delete toUpdate[key];
+    }
+  });
+  console.log(toUpdate)
+  if (Object.entries(toUpdate).length === 0) {
+    return next(new ErrorResponse('Invalid update request', 400))
+  }
+
+  const user = await User.findByIdAndUpdate(req.user.id, toUpdate, {
+    new: true,
+    runValidators: true
+  });
+
+  res.status(200).json({
+    success: true,
+    data: user,
+  });
+});
+
+
+// @desc  Update password
+//@route  PUT /api/v1/auth/password
+//@access Private
+exports.updatePassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user.id).select('+password');
+
+  // Check current password
+  if (!(await user.matchPassword(req.body.currentPassword))) {
+    return next(new ErrorResponse('Password is incorrect', 401))
+  }
+
+  user.password = req.body.newPassword;
+  await user.save();
+
+  sendTokenResponse(user, 200, res);
+});
+
+
+
+
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token

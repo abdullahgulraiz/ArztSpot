@@ -50,4 +50,19 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
+// Mongoose middleware
+
+// Encrypt password in database
+UserSchema.pre("save", async function(next) {
+  // Higher the round the more secure but heavy
+  // 10 is the recommended in the docs
+  if (!this.isModified("password")) {
+    next();
+  }
+  const round = 10;
+  const salt = await bcrypt.genSalt(round);
+  this.password = await bcrypt.hash(this.password, salt);
+})
+
+
 module.exports = mongoose.model("User", UserSchema);

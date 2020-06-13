@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-const isDoctor = function() {
+const isDoctor = function () {
   return this.role === "doctor";
-}
+};
 
 const UserSchema = new mongoose.Schema({
   firstname: {
@@ -40,7 +40,7 @@ const UserSchema = new mongoose.Schema({
   },
   experience: {
     type: String,
-    validate: [isDoctor, "Only Doctors can have field `experience`"]
+    validate: [isDoctor, "Only Doctors can have field `experience`"],
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
@@ -51,9 +51,8 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Mongoose middleware
-
 // Encrypt password in database
-UserSchema.pre("save", async function(next) {
+UserSchema.pre("save", async function (next) {
   // Higher the round the more secure but heavy
   // 10 is the recommended in the docs
   if (!this.isModified("password")) {
@@ -62,7 +61,10 @@ UserSchema.pre("save", async function(next) {
   const round = 10;
   const salt = await bcrypt.genSalt(round);
   this.password = await bcrypt.hash(this.password, salt);
-})
+});
 
-
+// Match user entered password to hashed password in database
+UserSchema.methods.matchPassword = async function (inputPassword) {
+  return await bcrypt.compare(inputPassword, this.password);
+};
 module.exports = mongoose.model("User", UserSchema);

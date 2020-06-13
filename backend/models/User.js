@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+const isDoctor = function() {
+  return this.role === "doctor";
+}
+
 const UserSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -36,6 +40,7 @@ const UserSchema = new mongoose.Schema({
   },
   experience: {
     type: String,
+    validate: [isDoctor, "Only Doctors can have field `experience`"]
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const geocoder = require("../utils/geocoder");
+const requiredFields = require("../utils/requiredFields");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -54,7 +55,10 @@ const UserSchema = new mongoose.Schema({
   phone: {
     type: String,
     validate: [isPatient, "Only Patients can have field `phone number`"],
-    match: [/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/, "Please add a valid phone number formatted as +XX (XXX) XXX-XXX"]
+    match: [
+      /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/,
+      "Please add a valid phone number formatted as +XX (XXX) XXX-XXX",
+    ],
   },
   address: {
     type: String,
@@ -79,22 +83,38 @@ const UserSchema = new mongoose.Schema({
   },
   birthday: {
     type: Date,
-    min: ['1900-01-01', "Shouldn't you call the Guinness Book?"],
-    validate: [isPatient, "Only Patients can have field `birthday`"]
+    min: ["1900-01-01", "Shouldn't you call the Guinness Book?"],
+    validate: [isPatient, "Only Patients can have field `birthday`"],
   },
   insurance_company: {
     type: String,
     enum: ["AOK", "GEK", "TK"],
-    validate: [isPatient, "Only Patients can have field `insurance company` "]
+    validate: [isPatient, "Only Patients can have field `insurance company` "],
   },
   insurance_number: {
     type: String,
-    validate:[isPatient, "Only Patients can have field `insurance number` "]
+    validate: [isPatient, "Only Patients can have field `insurance number` "],
   },
   // doctor specific fields
   experience: {
     type: String,
     validate: [isDoctor, "Only Doctors can have field `experience`"],
+  },
+  specialization: {
+    type: String,
+  },
+});
+
+// Field validation depending on user role.
+// Since we cannot run `required: true` because
+// it would affect both roles (patients and doctors)
+UserSchema.pre("save", async function (next) {
+  const required_fields_doctor = ["specialization"];
+  const required_fields_patient = ["phone", "address"]
+  if (this.role === "doctor") {
+    requiredFields(this, required_fields_doctor, next);
+  } else if (this.role === "user") {
+    requiredFields(this, required_fields_patient, next);
   }
 });
 
@@ -102,19 +122,21 @@ const UserSchema = new mongoose.Schema({
 // useful to search doctors near certain location
 // Geocode & create location field
 UserSchema.pre("save", async function (next) {
-  const loc = await geocoder.geocode(this.address);
-  this.address_geojson = {
-    type: "Point",
-    coordinates: [loc[0].longitude, loc[0].latitude],
-    formattedAddress: loc[0].formattedAddress,
-    street: loc[0].streetName,
-    city: loc[0].city,
-    state: loc[0].stateCode,
-    country: loc[0].countryCode,
-  };
-  // Do not save address in DB
-  this.address = undefined;
-  next();
+  if (this.role === "user") {
+    const loc = await geocoder.geocode(this.address);
+    this.address_geojson = {
+      type: "Point",
+      coordinates: [loc[0].longitude, loc[0].latitude],
+      formattedAddress: loc[0].formattedAddress,
+      street: loc[0].streetName,
+      city: loc[0].city,
+      state: loc[0].stateCode,
+      country: loc[0].countryCode,
+    };
+    // Do not save address in DB
+    this.address = undefined;
+    next();
+  }
 });
 
 // Mongoose middleware
@@ -143,7 +165,7 @@ UserSchema.methods.matchPassword = async function (inputPassword) {
 };
 
 // Generate reset password token, hash it and store it temporally in db
-UserSchema.methods.getResetPasswordToken = function() {
+UserSchema.methods.getResetPasswordToken = function () {
   // Generate token
   const resetToken = crypto.randomBytes(20).toString("hex");
 
@@ -154,8 +176,9 @@ UserSchema.methods.getResetPasswordToken = function() {
     .digest("hex");
 
   // Set expire
-  this.resetPasswordExpire = Date.now() + process.env.RESET_PASSWORD_TOKEN_EXPIRE * 60 * 1000;
+  this.resetPasswordExpire =
+    Date.now() + process.env.RESET_PASSWORD_TOKEN_EXPIRE * 60 * 1000;
 
   return resetToken;
-}
+};
 module.exports = mongoose.model("User", UserSchema);

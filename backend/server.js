@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const cookieParser = require('cookie-parser');
 const errorHandler = require("./middleware/error");
 const morgan = require('morgan');
 
@@ -24,6 +25,9 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Cookie parser middleware
+app.use(cookieParser());
 
 // Mount routers
 app.use("/api/v1/auth", auth);

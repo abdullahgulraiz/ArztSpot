@@ -14,6 +14,10 @@ exports.protectRoute = asyncHandler(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(" ")[1];
   }
+  // Not using cookie authentication
+  // else if (req.cookies.token) {
+  //   token = req.cookies.token;
+  // }
 
   // Make sure token exits
   if (!token) {

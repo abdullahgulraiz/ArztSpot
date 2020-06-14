@@ -7,6 +7,10 @@ const isDoctor = function () {
   return this.role === "doctor";
 };
 
+const isPatient = function () {
+  return this.role === "user";
+};
+
 const UserSchema = new mongoose.Schema({
   firstname: {
     type: String,
@@ -39,16 +43,40 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     select: false,
   },
-  experience: {
-    type: String,
-    validate: [isDoctor, "Only Doctors can have field `experience`"],
-  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
   },
+  // patient specific fields
+  phone: {
+    type: String,
+    validate: [isPatient, "Only Patients can have field `phone number`"],
+    match: [/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/, "Please add a valid phone number formatted as +XX (XXX) XXX-XXX"]
+  },
+  address: {
+    type: String,
+  },
+  birthday: {
+    type: Date,
+    min: ['1900-01-01', "Shouldn't you call the Guinness Book?"],
+    validate: [isPatient, "Only Patients can have field `birthday`"]
+  },
+  insurance_company: {
+    type: String,
+    enum: ["AOK", "GEK", "TK"],
+    validate: [isPatient, "Only Patients can have field `insurance company` "]
+  },
+  insurance_number: {
+    type: String,
+    validate:[isPatient, "Only Patients can have field `insurance number` "]
+  },
+  // doctor specific fields
+  experience: {
+    type: String,
+    validate: [isDoctor, "Only Doctors can have field `experience`"],
+  }
 });
 
 // Mongoose middleware

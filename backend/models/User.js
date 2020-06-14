@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const mongoose = require("mongoose");
+const geocoder = require("../utils/geocoder");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
@@ -57,6 +58,24 @@ const UserSchema = new mongoose.Schema({
   },
   address: {
     type: String,
+    validate: [isPatient, "Only Patients can have field `address`"],
+  },
+  address_geojson: {
+    // GeoJSON Point
+    type: {
+      type: String,
+      enum: ["Point"],
+    },
+    coordinates: {
+      type: [Number],
+      index: "2dsphere",
+    },
+    formattedAddress: String,
+    street: String,
+    city: String,
+    state: String,
+    zipcode: String,
+    country: String,
   },
   birthday: {
     type: Date,
@@ -77,6 +96,25 @@ const UserSchema = new mongoose.Schema({
     type: String,
     validate: [isDoctor, "Only Doctors can have field `experience`"],
   }
+});
+
+// Geocode address in geojson format
+// useful to search doctors near certain location
+// Geocode & create location field
+UserSchema.pre("save", async function (next) {
+  const loc = await geocoder.geocode(this.address);
+  this.address_geojson = {
+    type: "Point",
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress,
+    street: loc[0].streetName,
+    city: loc[0].city,
+    state: loc[0].stateCode,
+    country: loc[0].countryCode,
+  };
+  // Do not save address in DB
+  this.address = undefined;
+  next();
 });
 
 // Mongoose middleware

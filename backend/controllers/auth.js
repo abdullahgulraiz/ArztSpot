@@ -9,10 +9,7 @@ const User = require("../models/User");
 //@access Public
 exports.register = asyncHandler(async (req, res, next) => {
   // Create user
-  const user = await User.create(
-    req.body
-  );
-
+  const user = await User.create(req.body);
   sendTokenResponse(user, 200, res);
 });
 
@@ -66,22 +63,22 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
-    experience: req.body.experience
-  }
+    experience: req.body.experience,
+  };
   // Only update fields which come in the request.
-  Object.keys(toUpdate).forEach(key => {
+  Object.keys(toUpdate).forEach((key) => {
     if (toUpdate[key] === undefined) {
       delete toUpdate[key];
     }
   });
-  console.log(toUpdate)
+  console.log(toUpdate);
   if (Object.entries(toUpdate).length === 0) {
-    return next(new ErrorResponse('Invalid update request', 400))
+    return next(new ErrorResponse("Invalid update request", 400));
   }
 
   const user = await User.findByIdAndUpdate(req.user.id, toUpdate, {
     new: true,
-    runValidators: true
+    runValidators: true,
   });
 
   res.status(200).json({
@@ -90,16 +87,15 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 // @desc  Update password
 //@route  PUT /api/v1/auth/password
 //@access Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id).select('+password');
+  const user = await User.findById(req.user.id).select("+password");
 
   // Check current password
   if (!(await user.matchPassword(req.body.currentPassword))) {
-    return next(new ErrorResponse('Password is incorrect', 401))
+    return next(new ErrorResponse("Password is incorrect", 401));
   }
 
   user.password = req.body.newPassword;
@@ -207,4 +203,3 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie("token", token, options)
     .json({ success: true, token });
 };
-

@@ -26,8 +26,9 @@ exports.protectRoute = asyncHandler(async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     req.user = await User.findById(decoded.id);
+    // valid token but user not existing (probably deleted)
+    if (!req.user)  throw "error";
     next();
   } catch (err) {
     return next(new ErrorResponse("Not authorized to access this route"), 401);

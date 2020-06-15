@@ -26,6 +26,10 @@ const HospitalSchema = new mongoose.Schema({
     zipcode: String,
     country: String,
   },
+  owner: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User"
+  },
   phone: {
     type: String,
     match: [
@@ -39,6 +43,8 @@ const HospitalSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+
 
 // Geocode address in geojson format
 // useful to search doctors near certain location

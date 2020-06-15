@@ -111,7 +111,7 @@ const UserSchema = new mongoose.Schema({
   hospital: {
     type: mongoose.Schema.ObjectId,
     ref: "Hospital",
-    required: true
+    required: false
   }
 });
 

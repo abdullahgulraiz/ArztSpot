@@ -50,6 +50,7 @@ const HospitalSchema = new mongoose.Schema({
 // useful to search doctors near certain location
 // Geocode & create location field
 HospitalSchema.pre("save", async function (next) {
+  console.log("Runned!")
   const loc = await geocoder.geocode(this.address);
   this.address_geojson = {
     type: "Point",

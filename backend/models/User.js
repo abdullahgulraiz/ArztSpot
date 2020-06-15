@@ -107,7 +107,12 @@ const UserSchema = new mongoose.Schema({
   languages: [{
     type: String,
     validate: [isDoctor, "Only Doctors can have field `specialization`"]
-  }]
+  }],
+  hospital: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Hospital",
+    required: true
+  }
 });
 
 // Field validation depending on user role.

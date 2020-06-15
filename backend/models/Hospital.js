@@ -42,6 +42,9 @@ const HospitalSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+}, {
+  toJSON: {virtuals: true},
+  toObject: {virtuals: true}
 });
 
 
@@ -50,7 +53,6 @@ const HospitalSchema = new mongoose.Schema({
 // useful to search doctors near certain location
 // Geocode & create location field
 HospitalSchema.pre("save", async function (next) {
-  console.log("Runned!")
   const loc = await geocoder.geocode(this.address);
   this.address_geojson = {
     type: "Point",
@@ -65,5 +67,15 @@ HospitalSchema.pre("save", async function (next) {
   this.address = undefined;
   next();
 });
+
+// Reverse populate with virtuals
+// @Doc: https://mongoosejs.com/docs/tutorials/virtuals.html (under Populate field)
+HospitalSchema.virtual("doctors", {
+  ref: "User",
+  localField: "_id",
+  foreignField: "hospital",
+  justOne: false,
+});
+
 
 module.exports = mongoose.model("Hospital", HospitalSchema);

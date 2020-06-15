@@ -6,7 +6,8 @@
     "email": "marioperez@hotmail.com",
     "role": "doctor",
     "specialization": "Dermatology",
-    "languages": ["spanish", "german"]
+    "languages": ["spanish", "german"],
+    "hospital": "5ee7667dd8fc69a5308311b4"
   },
   {
     "firstname": "John",

@@ -7,9 +7,10 @@ const requiredFields = (user, fieldsToCheck, next) => {
   let returnError = false
   let err = ""
   fieldsToCheck.forEach(field => {
-    if(!user[field]){
+    // empty arrays will pass first condition
+    if(!user[field] || user[field].length === 0){
       returnError = true
-      err += `Required field ${field} is empty.`
+      err += `Required field ${field} is empty,`
     }
   })
   if (returnError) {

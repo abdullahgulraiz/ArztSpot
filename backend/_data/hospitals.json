@@ -1,14 +1,18 @@
 [
   {
+    "_id": "5ee7b9683431feba57523d01",
     "name": "Klinikum rechts der Isar",
     "address": "Ismaninger Str. 22, 81675",
     "phone": "+49 (894) 140-000",
-    "is_private_practice": "false"
+    "is_private_practice": "false",
+    "owner": "5ee7b96a3431feba57523d03"
   },
   {
+    "_id": "5ee7b9683431feba57523d00",
     "name": "Munich Private Clinic",
     "address": "Pfarrstraße 1, 80538",
     "phone": "+49 (894) 555-555",
-    "is_private_practice": "false"
+    "is_private_practice": "false",
+    "owner": "5ee7b96a3431feba57523d03"
   }
 ]

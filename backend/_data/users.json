@@ -1,13 +1,23 @@
 [
   {
+    "_id": "5ee7b96a3431feba57523d03",
     "firstname": "Mario",
     "lastname": "Perez",
     "password": "123456",
     "email": "marioperez@hotmail.com",
     "role": "doctor",
     "specialization": "Dermatology",
-    "languages": ["spanish", "german"],
-    "hospital": "5ee7667dd8fc69a5308311b4"
+    "languages": ["spanish", "german"]
+  },
+  {
+    "_id": "5ee7b96a3431feba57523d02",
+    "firstname": "Kevin",
+    "lastname": "Hart",
+    "password": "123456",
+    "email": "kevinhart@hotmail.com",
+    "role": "doctor",
+    "specialization": "traumatology",
+    "languages": ["english", "chinese"]
   },
   {
     "firstname": "John",

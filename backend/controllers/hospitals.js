@@ -20,7 +20,7 @@ exports.createHospital = asyncHandler(async (req, res, next) => {
 //@route  GET /api/v1/hospitals
 //@access Public
 exports.getHospitals = asyncHandler(async (req, res, next) => {
-  const hospitals = await Hospital.find();
+  const hospitals = await Hospital.find().populate("doctors");
 
   res.status(201).json({
     success: true,
@@ -32,7 +32,7 @@ exports.getHospitals = asyncHandler(async (req, res, next) => {
 //@route  GET /api/v1/hospitals/:id
 //@access Public
 exports.getHospital = asyncHandler(async (req, res, next) => {
-  const hospital = await Hospital.findById(req.params.id);
+  const hospital = await Hospital.findById(req.params.id).populate("doctors");
   if (!hospital) {
     return next(
       new ErrorResponse(`Hospital not found with id of ${req.params.id}`, 404)

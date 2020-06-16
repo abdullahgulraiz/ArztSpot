@@ -8,6 +8,9 @@ const {
   deleteHospital
 } = require("../controllers/hospitals");
 
+const Hospital = require("../models/Hospital");
+const filterResults = require("../middleware/filterResults");
+
 // Include other resource routers
 const doctorsRouter = require("./doctors");
 
@@ -20,7 +23,7 @@ router.use("/:hospitalId/doctors", doctorsRouter);
 
 router
   .route("/")
-  .get(getHospitals)
+  .get(filterResults(Hospital, "doctors"), getHospitals)
   .post(protectRoute, authorize("doctor", "admin"), createHospital);
 
 router

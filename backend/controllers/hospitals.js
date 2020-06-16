@@ -20,12 +20,7 @@ exports.createHospital = asyncHandler(async (req, res, next) => {
 //@route  GET /api/v1/hospitals
 //@access Public
 exports.getHospitals = asyncHandler(async (req, res, next) => {
-  const hospitals = await Hospital.find().populate("doctors");
-
-  res.status(201).json({
-    success: true,
-    data: hospitals,
-  });
+  res.status(200).json(res.filterResults);
 });
 
 // @desc  Get single Hospital

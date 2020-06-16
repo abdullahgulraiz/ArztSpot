@@ -1,0 +1,46 @@
+[
+  {
+    "_id": "5ee7b96a3431feba57523d03",
+    "firstname": "Mario",
+    "lastname": "Perez",
+    "password": "123456",
+    "email": "marioperez@hotmail.com",
+    "role": "doctor",
+    "specialization": "Dermatology",
+    "languages": ["spanish", "german"]
+  },
+  {
+    "_id": "5ee7b96a3431feba57523d02",
+    "firstname": "Kevin",
+    "lastname": "Hart",
+    "password": "123456",
+    "email": "kevinhart@hotmail.com",
+    "role": "doctor",
+    "specialization": "traumatology",
+    "languages": ["english", "chinese"]
+  },
+  {
+    "firstname": "John",
+    "lastname": "Smith",
+    "password": "123456",
+    "email": "johnsmith@hotmail.com",
+    "role": "user",
+    "phone": "+49 (494) 989-989",
+    "address": "Barer Str, 80799",
+    "birthday": "1967-01-01",
+    "insurance_company": "AOK",
+    "insurance_number": "123456789"
+  },
+  {
+    "firstname": "Kevin",
+    "lastname": "Brown",
+    "password": "123456",
+    "email": "kevinbrown@hotmail.com",
+    "role": "user",
+    "phone": "+34 (494) 555-555",
+    "address": "Franz-Joseph-Str, 80801",
+    "birthday": "1905-01-01",
+    "insurance_company": "GEK",
+    "insurance_number": "123456789"
+  }
+]

@@ -1,6 +1,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const cookieParser = require('cookie-parser');
 const errorHandler = require("./middleware/error");
 const morgan = require('morgan');
 
@@ -12,6 +13,8 @@ connectDB();
 
 // Route files
 const auth = require("./routes/auth");
+const hospitals = require("./routes/hospitals");
+const doctors = require("./routes/doctors");
 
 const app = express();
 
@@ -25,8 +28,13 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Cookie parser middleware
+app.use(cookieParser());
+
 // Mount routers
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/hospitals", hospitals);
+app.use("/api/v1/doctors", doctors);
 
 // Error handler middleware
 app.use(errorHandler)

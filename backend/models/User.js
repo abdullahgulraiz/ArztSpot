@@ -1,9 +1,16 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
+const geocoder = require("../utils/geocoder");
+const requiredFields = require("../utils/requiredFields");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const isDoctor = function () {
   return this.role === "doctor";
+};
+
+const isPatient = function () {
+  return this.role === "user";
 };
 
 const UserSchema = new mongoose.Schema({
@@ -38,16 +45,108 @@ const UserSchema = new mongoose.Schema({
     minlength: 6,
     select: false,
   },
-  experience: {
-    type: String,
-    validate: [isDoctor, "Only Doctors can have field `experience`"],
-  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
   },
+  // patient specific fields
+  phone: {
+    type: String,
+    validate: [isPatient, "Only Patients can have field `phone number`"],
+    match: [
+      /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/,
+      "Please add a valid phone number formatted as +XX (XXX) XXX-XXX",
+    ],
+  },
+  address: {
+    type: String,
+    validate: [isPatient, "Only Patients can have field `address`"],
+  },
+  address_geojson: {
+    // GeoJSON Point
+    type: {
+      type: String,
+      enum: ["Point"],
+    },
+    coordinates: {
+      type: [Number],
+      index: "2dsphere",
+    },
+    formattedAddress: String,
+    street: String,
+    city: String,
+    state: String,
+    zipcode: String,
+    country: String,
+  },
+  birthday: {
+    type: Date,
+    min: ["1900-01-01", "Shouldn't you call the Guinness Book?"],
+    validate: [isPatient, "Only Patients can have field `birthday`"],
+  },
+  insurance_company: {
+    type: String,
+    enum: ["AOK", "GEK", "TK"],
+    validate: [isPatient, "Only Patients can have field `insurance company` "],
+  },
+  insurance_number: {
+    type: String,
+    validate: [isPatient, "Only Patients can have field `insurance number` "],
+  },
+  // doctor specific fields
+  experience: {
+    type: String,
+    validate: [isDoctor, "Only Doctors can have field `experience`"],
+  },
+  specialization: {
+    type: String,
+    validate: [isDoctor, "Only Doctors can have field `specialization`"]
+  },
+  languages: [{
+    type: String,
+    validate: [isDoctor, "Only Doctors can have field `specialization`"]
+  }],
+  hospital: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Hospital",
+    required: false
+  }
+});
+
+// Field validation depending on user role.
+// Since we cannot run `required: true` because
+// it would affect both roles (patients and doctors)
+UserSchema.pre("save", async function (next) {
+  const required_fields_doctor = ["specialization", "languages"];
+  const required_fields_patient = ["phone", "address"]
+  if (this.role === "doctor") {
+    requiredFields(this, required_fields_doctor, next);
+  } else if (this.role === "user") {
+    requiredFields(this, required_fields_patient, next);
+  }
+});
+
+// Geocode address in geojson format
+// useful to search doctors near certain location
+// Geocode & create location field
+UserSchema.pre("save", async function (next) {
+  if (this.role === "user") {
+    const loc = await geocoder.geocode(this.address);
+    this.address_geojson = {
+      type: "Point",
+      coordinates: [loc[0].longitude, loc[0].latitude],
+      formattedAddress: loc[0].formattedAddress,
+      street: loc[0].streetName,
+      city: loc[0].city,
+      state: loc[0].stateCode,
+      country: loc[0].countryCode,
+    };
+    // Do not save address in DB
+    this.address = undefined;
+    next();
+  }
 });
 
 // Mongoose middleware
@@ -73,5 +172,23 @@ UserSchema.methods.getJwtToken = function () {
 // Match user entered password to hashed password in database
 UserSchema.methods.matchPassword = async function (inputPassword) {
   return await bcrypt.compare(inputPassword, this.password);
+};
+
+// Generate reset password token, hash it and store it temporally in db
+UserSchema.methods.getResetPasswordToken = function () {
+  // Generate token
+  const resetToken = crypto.randomBytes(20).toString("hex");
+
+  // Hash token and set to resetPasswordToken field
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // Set expire
+  this.resetPasswordExpire =
+    Date.now() + process.env.RESET_PASSWORD_TOKEN_EXPIRE * 60 * 1000;
+
+  return resetToken;
 };
 module.exports = mongoose.model("User", UserSchema);

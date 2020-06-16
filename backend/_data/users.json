@@ -17,7 +17,52 @@
     "email": "kevinhart@hotmail.com",
     "role": "doctor",
     "specialization": "traumatology",
-    "languages": ["english", "chinese"]
+    "languages": ["english", "chinese"],
+    "hospital": "5ee7b9683431feba57523d01"
+  },
+  {
+    "_id": "816c8e3576d9fac927e1ab96",
+    "firstname": "Will",
+    "lastname": "Smith",
+    "password": "123456",
+    "email": "willsmith@hotmail.com",
+    "role": "doctor",
+    "specialization": "cardiology",
+    "languages": ["japanese", "german"],
+    "hospital": "5ee7b9683431feba57523d01"
+  },
+  {
+    "_id": "669b0d7ddcd112d072ed43a9",
+    "firstname": "Chad",
+    "lastname": "Clark",
+    "password": "123456",
+    "email": "chadclark@hotmail.com",
+    "role": "doctor",
+    "specialization": "neurology",
+    "languages": ["english"],
+    "hospital": "5ee7b9683431feba57523d01"
+  },
+  {
+    "_id": "2b95d5cb58b5ebbe568462e0",
+    "firstname": "Chris",
+    "lastname": "Anderson",
+    "password": "123456",
+    "email": "chrisanderson@hotmail.com",
+    "role": "doctor",
+    "specialization": "radiology",
+    "languages": ["english", "italian"],
+    "hospital": "5ee7b9683431feba57523d00"
+  },
+  {
+    "_id": "1633ede88f420f0e89f673c9",
+    "firstname": "James",
+    "lastname": "Johnson",
+    "password": "123456",
+    "email": "jamesjohnson@hotmail.com",
+    "role": "doctor",
+    "specialization": "family",
+    "languages": ["french", "arabic"],
+    "hospital": "5ee7b9683431feba57523d00"
   },
   {
     "firstname": "John",

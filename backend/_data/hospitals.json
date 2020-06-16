@@ -10,7 +10,7 @@
   {
     "_id": "5ee7b9683431feba57523d00",
     "name": "Munich Private Clinic",
-    "address": "Pfarrstraße 1, 80538",
+    "address": "Pfarr Str. 1, 80538, Munich",
     "phone": "+49 (894) 555-555",
     "is_private_practice": "false",
     "owner": "5ee7b96a3431feba57523d03"

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import routes from '../../routes.js';
+import { reverse } from 'named-urls'
 
 const DoctorButton = props => (
     <div className="dropdown">
@@ -10,7 +12,7 @@ const DoctorButton = props => (
             <Link className="dropdown-item" to="#">Appointments</Link>
             <Link className="dropdown-item" to="#">Patients</Link>
             <Link className="dropdown-item" to="#">Questionnaires</Link>
-            <Link className="dropdown-item" to="#">Prescriptions</Link>
+            <Link className="dropdown-item" to="/doctor/prescriptions">Prescriptions</Link>
             <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } >Logout</Link>
         </div>
     </div>
@@ -23,7 +25,7 @@ const DoctorButton = props => (
         </Link>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <Link className="dropdown-item" to="#">Appointments</Link>
-            <Link className="dropdown-item" to="#">Prescriptions</Link>
+            <Link className="dropdown-item" to={reverse(routes.doctor.prescriptions.search)}>Prescriptions</Link>
             <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } >Logout</Link>
         </div>
     </div>
@@ -80,11 +82,10 @@ export default class Navbar extends Component {
                 <nav className="nav-menu d-none d-lg-block">
                 <ul>
                     <li><Link to="/">Home</Link></li>
-                    <li><Link to="/about">About</Link></li>
-                    <li><Link to="/services">Service</Link></li>
-                    <li><Link to="/faqs">FAQs</Link></li>
-                    <li><Link to="/contact">Contact</Link></li>
-
+                    <li><Link to={routes.about}>About</Link></li>
+                    <li><Link to={routes.services}>Service</Link></li>
+                    <li><Link to={routes.faqs}>FAQs</Link></li>
+                    <li><Link to={routes.contact}>Contact</Link></li>
                 </ul>
                 </nav>
 

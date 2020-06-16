@@ -281,6 +281,14 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff;
 }
 
+.btn-primary {
+  background: #2487ce;
+}
+
+.btn-primary:hover {
+  background: #2079b8;
+}
+
 @media (max-width: 768px) {
   .get-started-btn {
     margin: 0 48px 0 0;

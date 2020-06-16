@@ -1,29 +1,28 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
-
-import Navbar from "./components/navbar.component"
-import Home from "./components/home.component"
-import About from "./components/about.component"
-import Services from "./components/services.component"
-import FAQS from "./components/faqs.component"
-import Contact from "./components/contact.component"
-import Footer from "./components/footer.component"
-import NotFound from "./components/notfound.component"
+import routes from './routes.js'
+import components from "./components/components";
 
 function App() {
   return (
     <Router>
 
-      <Navbar />
+      <components.general.Navbar />
       <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/about" component={About} />
-        <Route path="/services" component={Services} />
-        <Route path="/faqs" component={FAQS} />
-        <Route path="/contact" component={Contact} />
-        <Route component={NotFound} />
+        {/* General */}
+        <Route path="/" exact component={components.general.Home} />
+        <Route path={routes.about} component={components.general.About} />
+        <Route path={routes.services} component={components.general.Services} />
+        <Route path={routes.faqs} component={components.general.FAQS} />
+        <Route path={routes.contact} component={components.general.Contact} />
+        {/* Doctor */}
+        <Route path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
+        <Route path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
+        <Route path={routes.doctor.prescriptions.search} component={components.doctor.prescriptions.PrescriptionsSearch} />
+        {/* 404 */}
+        <Route component={components.general.NotFound} />
       </Switch>
-      <Footer />
+      <components.general.Footer />
 
     </Router>
   );

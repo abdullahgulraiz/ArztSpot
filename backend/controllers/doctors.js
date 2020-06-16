@@ -8,8 +8,7 @@ const Hospital = require("../models/Hospital");
 //@route  GET /api/v1/doctors
 //@access Public
 exports.getDoctors = asyncHandler(async (req, res, next) => {
-  const doctors = await User.find({ role: "doctor" });
-  res.status(200).json({ success: true, data: doctors });
+  res.status(200).json(res.filterResults);
 });
 
 // @desc  Get single doctor
@@ -63,31 +62,37 @@ exports.addDoctorToHospital = asyncHandler(async (req, res, next) => {
 // @desc Get Doctors within a radius (from user address)
 // @route GET /api/v1/doctors/search/:distance
 //@access Private
-exports.getDoctorsWithinRadius = asyncHandler(async (req, res, next) => {
-  const { distance } = req.params;
-  const lng = req.user.address_geojson.coordinates[0];
-  const lat = req.user.address_geojson.coordinates[1];
-
-  // Calc radius using radians
-  // Divide dist by radius of Earth
-  // Earth Radius = 3,963 mi / 6,378 km
-  const radius = distance / 6378;
-  const hospitals = await Hospital.find({
-    address_geojson: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
-  });
-  // find doctors that work in the hospitals found
-  let doctors = [];
-  for (const hospital of hospitals) {
-    const foundDoctors = await User.find({
-      role: "doctor",
-      hospital,
-    });
-    doctors.push(foundDoctors);
-  }
-
-  // console.log(hospitals)
-  res.status(200).json({
-    success: true,
-    data: doctors,
-  });
-});
+// exports.getDoctorsWithinRadius = asyncHandler(async (req, res, next) => {
+//   const { distance } = req.params;
+//   const lng = req.user.address_geojson.coordinates[0];
+//   const lat = req.user.address_geojson.coordinates[1];
+//
+//   // Calc radius using radians
+//   // Divide dist by radius of Earth
+//   // Earth Radius = 3,963 mi / 6,378 km
+//   const radius = distance / 6378;
+//   const hospitals = await Hospital.find({
+//     address_geojson: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
+//   });
+//   // find doctors that work in the hospitals found
+//   let doctors = [];
+//   // for (const hospital of hospitals) {
+//   //   const foundDoctors = await User.find({
+//   //     role: "doctor",
+//   //     hospital,
+//   //     specialization: "traumatology"
+//   //   });
+//   //   doctors.push(foundDoctors);
+//   // }
+//   doctors = await User.find({
+//     role: "doctor",
+//     hospital: { $in: hospitals}
+//   })
+//
+//
+//   // console.log(hospitals)
+//   res.status(200).json({
+//     success: true,
+//     data: doctors,
+//   });
+// });

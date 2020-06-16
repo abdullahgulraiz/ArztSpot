@@ -2,7 +2,7 @@
   {
     "_id": "5ee7b9683431feba57523d01",
     "name": "Klinikum rechts der Isar",
-    "address": "Ismaninger Str. 22, 81675",
+    "address": "Ismaninger Str. 22, 81675, Munich, DE",
     "phone": "+49 (894) 140-000",
     "is_private_practice": "false",
     "owner": "5ee7b96a3431feba57523d03"
@@ -10,9 +10,49 @@
   {
     "_id": "5ee7b9683431feba57523d00",
     "name": "Munich Private Clinic",
-    "address": "Pfarr Str. 1, 80538, Munich",
-    "phone": "+49 (894) 555-555",
+    "address": "Leopold Str. 25, 80538, Munich, DE",
+    "phone": "+49 (894) 666-555",
     "is_private_practice": "false",
     "owner": "5ee7b96a3431feba57523d03"
+  },
+  {
+    "_id": "f96fac629434f6c24e01405f",
+    "name": "Clinic of Dr. Johnson",
+    "address": "Kaiser Str. 22, 80801, Munich, DE",
+    "phone": "+49 (894) 854-555",
+    "is_private_practice": "false",
+    "owner": "f96fac629434f6c24e01405f"
+  },
+  {
+    "_id": "60df9bc79036533b64a97319",
+    "name": "Garching Clinic",
+    "address": "Steiningerweg 2, 85748, Garching bei München,, DE",
+    "phone": "+49 (894) 555-112",
+    "is_private_practice": "false",
+    "owner": "5ee7b96a3431feba57523d03"
+  },
+  {
+    "_id": "bd2b6f8a69fcd1f0b3db6ee8",
+    "name": "Icking Private Clinic",
+    "address": "Haiderweg 9-1 2, 82057, Icking, DE",
+    "phone": "+49 (894) 555-112",
+    "is_private_practice": "true",
+    "owner": "5ee7b96a3431feba57523d03"
+  },
+  {
+    "_id": "55e9b7b4d556758c53b2c1f9",
+    "name": "Olympiapark Private Clinic",
+    "address": "Kantstraße 32 80809, Munich, DE",
+    "phone": "+49 (894) 555-847",
+    "is_private_practice": "true",
+    "owner": "5ee7b96a3431feba57523d03"
+  },
+  {
+    "_id": "c423393477273fb3dd9f3596",
+    "name": "Berlin General Hospital",
+    "address": "Promenadenstraße 3-5, 12207, Berlin, DE",
+    "phone": "+49 (300) 555-112",
+    "is_private_practice": "false",
+    "owner": "75f46352eb8978f6aee0f9e4"
   }
 ]

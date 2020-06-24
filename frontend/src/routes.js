@@ -1,12 +1,18 @@
 import { include } from 'named-urls'
 
 export default {
-    //general
+    // general
     home: "/",
     about: "/about",
     services: "/services",
     faqs: "/faqs",
     contact: "/contact",
+
+    // auth
+    auth: include('/auth', {
+        login: 'login',
+        register: 'register'
+    }),
 
     // doctor
     doctor: include('/doctor', {

@@ -14,7 +14,9 @@ export const DoctorRoute = (props) => {
     user.role === "doctor" ? valid_user = true : valid_user = false;
     if (!is_authenticated && callbackUrl !== window.location.pathname) {
         setCallbackUrl(window.location.pathname);
+        console.log("Check 1");
     }
+    console.log("Check 2", valid_user, user);
 
     return (
         <Route
@@ -36,7 +38,7 @@ export const PatientRoute = (props) => {
     const { is_authenticated, user, callbackUrl, setCallbackUrl } = useContext(AuthContext);
 
     let valid_user = false;
-    user.role === "patient" ? valid_user = true : valid_user = false;
+    user.role === "user" ? valid_user = true : valid_user = false;
     if (!is_authenticated && callbackUrl !== window.location.pathname) {
         setCallbackUrl(window.location.pathname);
     }

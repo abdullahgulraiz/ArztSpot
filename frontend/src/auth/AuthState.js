@@ -3,22 +3,10 @@ import AuthReducer from './AuthReducer';
 
 // Initial state
 const initialState = {
-    is_authenticated: true,
+    is_authenticated: false,
     callbackUrl: '/',
-    user: {
-        role: "doctor",
-        languages: [
-            "spanish",
-            "german"
-        ],
-        _id: "5ee7b96a3431feba57523d03",
-        firstname: "Mario",
-        lastname: "Perez",
-        email: "marioperez@hotmail.com",
-        specialization: "Dermatology",
-        createdAt: "2020-06-16T13:33:06.451Z",
-        __v: 0
-    }
+    user: {},
+    axios: null,
 }
 
 // Create context
@@ -29,17 +17,19 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AuthReducer, initialState);
 
     // Actions
-    function loginUser(user) {
+    function loginUser(user, axios) {
         dispatch({
             type: 'LOGIN_USER',
-            payload: user
+            payload: {
+                user: user,
+                axios: axios
+            }
         });
     }
 
-    function logoutUser(user) {
+    function logoutUser() {
         dispatch({
             type: 'LOGOUT_USER',
-            payload: user
         });
     }
 
@@ -54,6 +44,7 @@ export const AuthProvider = ({ children }) => {
         is_authenticated: state.is_authenticated,
         user: state.user,
         callbackUrl: state.callbackUrl,
+        axios: state.axios,
         loginUser,
         logoutUser,
         setCallbackUrl

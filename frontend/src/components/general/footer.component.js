@@ -34,7 +34,7 @@ export const Footer = () => {
     if (is_authenticated) {
         if (user.role === 'doctor') {
             actions = <DoctorActions />;
-        } else if (user.role === 'patient') {
+        } else if (user.role === 'user') {
             actions = <PatientActions />;
         }
     } else {

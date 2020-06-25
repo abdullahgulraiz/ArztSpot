@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, {useContext, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import routes from '../../routes.js';
 import { reverse } from 'named-urls'
 import { AuthContext } from '../../auth/AuthState';
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const DoctorButton = props => (
     <div className="dropdown">
@@ -21,13 +23,13 @@ const DoctorButton = props => (
 
   const PatientButton = props => (
     <div className="dropdown">
-        <Link className="get-started-btn scrollto dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <Link className="get-started-btn scrollto dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" to="#">
             {props.user.firstname}  {props.user.lastname}
         </Link>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <Link className="dropdown-item" to="#">Appointments</Link>
             <Link className="dropdown-item" to="#">Prescriptions</Link>
-            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } >Logout</Link>
+            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to="#" >Logout</Link>
         </div>
     </div>
   )
@@ -38,7 +40,31 @@ const DoctorButton = props => (
 
 export const Navbar = () => {
 
-    const { is_authenticated, user, logoutUser } = useContext(AuthContext);
+    const { is_authenticated, user, logoutUser, loginUser } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (!is_authenticated) {
+            const token = Cookies.get('bearer_token');
+            let user = {}
+            if (token) {
+                const axios_instance = axios.create({
+                    timeout: 1000,
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                axios_instance
+                    .get("/api/v1/auth/me")
+                    .then(response => {
+                        if (response.data.success) {
+                            user = response.data.data;
+                            loginUser(user, axios_instance);
+                        }
+                    });
+            }
+        }
+    });
+
     const handleLogout = () => {
         logoutUser();
         window.location.pathname = "/";
@@ -48,7 +74,7 @@ export const Navbar = () => {
     if (is_authenticated) {
         if (user.role === 'doctor') {
             button = <DoctorButton user={user} handleLogoutClick={handleLogout} />;
-        } else if (user.role === 'patient') {
+        } else if (user.role === 'user') {
             button = <PatientButton user={user} handleLogoutClick={handleLogout} />;
         }
     } else {

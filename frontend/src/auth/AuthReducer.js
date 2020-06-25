@@ -1,11 +1,18 @@
+import Cookies from 'js-cookie'
+
 export default (state, action) => {
     switch(action.type) {
         case 'LOGIN_USER':
+            const user = action.payload.user;
             return {
                 ...state,
-                transactions: state.transactions.filter(transaction => transaction.id !== action.payload)
+                callbackUrl: '/',
+                user: user,
+                is_authenticated: true,
+                axios: action.payload.axios
             }
         case 'LOGOUT_USER':
+            Cookies.remove('bearer_token');
             return {
                 ...state,
                 is_authenticated: false,

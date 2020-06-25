@@ -65,6 +65,7 @@
     "hospital": "5ee7b9683431feba57523d00"
   },
   {
+    "_id": "7c5d98685ee0f21c963f63cb",
     "firstname": "John",
     "lastname": "Smith",
     "password": "123456",
@@ -77,6 +78,7 @@
     "insurance_number": "123456789"
   },
   {
+    "_id": "0f34bc7599638c93b361fb2f",
     "firstname": "Kevin",
     "lastname": "Brown",
     "password": "123456",

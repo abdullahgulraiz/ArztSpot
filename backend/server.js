@@ -15,6 +15,7 @@ connectDB();
 const auth = require("./routes/auth");
 const hospitals = require("./routes/hospitals");
 const doctors = require("./routes/doctors");
+const appointments = require("./routes/appointments");
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use(cookieParser());
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/hospitals", hospitals);
 app.use("/api/v1/doctors", doctors);
+app.use("/api/v1/appointments", appointments);
 
 // Error handler middleware
 app.use(errorHandler)

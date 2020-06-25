@@ -19,7 +19,6 @@ const filterResults = (model, populate) => async (req, res, next) => {
     const { address, zipcode } = requestQuery;
     // distance to search in. Default is 10km
     const distance = parseInt(req.query.distance, 10) || 10;
-    console.log(distance);
     const fullAddress = address + ", " + zipcode;
     const loc = await geocoder.geocode(fullAddress);
     const lat = loc[0].latitude;
@@ -28,7 +27,6 @@ const filterResults = (model, populate) => async (req, res, next) => {
     // Divide dist by radius of Earth
     // Earth Radius = 3,963 mi / 6,378 km
     let radius = distance / 6378;
-    console.log(radius);
     locQuery = {
       address_geojson: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
     };
@@ -71,8 +69,16 @@ const filterResults = (model, populate) => async (req, res, next) => {
         ...JSON.parse(queryStr),
       });
     }
-  } else {
-    query = model.find(JSON.parse(queryStr));
+  }
+  else {
+    // we want to be able to fetch data that is related to doctors and patients
+    // Ex: doctors want to get their appointments, users want
+    // to get their prescriptions
+    if (req.user) {
+      query = model.find({[req.user.role]: [req.user.id], ...JSON.parse(queryStr)})
+    } else {
+      query = model.find(JSON.parse(queryStr));
+    }
   }
 
   // query with mongoose

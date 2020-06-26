@@ -26,7 +26,11 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   }
   // check that there are no appointments
   // for that doctor in the given time window
-  appointment = await Appointment.find(findClashQuery(startTime, finishTime));
+  appointment = await Appointment.find({
+    doctor: doctorId,
+    hospital: hospitalId,
+    ...findClashQuery(startTime, finishTime),
+  });
   if (appointment.length > 0) {
     return next(new ErrorResponse(`Appointment already exists in that time slot`, 400));
   }
@@ -94,19 +98,20 @@ exports.updateAppointment = asyncHandler(async (req, res, next) => {
   }
   // check that there are no appointments
   // for that doctor in the given time window
-  const clashingAppointments = await Appointment.find(findClashQuery(startTime, finishTime));
+  const clashingAppointments = await Appointment.find({
+    hospital: appointment.hospital,
+    doctor: appointment.doctor,
+    ...findClashQuery(startTime, finishTime),
+  });
   if (clashingAppointments.length > 0) {
     return next(new ErrorResponse(`Appointment already exists in that time slot`, 400));
   }
   // update appointment
-  appointment = await Appointment.findByIdAndUpdate(
-    req.params.id,
-    { startTime, finishTime },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  // do not use findByIdAndUpdate since
+  // custom validators do not have access to `this`
+  appointment.startTime = startTime
+  appointment.finishTime = finishTime
+  await appointment.save()
   res.status(200).json({ success: true, appointment });
 });
 
@@ -147,41 +152,46 @@ const findClashQuery = (startTime, finishTime) => {
       {
         $and: [
           {
-            "startTime": {
-              $lte: startTime
-            }
-          }, {
-            "finishTime": {
-              $gt: startTime
-            }
-          }
-        ]
-      }, {
+            startTime: {
+              $lt: startTime,
+            },
+          },
+          {
+            finishTime: {
+              $gt: startTime,
+            },
+          },
+        ],
+      },
+      {
         $and: [
           {
-            "startTime": {
-              $lte: finishTime
-            }
-          }, {
-            "finishTime": {
-              $gte: finishTime
-            }
-          }
-        ]
-      }, {
+            startTime: {
+              $lt: finishTime,
+            },
+          },
+          {
+            finishTime: {
+              $gt: finishTime,
+            },
+          },
+        ],
+      },
+      {
         $and: [
           {
-            "startTime": {
-              $gte: startTime
-            }
-          }, {
-            "finishTime": {
-              $lte: finishTime
-            }
-          }
-        ]
-      }
-    ]
-  }
-  return query
-}
+            startTime: {
+              $gte: startTime,
+            },
+          },
+          {
+            finishTime: {
+              $lte: finishTime,
+            },
+          },
+        ],
+      },
+    ],
+  };
+  return query;
+};

@@ -24,7 +24,7 @@ const PatientActions = () => (
 const GuestActions = () => (
   <ul>
     <li><i className="bx bx-chevron-right"></i> <a href="#">Log in / Sign up</a></li>
-    <li><i className="bx bx-chevron-right"></i> <a href="#">Search for a doctor</a></li>
+    <li><i className="bx bx-chevron-right"></i> <a href="#">SearchComponents for a doctor</a></li>
   </ul>
 )
 

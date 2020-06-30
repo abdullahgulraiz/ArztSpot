@@ -7,6 +7,7 @@ export default {
     services: "/services",
     faqs: "/faqs",
     contact: "/contact",
+    search: "/search",
 
     // auth
     auth: include('/auth', {

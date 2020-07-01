@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 const mongoose = require("mongoose");
 
 // validators
@@ -58,6 +59,8 @@ module.exports = mongoose.model("Appointment", AppointmentSchema);
 =======
 // Here Manuel Schema starts
 
+=======
+>>>>>>> 7e1e9dd... Question and Questionnaire models.
 const mongoose = require("mongoose");
 
 const AppointmentSchema = new mongoose.Schema({

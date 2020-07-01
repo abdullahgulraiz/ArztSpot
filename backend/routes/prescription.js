@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let Prescription = require('../models/prescription.model');
+let Prescription = require('../models/Prescription');
 
 // Get exercises
 router.route('/').get((req,res) => {
@@ -56,6 +56,6 @@ router.route('/update/:id').post((req,res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//Send prescription to be made!
+//Send prescription to be made! some changes
 
 module.exports = router;

@@ -14,8 +14,10 @@ const InsuranceSchema = new Schema({
     },
     email:{
         type: String,
-        required: true
-    },
+        pattern: /[a-z0-9\._%+!$&*=^|~#%{}/\-]+@([a-z0-9\-]+\.){1,}([a-z]{2,22})/
+    }
+},{
+    timestamps: true
 });
 
 const Insurance = mongoose.model('Insurance', InsuranceSchema);

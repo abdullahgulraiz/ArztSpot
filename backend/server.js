@@ -15,7 +15,13 @@ connectDB();
 const auth = require("./routes/auth");
 const hospitals = require("./routes/hospitals");
 const doctors = require("./routes/doctors");
+<<<<<<< HEAD
 const appointments = require("./routes/appointments");
+=======
+const insurance = require("./routes/insurance");
+const appointments = require('./routes/appointment');
+//const prescriptions = require('./routes/prescription');
+>>>>>>> 0af1326... Question and Questionnaire models..
 
 const app = express();
 
@@ -36,7 +42,13 @@ app.use(cookieParser());
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/hospitals", hospitals);
 app.use("/api/v1/doctors", doctors);
+<<<<<<< HEAD
 app.use("/api/v1/appointments", appointments);
+=======
+app.use("/api/v1/insurances", insuranceRouter);
+// app.use('/api/v1/appointments', appointments);
+// app.use('/api/v1/prescriptions', prescriptions);
+>>>>>>> 0af1326... Question and Questionnaire models..
 
 // Error handler middleware
 app.use(errorHandler)

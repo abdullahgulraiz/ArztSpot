@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
 const prescriptionSchema = new Schema({
@@ -45,5 +44,4 @@ const prescriptionSchema = new Schema({
 });
 
 const Prescription = mongoose.model('Prescription', prescriptionSchema);
-
 module.exports = Prescription;

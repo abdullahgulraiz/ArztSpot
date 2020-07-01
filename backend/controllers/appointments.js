@@ -6,39 +6,30 @@ const Hospital = require("../models/Hospital");
 
 // @desc  Create new appointment
 //@route  POST /api/v1/appointment
-<<<<<<< HEAD
 //@access Private/patient
+//@access Public
 exports.createAppointment = asyncHandler(async (req, res, next) => {
   let appointment;
   const { hospitalId, doctorId, startTime, finishTime } = req.body;
   // find the doctor that works in the given hospital
-  const doctor = await User.findOne({
-    hospital: hospitalId,
-    _id: doctorId,
-    role: "doctor",
-  });
+  const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
   if (!doctor) {
-    return next(
-      new ErrorResponse(
-        `Doctor not found with id of ${doctorId} working at hospital with id ${hospitalId}`,
-        404
-      )
-    );
+    return next(new ErrorResponse(`Doctor not found with id of ${hospitalId}`, 404));
   }
   // check that there are no appointments
   // for that doctor in the given time window
-  appointment = await Appointment.find({
-    doctor: doctorId,
+  appointment = await Appointment.findOne({
     hospital: hospitalId,
-    ...findClashQuery(startTime, finishTime),
-  });
-  if (appointment.length > 0) {
-    return next(new ErrorResponse(`Appointment already exists in that time slot`, 400));
+    doctor: doctorId,
+    startTime: { $gte: startTime},
+    finishTime: {$lte: finishTime}
+  })
+  if(appointment) {
+    return next(new ErrorResponse(`Appointment already exists`, 400));
   }
   appointment = await Appointment.create({
     hospital: hospitalId,
     doctor: doctorId,
-    user: req.user.id,
     startTime: startTime,
     finishTime: finishTime,
   });
@@ -196,42 +187,3 @@ const findClashQuery = (startTime, finishTime) => {
   };
   return query;
 };
-=======
-//@access Public
-exports.createAppointment = asyncHandler(async (req, res, next) => {
-    let appointment;
-    const { hospitalId, doctorId, startTime, finishTime } = req.body;
-    // find the doctor that works in the given hospital
-    const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
-    if (!doctor) {
-        return next(new ErrorResponse(`Doctor not found with id of ${hospitalId}`, 404));
-    }
-    // check that there are no appointments
-    // for that doctor in the given time window
-    appointment = await Appointment.findOne({
-        hospital: hospitalId,
-        doctor: doctorId,
-        startTime: { $gte: startTime},
-        finishTime: {$lte: finishTime}
-    })
-    if(appointment) {
-        return next(new ErrorResponse(`Appointment already exists`, 400));
-    }
-    appointment = await Appointment.create({
-        hospital: hospitalId,
-        doctor: doctorId,
-        startTime: startTime,
-        finishTime: finishTime,
-    });
-    res.status(200).json({ success: true, appointment });
-});
-
-
-// @desc  Get single Appointment
-//@route  GET /api/v1/appointment/:id
-//@access Public
-exports.getAppointment = asyncHandler(async (req, res, next) => {
-    const appointment = await Appointment.findById(req.params.id)
-    res.status(200).json(res.filterResults);
-});
->>>>>>> 0af1326... Question and Questionnaire models..

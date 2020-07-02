@@ -24,7 +24,7 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
       )
     );
   }
-  // check that there are no appointments
+  // check that there are no search
   // for that doctor in the given time window
   appointment = await Appointment.find({
     doctor: doctorId,
@@ -96,7 +96,7 @@ exports.updateAppointment = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`You are not authorized to update this appointment`, 401)
     );
   }
-  // check that there are no appointments
+  // check that there are no search
   // for that doctor in the given time window
   const clashingAppointments = await Appointment.find({
     hospital: appointment.hospital,
@@ -144,8 +144,8 @@ exports.deleteAppointment = asyncHandler(async (req, res, next) => {
 
 const findClashQuery = (startTime, finishTime) => {
   // Check three cases:
-  // 1) Is start time of new appointment between existing appointments?
-  // 2) Is finish time of new appointment between existing appointments?
+  // 1) Is start time of new appointment between existing search?
+  // 2) Is finish time of new appointment between existing search?
   // 3) Is there any event between the new start time and finish time?
   const query = {
     $or: [

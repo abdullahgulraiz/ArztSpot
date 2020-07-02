@@ -8,14 +8,17 @@ import LocationSearch from "./LocationSearch";
 
 const Filter = () => {
   const searchContext = useContext(SearchContext);
-  const { search, setSearch } = searchContext;
+  const { search, setSearch, doctorSearch } = searchContext;
+  const onSubmit = (e) => {
+    e.preventDefault();
+    doctorSearch(search)
+  }
   return (
-    <div className="card col-xl-4 col-lg-6 col-md-6 col-sm-12 mt-5">
-      <div className="card-body">
+      <div className="card-body" >
         <h5 className="card-title text-center">
           <strong>Filter</strong>
         </h5>
-        <form>
+        <form onSubmit={onSubmit}>
           {search.type === "doctor" && (
             <Fragment>
               <h6 className="card-subtitle my-2 text-muted">Spoken Language</h6>{" "}
@@ -44,13 +47,12 @@ const Filter = () => {
           )}
           <LocationSearch />
           <div>
-            <button className="btn btn-outline-dark btn-light btn-block">
+            <button type="submit" className="btn btn-outline-dark btn-light btn-block">
               Apply
             </button>
           </div>
         </form>
       </div>
-    </div>
   );
 };
 

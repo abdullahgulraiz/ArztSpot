@@ -4,10 +4,10 @@ import DoctorItem from "./DoctorItem";
 
 const SearchResults = () => {
   const searchContext = useContext(SearchContext);
-  const {doctors} = searchContext
+  const {search, doctors} = searchContext
   return (
     <Fragment>
-      {doctors.map(doctor => (<DoctorItem doctor={doctor}/>))}
+      {search.hasSearched && doctors.map(doctor => (<DoctorItem doctor={doctor}/>)) }
     </Fragment>
   );
 };

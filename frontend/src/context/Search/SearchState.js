@@ -14,38 +14,19 @@ const SearchState = (props) => {
       country: "",
       zipcode: "",
       distance: "15",
+      hasSearched: false
     },
     doctors: [
       {
-        id: "5ee7b96a3431feba57523d03",
-        firstname: "Mario",
-        lastname: "Perez",
-        email: "marioperez@hotmail.com",
-        phone: "+(34) 555-555-555",
-        specialization: "Dermatology",
-        avatar: "backend/public/default.jpg",
-        languages: ["japanese", "german"],
-      },
-      {
-        id: "669b0d7ddcd112d072ed43a9",
-        firstname: "Chad",
-        lastname: "Clark",
-        email: "chadclark@hotmail.com",
-        phone: "+(34) 888-888-888",
-        specialization: "Neurology",
-        avatar: "backend/public/default.jpg",
-        languages: ["english"],
-      },
-      {
-        id: "816c8e3576d9fac927e1ab96",
-        firstname: "Kevin",
-        lastname: "Hart",
-        email: "kevinhart@hotmail.com",
-        phone: "+(34) 777-777-777",
-        specialization: "traumatology",
-        avatar: "backend/public/default.jpg",
-        languages: ["spanish", "german"],
-      },
+        id: "",
+        firstname: "",
+        lastname: "",
+        email: "",
+        phone: "",
+        specialization: "",
+        avatar: "",
+        languages: [],
+      }
     ],
   };
 
@@ -71,13 +52,21 @@ const SearchState = (props) => {
     if (street !== "" && country !== "" && zipcode !== "") {
       queryStr += `street=${street},${country}&zipcode=${zipcode}&distance=${distance}&`;
     }
-    if (languages.length > 0) {
-      queryStr += `languages=or[${languages.join(",")}]&`;
+    // to search for multiple fields we need to format the string such that
+    // languages[in]=french&languages[in]=spanish
+    // so we get {'languages': '$in': ['spanish', 'french']
+    if (languages.length > 1) {
+      languages.map(language => {
+        queryStr += `languages[in]=${language.toLowerCase()}&`;
+      })
+    } else if (languages.length === 1) {
+      queryStr += `languages=${languages.toLowerCase()}&`;
     }
     if (specialization !== "") {
       queryStr += `specialization=${specialization}`;
     }
     const url = encodeURI("/api/v1/doctors" + queryStr);
+    console.log(url)
     try {
       const res = await axios.get(url);
       console.log(res.data.data);

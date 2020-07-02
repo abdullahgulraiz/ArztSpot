@@ -11,6 +11,7 @@ const Filter = () => {
   const { search, setSearch, doctorSearch } = searchContext;
   const onSubmit = (e) => {
     e.preventDefault();
+    setSearch({...search, hasSearched: true})
     doctorSearch(search)
   }
   return (

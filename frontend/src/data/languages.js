@@ -4,4 +4,5 @@ export default [
   {label: "German"},
   {label: "Chinese"},
   {label: "Italian"},
+  {label: "French"}
 ];

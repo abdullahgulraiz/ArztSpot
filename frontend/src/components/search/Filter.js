@@ -8,7 +8,12 @@ import LocationSearch from "./LocationSearch";
 
 const Filter = () => {
   const searchContext = useContext(SearchContext);
-  const { search, setSearch } = searchContext;
+  const { search, setSearch, doctorSearch } = searchContext;
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setSearch({...search, hasSearched: true})
+    doctorSearch(search)
+  }
   return (
     <div className="card col-xl-4 col-lg-6 col-md-6 col-sm-12 mt-5">
       <div className="card-body">

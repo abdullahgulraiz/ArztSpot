@@ -11,6 +11,7 @@ import Unauthorized from "./general/unauthorized.component"
 /* Auth */
 import {Login} from "./auth/login.component"
 import Register from "./auth/register.component"
+import ForgotPassword from "./auth/forgot.component"
 /* Doctors */
 import {PrescriptionsSearch} from "./doctor/prescriptions/search.component"
 import PrescriptionsPatient from "./doctor/prescriptions/patient.component"
@@ -30,7 +31,8 @@ export default {
     },
     auth: {
         Login,
-        Register
+        Register,
+        ForgotPassword
     },
     doctor: {
         prescriptions: {

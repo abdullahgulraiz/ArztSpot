@@ -11,7 +11,8 @@ export default {
     // auth
     auth: include('/auth', {
         login: 'login',
-        register: 'register'
+        register: 'register',
+        forgot: 'forgot'
     }),
 
     // doctor

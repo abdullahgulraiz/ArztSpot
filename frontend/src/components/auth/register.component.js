@@ -70,23 +70,37 @@ export default class Register extends Component {
             <div className="row">
               <div className="col-6 offset-3">
                 <form onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <label htmlFor="email">Email</label>
-                  <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"email"} placeholder={"Email"} name={"email"} required={"required"} />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="password">Password</label>
-                  <input type={"password"} onChange={this.handleChange} className={"form-control"} id={"password"} placeholder={"Password"} name={"password"} required={"true"} />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="password_confirmation">Confirm Password</label>
-                  <input type={"password"} onChange={this.handleChange} className={"form-control"} id={"password_confirmation"} placeholder={"Confirm Password"} name={"password_confirmation"} required={"true"} />
-                </div>
-                <div className="row" style={{marginTop: "3%"}}>
-                  <div className="col-6 offset-3 text-center">
-                    <button type="submit" className="btn btn-primary">Sign up</button>
+                  <div className="form-group">
+                    <label htmlFor="name">Name</label>
+                    <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"name"} placeholder={"Name"} name={"name"} required={"required"} />
                   </div>
-                </div>
+                  <div className="form-group">
+                    <label htmlFor="lastname">Last Name</label>
+                    <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"lastname"} placeholder={"Last Name"} name={"lastname"} required={"required"} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"email"} placeholder={"Email"} name={"email"} required={"required"} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password">Password</label>
+                    <input type={"password"} onChange={this.handleChange} className={"form-control"} id={"password"} placeholder={"Password"} name={"password"} required={"true"} />
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="password_confirmation">Confirm Password</label>
+                    <input type={"password"} onChange={this.handleChange} className={"form-control"} id={"password_confirmation"} placeholder={"Confirm Password"} name={"password_confirmation"} required={"true"} />
+                  </div>
+                  <div className="row" style={{marginTop: "3%"}}>
+                      <div className="col-6 offset-3 text-center">
+                          <button type="submit" className="btn btn-primary">Sign up</button>
+                          <div className="section-title" style={{marginTop: "3%"}}>
+                              <p>By signing up, you agree to ArztSpot's <a href="#" className="alert-link">Terms of Use</a> and <a href="#" className="alert-link">Privacy Policy</a>.</p>
+                          </div>
+                          <div className="section-title" style={{marginTop: "3%"}}>
+                              <p>Already signed up? <a href="auth/login" className="alert-link">Log in</a> with your account</p>
+                          </div>
+                      </div>
+                  </div>
                 </form>
               </div>
             </div>

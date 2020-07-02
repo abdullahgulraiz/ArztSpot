@@ -25,6 +25,7 @@ function App() {
                 {/* Auth */}
                 <NoAuthRoute path={routes.auth.login} component={components.auth.Login}/>
                 <NoAuthRoute path={routes.auth.register} component={components.auth.Register} />
+                <NoAuthRoute path={routes.auth.forgot} component={components.auth.ForgotPassword}/>
                 {/* 404 */}
                 <Route component={components.general.NotFound} />
               </Switch>

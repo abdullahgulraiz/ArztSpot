@@ -2,6 +2,9 @@ import React, {useContext, useState} from 'react';
 import axios from 'axios';
 import {AuthContext} from "../../auth/AuthState";
 import Cookies from 'js-cookie'
+import {reverse} from "named-urls";
+import routes from "../../routes";
+import {Link} from "react-router-dom";
 
 export const Login = () => {
 
@@ -64,6 +67,12 @@ export const Login = () => {
                     <div className="col-6 offset-3 text-center">
                       <button type="submit" className="btn btn-primary">Sign in</button>
                     </div>
+                  </div>
+                  <div className="section-title" style={{marginTop: "3%"}}>
+                    <Link to={reverse(routes.auth.forgot)} className="btn-get-started scrollto">Forgot your password?</Link>
+                  </div>
+                  <div className="section-title">
+                    <p>New to ArztSpot? <a href="auth/register" className="alert-link">Sign up!</a></p>
                   </div>
                 </form>
               </div>

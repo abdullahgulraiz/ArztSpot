@@ -1,5 +1,4 @@
 /backend/node_modules
 .idea
-/backend/config/.env
 /frontend/node_modules
 /node_modules

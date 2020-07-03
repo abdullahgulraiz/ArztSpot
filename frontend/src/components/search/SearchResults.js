@@ -7,7 +7,7 @@ const SearchResults = () => {
   const {search, doctors} = searchContext
   return (
     <Fragment>
-      {search.hasSearched && doctors.map(doctor => (<DoctorItem doctor={doctor}/>)) }
+      {search.hasSearched && doctors.map(doctor => (doctor.id !== "" && (<DoctorItem doctor={doctor}/>)) ) }
     </Fragment>
   );
 };

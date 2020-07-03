@@ -1,60 +1,70 @@
 import React, { useContext, Fragment } from "react";
-import "react-bootstrap-typeahead/css/Typeahead.css";
 import languages from "../../data/languages";
 import specialization from "../../data/specialization";
 import SearchContext from "../../context/Search/searchContext";
 import TypeaheadSearch from "./TypeaheadSearch";
 import LocationSearch from "./LocationSearch";
+import { useForm } from "react-hook-form";
 
 const Filter = () => {
+  const { handleSubmit, register } = useForm();
   const searchContext = useContext(SearchContext);
   const { search, setSearch, doctorSearch } = searchContext;
-  const onSubmit = (e) => {
-    e.preventDefault();
-    setSearch({...search, hasSearched: true})
-    doctorSearch(search)
-  }
+  const onSubmit = (data) => {
+    if (
+      (!data.street && !data.country && !data.zipcode) ||
+      (data.street && data.country && data.zipcode)
+    ) {
+      setSearch({ ...search, hasSearched: true, errorLocation: false });
+      doctorSearch(search);
+    } else {
+      setSearch({ ...search, errorLocation: true });
+    }
+
+  };
   return (
-    <div className="card col-xl-4 col-lg-6 col-md-6 col-sm-12 mt-5">
-      <div className="card-body">
-        <h5 className="card-title text-center">
-          <strong>Filter</strong>
-        </h5>
-        <form>
-          {search.type === "doctor" && (
-            <Fragment>
-              <h6 className="card-subtitle my-2 text-muted">Spoken Language</h6>{" "}
-              <TypeaheadSearch
-                props={{
-                  data: languages,
-                  multiple: true,
-                  name: "languages",
-                  setFunction: setSearch,
-                  state: search,
-                }}
-              />{" "}
-              <h6 className="card-subtitle my-2 text-muted">
-                Doctor Specialization
-              </h6>
-              <TypeaheadSearch
-                props={{
-                  data: specialization,
-                  multiple: false,
-                  name: "specialization",
-                  setFunction: setSearch,
-                  state: search,
-                }}
-              />
-            </Fragment>
-          )}
-          <LocationSearch />
-          <div>
-            <button className="btn btn-outline-dark btn-light btn-block">
-              Apply
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className="card-body">
+      <h5 className="card-title text-center">
+        <strong>Filter</strong>
+      </h5>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {search.type === "doctor" && (
+          <Fragment>
+            <h6 className="card-subtitle my-2 text-muted">Spoken Language</h6>{" "}
+            <TypeaheadSearch
+              props={{
+                data: languages,
+                multiple: true,
+                name: "languages",
+                setFunction: setSearch,
+                state: search,
+              }}
+            />{" "}
+            <h6 className="card-subtitle my-2 text-muted">
+              Doctor Specialization
+            </h6>
+            <TypeaheadSearch
+              props={{
+                data: specialization,
+                multiple: false,
+                name: "specialization",
+                setFunction: setSearch,
+                state: search,
+              }}
+            />
+          </Fragment>
+        )}
+        <LocationSearch register={register} />
+
+        <div>
+          <button
+            type="submit"
+            className="btn btn-outline-dark btn-light btn-block"
+          >
+            Apply
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

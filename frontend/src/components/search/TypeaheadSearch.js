@@ -1,5 +1,6 @@
 import React, {Fragment, useContext} from 'react';
 import {Typeahead} from "react-bootstrap-typeahead";
+import "react-bootstrap-typeahead/css/Typeahead.css";
 import SearchContext from "../../context/Search/searchContext";
 import languages from "../../data/languages"
 

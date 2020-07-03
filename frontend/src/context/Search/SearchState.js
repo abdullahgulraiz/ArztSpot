@@ -12,7 +12,8 @@ const SearchState = (props) => {
       country: "",
       zipcode: "",
       distance: "15",
-      hasSearched: false
+      hasSearched: false,
+      locationFormError: true
     },
     doctors: [
       {
@@ -61,7 +62,7 @@ const SearchState = (props) => {
       queryStr += `languages=${languages.toLowerCase()}&`;
     }
     if (specialization !== "") {
-      queryStr += `specialization=${specialization}`;
+      queryStr += `specialization=${specialization.toLowerCase()}`;
     }
     const url = encodeURI("/api/v1/doctors" + queryStr);
     console.log(url)

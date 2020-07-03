@@ -5,15 +5,14 @@ import SearchContext from "../../context/Search/searchContext";
 import languages from "../../data/languages"
 
 const TypeaheadSearch = ({props}) => {
-  const {data, multiple, name, setFunction, state} = props
+  const {data, multiple, name, placeholder, setFunction, state} = props
   // Typeahead passes an array of objects not the event to onChange
   const onChange = (name) => values => {
     let stateField = {[name]: ""};
-    if (multiple) {
-      stateField[name] = []
-      values.forEach(value => {stateField[name].push(value.label)})
-    } else {
-      stateField[name] = values[0].label
+    stateField[name] = []
+    values.forEach(value => {stateField[name].push(value.label)})
+    if(!multiple) {
+      stateField[name] = stateField[name][0] ? stateField[name][0] : ""
     }
     setFunction({...state, [name]: stateField[name]})
   }
@@ -24,7 +23,7 @@ const TypeaheadSearch = ({props}) => {
         id={name}
         multiple={multiple}
         options={data}
-        placeholder="Language..."
+        placeholder={placeholder}
         onChange={onChange(name)}
       />
     </Fragment>

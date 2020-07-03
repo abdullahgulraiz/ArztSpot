@@ -38,6 +38,7 @@ const Filter = () => {
                 name: "languages",
                 setFunction: setSearch,
                 state: search,
+                placeholder: "Language..."
               }}
             />{" "}
             <h6 className="card-subtitle my-2 text-muted">
@@ -50,6 +51,7 @@ const Filter = () => {
                 name: "specialization",
                 setFunction: setSearch,
                 state: search,
+                placeholder: "Specialization..."
               }}
             />
           </Fragment>

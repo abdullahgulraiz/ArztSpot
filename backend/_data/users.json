@@ -6,7 +6,7 @@
     "password": "123456",
     "email": "marioperez@hotmail.com",
     "role": "doctor",
-    "specialization": "dermatology",
+    "specialization": "Dermatology",
     "languages": ["spanish", "german"]
   },
   {

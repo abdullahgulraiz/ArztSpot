@@ -46,12 +46,6 @@ const filterResults = (model, populate) => async (req, res, next) => {
   // Remove mongoose keywords before querying database
   fieldsToRemove.forEach((param) => delete requestQuery[param]);
 
-  // if we search for Users we can only get doctors
-  // Future change in case doctors need to search for Users
-  // Probably the best way is to add more parameters to the filter function.
-  if(model.modelName === "User") {
-    requestQuery.role = "doctor";
-  }
   // Create query string
   let queryStr = JSON.stringify(requestQuery);
 

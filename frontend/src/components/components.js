@@ -16,8 +16,6 @@ import ForgotPassword from "./auth/forgot.component"
 import {PrescriptionsSearch} from "./doctor/prescriptions/search.component"
 import PrescriptionsPatient from "./doctor/prescriptions/patient.component"
 import PrescriptionsCreate from "./doctor/prescriptions/create.component"
-/* General Search (Doctors, Hospitals) */
-import Search from "./general/search.component";
 
 export default {
     general: {
@@ -29,8 +27,7 @@ export default {
         Contact,
         Footer,
         NotFound,
-        Unauthorized,
-        Search
+        Unauthorized
     },
     auth: {
         Login,
@@ -43,5 +40,5 @@ export default {
             PrescriptionsPatient,
             PrescriptionsCreate
         }
-    },
+    }
 }

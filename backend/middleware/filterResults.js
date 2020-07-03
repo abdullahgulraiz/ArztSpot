@@ -52,16 +52,14 @@ const filterResults = (model, populate) => async (req, res, next) => {
   if(model.modelName === "User") {
     requestQuery.role = "doctor";
   }
-  console.log(requestQuery)
   // Create query string
   let queryStr = JSON.stringify(requestQuery);
 
   // Create query operators ($gt, $gte, $or etc)
   queryStr = queryStr.replace(
-    /\b(gt|gte|lt|lte|in|or)\b/g,
+    /\b(gt|gte|lt|lte|in)\b/g,
     (match) => `$${match}`
   );
-
 
   // Finding query in db
   if (locQuery) {

@@ -8,7 +8,7 @@ const isAfterStart = function () {
   return this.finishTime > this.startTime;
 };
 const isShort = function () {
-  // appointments must be shorter than 30 minutes
+  // search must be shorter than 30 minutes
   return this.finishTime - this.startTime <= 30 * 60 * 1000;
 };
 

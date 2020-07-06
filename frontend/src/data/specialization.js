@@ -1,0 +1,18 @@
+export default [
+  {label: "Dermatology"},
+  {label: "General Practice"},
+  {label: "Intensive care medicine"},
+  {label: "Gynecology"},
+  {label: "Pediatrics"},
+  {label: "Pathology"},
+  {label: "Psychiatry"},
+  {label: "Radiation Oncology"},
+  {label: "Rehabilitation"},
+  {label: "Surgery"},
+  {label: "Radiology"},
+  {label: "Urology"},
+  {label: "Neurology"},
+  {label: "Cardiology"},
+  {label: "Endocrinology"},
+  {label: "Immunology"},
+];

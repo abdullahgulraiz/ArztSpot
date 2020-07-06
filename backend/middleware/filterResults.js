@@ -46,10 +46,16 @@ const filterResults = (model, populate) => async (req, res, next) => {
   // Remove mongoose keywords before querying database
   fieldsToRemove.forEach((param) => delete requestQuery[param]);
 
+  // if we search for Users we can only get doctors
+  // Future change in case doctors need to search for Users
+  // Probably the best way is to add more parameters to the filter function.
+  if(model.modelName === "User") {
+    requestQuery.role = "doctor";
+  }
   // Create query string
   let queryStr = JSON.stringify(requestQuery);
 
-  // Create query operators ($gt, $gte, etc)
+  // Create query operators ($gt, $gte, $or etc)
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,
     (match) => `$${match}`
@@ -72,7 +78,7 @@ const filterResults = (model, populate) => async (req, res, next) => {
   }
   else {
     // we want to be able to fetch data that is related to doctors and patients
-    // Ex: doctors want to get their appointments, users want
+    // Ex: doctors want to get their search, users want
     // to get their prescriptions
     if (req.user) {
       query = model.find({[req.user.role]: [req.user.id], ...JSON.parse(queryStr)})
@@ -102,7 +108,7 @@ const filterResults = (model, populate) => async (req, res, next) => {
   // page 1 by default
   const page = parseInt(req.query.page, 10) || 1;
   // limit results to 10 per page by default
-  const limit = parseInt(req.query.limit, 10) || 10;
+  const limit = parseInt(req.query.limit, 10) || 5;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
   const total = await model.countDocuments(JSON.parse(queryStr));

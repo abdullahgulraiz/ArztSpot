@@ -24,7 +24,9 @@ export default function ForgotPassword() {
                             <div className="col-6 offset-3">
                                 <div className="form-group">
                                     <label htmlFor="email">Email</label>
-                                    <input type={"text"} className={"form-control"} id={"email"} placeholder={"Email"}
+                                    <input type={"text"} className={`form-control ${
+                                        errors.email && "is-invalid"
+                                    } `} id={"email"} placeholder={"Email"}
                                            name={"email"} ref = {register({ pattern: mailformat})}/>
                                 </div>
                                 {errors.email && <div className="alert alert-danger" role="alert">

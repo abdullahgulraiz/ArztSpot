@@ -9,7 +9,7 @@ export default function ForgotPassword() {
 
     const { register, handleSubmit, errors } = useForm();
     const onSubmit = data => console.log(data);
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     return (
         <main id="main">
@@ -27,11 +27,11 @@ export default function ForgotPassword() {
                                     <input type={"text"} className={`form-control ${
                                         errors.email && "is-invalid"
                                     } `} id={"email"} placeholder={"Email"}
-                                           name={"email"} ref = {register({ pattern: mailformat})}/>
+                                           name={"email"} ref = {register({ required: true, pattern: mailformat})}/>
                                 </div>
-                                {errors.email && <div className="alert alert-danger" role="alert">
+                                {errors.email && <small className="text-danger">
                                     Please enter a valid email
-                                </div>}
+                                </small>}
                                 <div className="col-6 offset-3 text-center">
                                     <button type="submit" className="btn btn-primary">Continue</button>
                                 </div>

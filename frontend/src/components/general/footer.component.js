@@ -16,15 +16,15 @@ const DoctorActions = () => (
 
 const PatientActions = () => (
   <ul>
-    <li><i className="bx bx-chevron-right"></i> <a href="#">Appointments</a></li>
+    <li><i className="bx bx-chevron-right"></i> <Link to={routes.search}>Appointments</Link></li>
     <li><i className="bx bx-chevron-right"></i> <a href="#">Prescriptions</a></li>
   </ul>
 )
 
 const GuestActions = () => (
   <ul>
-    <li><i className="bx bx-chevron-right"></i> <a href="#">Log in / Sign up</a></li>
-    <li><i className="bx bx-chevron-right"></i> <a href="#">SearchComponents for a doctor</a></li>
+    <li><i className="bx bx-chevron-right"></i> <Link to={routes.auth.register}>Sign up</Link></li>
+    <li><i className="bx bx-chevron-right"></i> <Link to={routes.search}>Search tools</Link></li>
   </ul>
 )
 
@@ -92,9 +92,9 @@ export const Footer = () => {
                     <div className="copyright">
                         &copy; Copyright <strong><span>ArztSpot</span></strong>. All Rights Reserved.
                     </div>
-                    <div className="credits">
-                        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-                    </div>
+                    {/*<div className="credits">*/}
+                    {/*    Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="social-links text-center text-md-right pt-3 pt-md-0">
                     <a href="#" className="twitter"><i className="bx bxl-twitter"></i></a>

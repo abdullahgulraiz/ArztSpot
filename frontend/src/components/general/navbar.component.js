@@ -1,10 +1,10 @@
 import React, {useContext, useEffect} from 'react';
-import { Link } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import routes from '../../routes.js';
 import { reverse } from 'named-urls'
 import { AuthContext } from '../../auth/AuthState';
 import Cookies from "js-cookie";
-import axios from "axios";
+import {isEmptyObj} from "../../utils/isEmptyObj";
 
 const DoctorButton = props => (
     <div className="dropdown">
@@ -40,45 +40,20 @@ const DoctorButton = props => (
 
 export const Navbar = () => {
 
-    const { is_authenticated, user, logoutUser, loginUser } = useContext(AuthContext);
+    const { user, bearerToken, setBearerToken, logoutUser } = useContext(AuthContext);
 
     useEffect(() => {
-        if (!is_authenticated) {
-            const token = Cookies.get('bearer_token');
-            let user = {}
-            if (token) {
-                const axios_instance = axios.create({
-                    timeout: 1000,
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                axios_instance
-                    .get("/api/v1/auth/me")
-                    .then(response => {
-                        if (response.data.success) {
-                            user = response.data.data;
-                            loginUser(user, axios_instance);
-                        }
-                    });
+        const token = Cookies.get('bearer_token');
+        if (token) {
+            if (bearerToken !== token) {
+                setBearerToken(token);
             }
         }
-    });
+    }, [bearerToken]);
 
     const handleLogout = () => {
         logoutUser();
         window.location.pathname = "/";
-    }
-
-    let button;
-    if (is_authenticated) {
-        if (user.role === 'doctor') {
-            button = <DoctorButton user={user} handleLogoutClick={handleLogout} />;
-        } else if (user.role === 'user') {
-            button = <PatientButton user={user} handleLogoutClick={handleLogout} />;
-        }
-    } else {
-        button = <LoginButton />;
     }
 
     return (
@@ -97,7 +72,25 @@ export const Navbar = () => {
                         <li><Link to={routes.contact}>Contact</Link></li>
                     </ul>
                 </nav>
-                {button}
+
+                {bearerToken && isEmptyObj(user) &&
+                    <Redirect to={{
+                        pathname: reverse(routes.auth.login),
+                        state: {callbackUrl: window.location.pathname}
+                    }} />
+                }
+
+                {bearerToken && user.role === 'doctor' &&
+                    <DoctorButton user={user} handleLogoutClick={handleLogout} />
+                }
+
+                {bearerToken && user.role === 'user' &&
+                    <PatientButton user={user} handleLogoutClick={handleLogout} />
+                }
+
+                {!bearerToken &&
+                    <LoginButton />
+                }
             </div>
         </header>
 

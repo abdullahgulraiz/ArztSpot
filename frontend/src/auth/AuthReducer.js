@@ -2,27 +2,22 @@ import Cookies from 'js-cookie'
 
 export default (state, action) => {
     switch(action.type) {
-        case 'LOGIN_USER':
-            const user = action.payload.user;
+        case 'SET_BEARER_TOKEN':
             return {
                 ...state,
-                callbackUrl: '/',
-                user: user,
-                is_authenticated: true,
-                axios: action.payload.axios
+                bearerToken: action.payload
+            }
+        case 'SET_USER':
+            return {
+                ...state,
+                user: action.payload
             }
         case 'LOGOUT_USER':
-            Cookies.remove('bearer_token');
+            Cookies.remove("bearer_token");
             return {
                 ...state,
-                is_authenticated: false,
-                callbackUrl: '/',
-                user: {}
-            }
-        case 'SET_CALLBACK_URL':
-            return {
-                ...state,
-                callbackUrl: action.payload
+                user: {},
+                bearerToken: undefined
             }
         default:
             return state;

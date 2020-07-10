@@ -4,7 +4,7 @@ import routes from "./routes.js";
 import components from "./components/components";
 import { AuthProvider } from "./auth/AuthState";
 import SearchState from "./context/Search/SearchState";
-import { DoctorRoute, PatientRoute, NoAuthRoute } from "./auth/ProtectedRoutes";
+import { DoctorRoute, PatientRoute } from "./auth/ProtectedRoutes";
 
 function App() {
   return (
@@ -25,9 +25,9 @@ function App() {
                 <DoctorRoute path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
                 <DoctorRoute path={routes.doctor.prescriptions.search} component={components.doctor.prescriptions.PrescriptionsSearch} />
                 {/* Auth */}
-                <NoAuthRoute path={routes.auth.login} component={components.auth.Login}/>
-                <NoAuthRoute path={routes.auth.register} component={components.auth.Register} />
-                <NoAuthRoute path={routes.auth.forgot} component={components.auth.ForgotPassword}/>
+                <Route path={routes.auth.login} component={components.auth.Login}/>
+                <Route path={routes.auth.register} component={components.auth.Register} />
+                <Route path={routes.auth.forgot} component={components.auth.ForgotPassword}/>
                 {/* 404 */}
                 <Route component={components.general.NotFound} />
               </Switch>

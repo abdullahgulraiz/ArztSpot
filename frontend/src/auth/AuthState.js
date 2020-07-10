@@ -3,10 +3,8 @@ import AuthReducer from './AuthReducer';
 
 // Initial state
 const initialState = {
-    is_authenticated: false,
-    callbackUrl: '/',
     user: {},
-    axios: null,
+    bearerToken: undefined
 }
 
 // Create context
@@ -17,37 +15,32 @@ export const AuthProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AuthReducer, initialState);
 
     // Actions
-    function loginUser(user, axios) {
+    function setBearerToken(token) {
         dispatch({
-            type: 'LOGIN_USER',
-            payload: {
-                user: user,
-                axios: axios
-            }
+            type: 'SET_BEARER_TOKEN',
+            payload: token
+        });
+    }
+
+    function setUser(user) {
+        dispatch({
+            type: 'SET_USER',
+            payload: user
         });
     }
 
     function logoutUser() {
         dispatch({
-            type: 'LOGOUT_USER',
-        });
-    }
-
-    function setCallbackUrl(url) {
-        dispatch({
-            type: 'SET_CALLBACK_URL',
-            payload: url
+            type: 'LOGOUT_USER'
         });
     }
 
     return (<AuthContext.Provider value={{
-        is_authenticated: state.is_authenticated,
         user: state.user,
-        callbackUrl: state.callbackUrl,
-        axios: state.axios,
-        loginUser,
-        logoutUser,
-        setCallbackUrl
+        bearerToken: state.bearerToken,
+        setBearerToken,
+        setUser,
+        logoutUser
     }}>
         {children}
     </AuthContext.Provider>);

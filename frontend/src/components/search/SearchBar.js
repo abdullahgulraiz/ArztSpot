@@ -3,9 +3,13 @@ import SearchContext from "../../context/Search/searchContext";
 
 const SearchBar = () => {
   const searchContext = useContext(SearchContext);
-  const { search, setSearch } = searchContext;
-  const { type } = search;
-  const onSubmit = (e) => {};
+  const { search, setSearch, doctorSearch } = searchContext;
+  const { type, query } = search;
+  const onSubmit = (e) => {
+    e.preventDefault()
+    setSearch({ ...search, hasSearched: true, errorLocation: false });
+    doctorSearch(search);
+  };
   const onChange = (e) =>
     setSearch({ ...search, [e.target.name]: e.target.value });
 
@@ -46,12 +50,13 @@ const SearchBar = () => {
             className="form-input"
             htmlFor="inlineRadio2"
             type="text"
-            name="type"
+            name="query"
+            value={query}
             placeholder="Search..."
             onChange={onChange}
           />
         </div>
-        <div className="form-group form-inline"><button className="btn btn-primary btn-block ml-3">Search</button></div>
+        <div className="form-group form-inline"><button type="submit" className="btn btn-primary btn-block ml-3">Search</button></div>
       </form>
     </div>
   );

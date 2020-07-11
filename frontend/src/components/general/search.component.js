@@ -7,7 +7,7 @@ import SearchResults from "../search/SearchResults";
 const Search = () => {
   return (
     <div
-      className="container position-relative mt-2"
+      className="container position-relative mt-xl-2 mt-5"
       data-aos="fade-up"
       data-aos-delay="100"
     >

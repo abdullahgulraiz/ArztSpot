@@ -8,6 +8,7 @@ const SearchState = (props) => {
   const initialState = {
     search: {
       type: "doctor",
+      query: "",
       languages: [],
       specialization: "",
       street: "",
@@ -42,6 +43,7 @@ const SearchState = (props) => {
   const doctorSearch = async (search) => {
     let queryStr = "?";
     const {
+      query,
       street,
       country,
       zipcode,
@@ -50,6 +52,10 @@ const SearchState = (props) => {
       specialization,
     } = search;
     // we first need to construct the query
+    // if(query !== "") {
+    //   // search by name or lastname
+    //   queryStr += `firstname=${query}&`;
+    // }
     if (street !== "" && country !== "" && zipcode !== "") {
       queryStr += `street=${street},${country}&zipcode=${zipcode}&distance=${distance}&`;
     }
@@ -67,11 +73,13 @@ const SearchState = (props) => {
       queryStr += `specialization=${specialization.toLowerCase()}`;
     }
     const url = encodeURI("/api/v1/doctors" + queryStr);
-    console.log(url)
     try {
       const res = await axios.get(url);
-      console.log(res.data.data);
-      dispatch({ type: "GET_DOCTORS", payload: res.data.data });
+      dispatch({ type: "GET_DOCTORS", payload: res.data.data.filter((doctor) => {
+        const regex = new RegExp(`${query}`, "gi");
+        const completeName = doctor.firstname + " " + doctor.lastname;
+        return doctor.firstname.match(regex) || doctor.lastname.match(regex) || completeName.match(regex);
+        }) });
     } catch (e) {
       console.log(e)
     }

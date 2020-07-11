@@ -13,7 +13,7 @@ const DoctorItem = ({doctor}) => {
     languages,
     hospital
   } = doctor;
-  const {formattedAddress} = hospital.address_geojson.formattedAddress;
+  const {street, city} = hospital.address_geojson;
   return (
     <div className="card mb-3">
       <div className="row no-gutters">
@@ -25,7 +25,7 @@ const DoctorItem = ({doctor}) => {
             <h5 className="card-title">{firstname + ' ' + lastname}</h5>
             <small>{specialization.charAt(0).toUpperCase() + specialization.slice(1)}</small>
             <p className="mt-1 mb-0"><strong>Languages:</strong> {languages.map(word => word.charAt(0).toUpperCase() + word.substring(1)).join(', ')}</p>
-            <p className=""><strong>Address:</strong> {formattedAddress}</p>
+            <p className=""><strong>Address:</strong> {street + ', ' + city}</p>
             <Link><button className="btn btn-success offset-9 offset-0">Book!</button></Link>
 
           </div>

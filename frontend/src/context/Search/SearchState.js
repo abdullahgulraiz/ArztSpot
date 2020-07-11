@@ -28,6 +28,7 @@ const SearchState = (props) => {
         specialization: "",
         avatar: "",
         languages: [],
+        hospital: {}
       }
     ],
   };
@@ -52,7 +53,7 @@ const SearchState = (props) => {
       specialization,
     } = search;
     if (street !== "" && country !== "" && zipcode !== "") {
-      queryStr += `street=${street},${country}&zipcode=${zipcode}&distance=${distance}&`;
+      queryStr += `address=${street},${country}&zipcode=${zipcode}&distance=${distance}&`;
     }
     // to search for multiple fields we need to format the string such that
     // languages[in]=french&languages[in]=spanish

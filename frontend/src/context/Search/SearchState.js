@@ -51,11 +51,6 @@ const SearchState = (props) => {
       languages,
       specialization,
     } = search;
-    // we first need to construct the query
-    // if(query !== "") {
-    //   // search by name or lastname
-    //   queryStr += `firstname=${query}&`;
-    // }
     if (street !== "" && country !== "" && zipcode !== "") {
       queryStr += `street=${street},${country}&zipcode=${zipcode}&distance=${distance}&`;
     }
@@ -67,7 +62,7 @@ const SearchState = (props) => {
         queryStr += `languages[in]=${language.toLowerCase()}&`;
       })
     } else if (languages.length === 1) {
-      queryStr += `languages=${languages.toLowerCase()}&`;
+      queryStr += `languages=${languages[0].toLowerCase()}&`;
     }
     if (specialization !== "") {
       queryStr += `specialization=${specialization.toLowerCase()}`;

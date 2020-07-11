@@ -6,7 +6,7 @@ import {AuthContext} from "../../../auth/AuthState";
 
 export const PrescriptionsSearch = (props) => {
 
-  const state = {
+  const initial_state = {
     query: '',
     criteria: 'first_name',
     search_results: [
@@ -27,35 +27,29 @@ export const PrescriptionsSearch = (props) => {
     ]
   }
 
-  const onChangeQuery = (e) => {
-    // this.setState({
-    //   query: e.target.value
-    // })
-  }
+  const [state, setState] = useState(initial_state);
 
-  const onChangeCriteria = (e) => {
-    // this.setState({
-    //   criteria: e.target.value
-    // })
+  const onChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
   }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // const search_query = {
-    //   username: this.state.query,
-    //   criteria: this.state.criteria,
-    // }
-    // console.log(search_query);
+    const search_query = {
+      query: state.query,
+      criteria: state.criteria,
+    }
+    console.log(search_query);
   }
 
   return (
 
       <main id="main">
 
-        <section id="contact" class="contact">
-          <div class="container" data-aos="fade-up">
+        <section id="contact" className="contact">
+          <div className="container" data-aos="fade-up">
 
-            <div class="section-title">
+            <div className="section-title">
               <h2>Prescriptions</h2>
               <p>Search for a Patient to browse their prescriptions.</p>
             </div>
@@ -66,12 +60,12 @@ export const PrescriptionsSearch = (props) => {
                 <form onSubmit={onSubmit}>
                   <div className="form-group">
                     <label htmlFor="inputAddress1">Query</label>
-                    <input type="text" className="form-control" id="inputAddress1" placeholder="Query" onChange={onChangeQuery} />
+                    <input type="text" className="form-control" id="inputAddress1" name={"query"} placeholder="Query" onChange={onChange} />
                   </div>
                   <div className="form-group">
                     <label htmlFor="inputAddress">Criteria</label>
-                    <select id="inputAddress" className="form-control" onChange={onChangeCriteria}>
-                      <option selected value="first_name">First Name</option>
+                    <select id="inputAddress" className="form-control" name={"criteria"} onChange={onChange}>
+                      <option value="first_name">First Name</option>
                       <option value="last_name">Last Name</option>
                       <option value="dob">Date of Birth</option>
                     </select>
@@ -101,18 +95,7 @@ export const PrescriptionsSearch = (props) => {
                     {
                       state.search_results.map((search_result, index) => {
                         return (
-                            <tr>
-                              <th scope="row">{index + 1}</th>
-                              <td>{search_result.first_name}</td>
-                              <td>{search_result.last_name}</td>
-                              <td>{search_result.dob}</td>
-                              <td>{search_result.last_appointment}</td>
-                              <td>
-                                <Link to={{
-                                  pathname: reverse(routes.doctor.prescriptions.patient, { patientId: search_result.patient_id })
-                                }} className={"btn btn-secondary btn-sm"}>View</Link>
-                              </td>
-                            </tr>
+                            <SearchResultRow result={search_result} index={index} />
                         );
                       })
                     }
@@ -129,4 +112,23 @@ export const PrescriptionsSearch = (props) => {
 
   );
 
+}
+
+const SearchResultRow = props => {
+  const search_result = props.result;
+  const index = props.index;
+  return (
+      <tr key={index}>
+        <th scope="row">{index + 1}</th>
+        <td>{search_result.first_name}</td>
+        <td>{search_result.last_name}</td>
+        <td>{search_result.dob}</td>
+        <td>{search_result.last_appointment}</td>
+        <td>
+          <Link to={{
+            pathname: reverse(routes.doctor.prescriptions.patient, { patientId: search_result.patient_id })
+          }} className={"btn btn-secondary btn-sm"}>View</Link>
+        </td>
+      </tr>
+  )
 }

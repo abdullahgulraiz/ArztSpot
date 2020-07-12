@@ -8,6 +8,7 @@ export default {
     faqs: "/faqs",
     contact: "/contact",
     search: "/search",
+    dashboard: "/doctors/:doctorId",
 
     // auth
     auth: include('/auth', {

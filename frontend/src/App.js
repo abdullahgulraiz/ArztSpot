@@ -4,12 +4,14 @@ import routes from "./routes.js";
 import components from "./components/components";
 import { AuthProvider } from "./auth/AuthState";
 import SearchState from "./context/Search/SearchState";
+import DashboardState from "./context/Dashboard/DashboardState";
 import { DoctorRoute, PatientRoute } from "./auth/ProtectedRoutes";
 
 function App() {
   return (
     <AuthProvider>
       <SearchState>
+        <DashboardState>
         <Router>
               <components.general.Navbar />
               <Switch>
@@ -20,6 +22,7 @@ function App() {
                 <Route path={routes.faqs} component={components.general.FAQS} />
                 <Route path={routes.contact} component={components.general.Contact} />
                 <Route path={routes.search} component={components.general.Search} />
+                <Route path={routes.dashboard} component={components.general.Dashboard} />
                 {/* Doctor */}
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
                 <DoctorRoute path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
@@ -33,6 +36,7 @@ function App() {
               </Switch>
               <components.general.Footer />
         </Router>
+        </DashboardState>
       </SearchState>
     </AuthProvider>
   );

@@ -18,6 +18,7 @@ import PrescriptionsPatient from "./doctor/prescriptions/patient.component"
 import PrescriptionsCreate from "./doctor/prescriptions/create.component"
 /* General Search (Doctors, Hospitals) */
 import Search from "./general/search.component";
+import Dashboard from "./general/dashboard.component";
 
 export default {
     general: {
@@ -30,7 +31,8 @@ export default {
         Footer,
         NotFound,
         Unauthorized,
-        Search
+        Search,
+        Dashboard
     },
     auth: {
         Login,

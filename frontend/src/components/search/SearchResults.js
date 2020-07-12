@@ -1,19 +1,16 @@
 import React, { Fragment, useContext } from "react";
 import SearchContext from "../../context/Search/searchContext";
-import DoctorItem from "./Doctors/DoctorItem";
+import Doctors from "./Doctors/Doctors";
 import Pagination from "../general/Pagination";
 
 const SearchResults = () => {
   const searchContext = useContext(SearchContext);
-  const { search, doctors, doctorSearch, pagination } = searchContext;
+  const { search, doctorSearch, pagination } = searchContext;
 
   return (
     <Fragment>
-      {search.hasSearched &&
-        doctors.map(
-          (doctor) => doctor.id !== "" && <DoctorItem doctor={doctor} />
-        )}
-      {search.hasSearched && (
+      {search.hasSearched && <Doctors/>}
+      {(search.hasSearched && search.resultsLoaded) && (
         <Pagination searchFunc={doctorSearch} pagination={pagination} searchParams={search}/>
       )}
     </Fragment>

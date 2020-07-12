@@ -1,6 +1,5 @@
 import React, { Fragment, useContext } from "react";
 import SearchContext from "../../context/Search/searchContext";
-import { useForm } from "react-hook-form";
 
 const LocationSearch = ({register}) => {
   const searchContext = useContext(SearchContext);

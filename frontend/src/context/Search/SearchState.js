@@ -2,7 +2,6 @@ import React, { useReducer } from "react";
 import axios from "axios";
 import SearchContext from "./searchContext";
 import searchReducer from "./searchReducer";
-import languages from "../../data/languages";
 
 const SearchState = (props) => {
   const initialState = {
@@ -16,7 +15,7 @@ const SearchState = (props) => {
       zipcode: "",
       distance: "15",
       hasSearched: false,
-      locationFormError: true
+      resultsLoaded: false,
     },
     doctors: [
       {
@@ -28,14 +27,14 @@ const SearchState = (props) => {
         specialization: "",
         avatar: "",
         languages: [],
-        hospital: {}
-      }
+        hospital: {},
+      },
     ],
     pagination: {
       page: 1,
       count: 0,
       limit: 5,
-    }
+    },
   };
 
   const [state, dispatch] = useReducer(searchReducer, initialState);
@@ -43,6 +42,10 @@ const SearchState = (props) => {
   // Set Search Components
   const setSearch = (search) => {
     dispatch({ type: "SET_SEARCH", payload: search });
+  };
+  // Search Results have loaded
+  const setResultsLoaded = (search) => {
+    dispatch({ type: "SET_LOADED", payload: search });
   };
 
   // Doctor Search
@@ -64,9 +67,9 @@ const SearchState = (props) => {
     // languages[in]=french&languages[in]=spanish
     // so we get {'languages': '$in': ['spanish', 'french']
     if (languages.length > 1) {
-      languages.map(language => {
-        queryStr += `languages[in]=${language.toLowerCase()}&`;
-      })
+      languages.map(
+        (language) => (queryStr += `languages[in]=${language.toLowerCase()}&`)
+      );
     } else if (languages.length === 1) {
       queryStr += `languages=${languages[0].toLowerCase()}&`;
     }
@@ -74,7 +77,7 @@ const SearchState = (props) => {
       queryStr += `specialization=${specialization.toLowerCase()}&`;
     }
     if (page !== 1) {
-      queryStr += `page=${page}&`
+      queryStr += `page=${page}&`;
     }
     const url = encodeURI("/api/v1/doctors" + queryStr);
     try {
@@ -82,16 +85,22 @@ const SearchState = (props) => {
       const doctors = res.data.data.filter((doctor) => {
         const regex = new RegExp(`${query}`, "gi");
         const completeName = doctor.firstname + " " + doctor.lastname;
-        return doctor.firstname.match(regex) || doctor.lastname.match(regex) || completeName.match(regex);
-      })
+        return (
+          doctor.firstname.match(regex) ||
+          doctor.lastname.match(regex) ||
+          completeName.match(regex)
+        );
+      });
       const pagination = {
         page: page,
         count: res.data.count,
-        limit: res.data.pagination.next ? res.data.pagination.next.limit : res.data.pagination.prev.limit
-      }
-      dispatch({ type: "GET_DOCTORS", payload: {doctors, pagination} });
+        limit: res.data.pagination.next
+          ? res.data.pagination.next.limit
+          : res.data.pagination.prev.limit,
+      };
+      dispatch({ type: "GET_DOCTORS", payload: { doctors, pagination } });
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
   };
 
@@ -105,6 +114,7 @@ const SearchState = (props) => {
         pagination: state.pagination,
         setSearch,
         doctorSearch,
+        setResultsLoaded,
       }}
     >
       {props.children}

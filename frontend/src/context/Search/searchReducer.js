@@ -12,6 +12,11 @@ export default (state, action) => {
         ...state,
         search: action.payload
       }
+    case "SET_LOADED":
+      return {
+        ...state,
+        search: action.payload
+      }
     default:
       return state;
   }

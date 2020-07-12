@@ -3,7 +3,8 @@ export default (state, action) => {
     case "GET_DOCTORS":
       return {
         ...state,
-        doctors: action.payload,
+        doctors: action.payload.doctors,
+        pagination: action.payload.pagination,
         hasSearched: true
       }
     case "SET_SEARCH":

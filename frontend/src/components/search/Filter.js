@@ -9,14 +9,14 @@ import { useForm } from "react-hook-form";
 const Filter = () => {
   const { handleSubmit, register } = useForm();
   const searchContext = useContext(SearchContext);
-  const { search, setSearch, doctorSearch } = searchContext;
+  const { search, setSearch, doctorSearch, pagination } = searchContext;
   const onSubmit = (data) => {
     if (
       (!data.street && !data.country && !data.zipcode) ||
       (data.street && data.country && data.zipcode)
     ) {
       setSearch({ ...search, hasSearched: true, errorLocation: false });
-      doctorSearch(search);
+      doctorSearch(search, pagination.page);
     } else {
       setSearch({ ...search, errorLocation: true });
     }

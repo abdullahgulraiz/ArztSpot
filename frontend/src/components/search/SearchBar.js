@@ -3,12 +3,12 @@ import SearchContext from "../../context/Search/searchContext";
 
 const SearchBar = () => {
   const searchContext = useContext(SearchContext);
-  const { search, setSearch, doctorSearch } = searchContext;
+  const { search, setSearch, doctorSearch, pagination } = searchContext;
   const { type, query } = search;
   const onSubmit = (e) => {
     e.preventDefault()
     setSearch({ ...search, hasSearched: true, errorLocation: false });
-    doctorSearch(search);
+    doctorSearch(search, pagination.page);
   };
   const onChange = (e) =>
     setSearch({ ...search, [e.target.name]: e.target.value });

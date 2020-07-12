@@ -31,6 +31,11 @@ const SearchState = (props) => {
         hospital: {}
       }
     ],
+    pagination: {
+      page: 1,
+      count: 0,
+      limit: 5,
+    }
   };
 
   const [state, dispatch] = useReducer(searchReducer, initialState);
@@ -41,7 +46,7 @@ const SearchState = (props) => {
   };
 
   // Doctor Search
-  const doctorSearch = async (search) => {
+  const doctorSearch = async (search, page) => {
     let queryStr = "?";
     const {
       query,
@@ -66,16 +71,25 @@ const SearchState = (props) => {
       queryStr += `languages=${languages[0].toLowerCase()}&`;
     }
     if (specialization !== "") {
-      queryStr += `specialization=${specialization.toLowerCase()}`;
+      queryStr += `specialization=${specialization.toLowerCase()}&`;
+    }
+    if (page !== 1) {
+      queryStr += `page=${page}&`
     }
     const url = encodeURI("/api/v1/doctors" + queryStr);
     try {
       const res = await axios.get(url);
-      dispatch({ type: "GET_DOCTORS", payload: res.data.data.filter((doctor) => {
+      const doctors = res.data.data.filter((doctor) => {
         const regex = new RegExp(`${query}`, "gi");
         const completeName = doctor.firstname + " " + doctor.lastname;
         return doctor.firstname.match(regex) || doctor.lastname.match(regex) || completeName.match(regex);
-        }) });
+      })
+      const pagination = {
+        page: page,
+        count: res.data.count,
+        limit: res.data.pagination.next ? res.data.pagination.next.limit : res.data.pagination.prev.limit
+      }
+      dispatch({ type: "GET_DOCTORS", payload: {doctors, pagination} });
     } catch (e) {
       console.log(e)
     }
@@ -88,6 +102,7 @@ const SearchState = (props) => {
       value={{
         search: state.search,
         doctors: state.doctors,
+        pagination: state.pagination,
         setSearch,
         doctorSearch,
       }}

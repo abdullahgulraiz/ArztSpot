@@ -94,9 +94,7 @@ const SearchState = (props) => {
       const pagination = {
         page: page,
         count: res.data.count,
-        limit: res.data.pagination.next
-          ? res.data.pagination.next.limit
-          : res.data.pagination.prev.limit,
+        limit: 5,
       };
       dispatch({ type: "GET_DOCTORS", payload: { doctors, pagination } });
     } catch (e) {

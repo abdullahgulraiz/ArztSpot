@@ -17,17 +17,22 @@ const Pagination = ({searchFunc, pagination, searchParams}) => {
   }
   const numberPages = Math.ceil(count / limit)
   let output = []
-  output.push(<li key={0} className={`page-item ${page===1 && "disabled"}`}>
-    <div className="page-link" tabIndex="-1" onClick={onClick} id="previous">Previous</div>
-  </li>)
-  for (let i=1; i<=numberPages; i++) {
-    output.push(<li key={i} className={`page-item ${page===i && "active"}`}>
-      <div className="page-link" onClick={onClick} id={i}>{i}</div>
+  // If there is more than one page
+  if(count >= limit) {
+    output.push(<li key={0} className={`page-item ${page===1 && "disabled"}`}>
+      <div className="page-link" tabIndex="-1" onClick={onClick} id="previous">Previous</div>
+    </li>)
+    for (let i=1; i<=numberPages; i++) {
+      output.push(<li key={i} className={`page-item ${page===i && "active"}`}>
+        <div className="page-link" onClick={onClick} id={i}>{i}</div>
+      </li>)
+    }
+    output.push(<li key={numberPages+1} className={`page-item ${page===numberPages && "disabled"}`}>
+      <div className="page-link" tabIndex="-1" onClick={onClick} id="next">Next</div>
     </li>)
   }
-  output.push(<li key={numberPages+1} className={`page-item ${page===numberPages && "disabled"}`}>
-    <div className="page-link" tabIndex="-1" onClick={onClick} id="next">Next</div>
-  </li>)
+
+
   return (
     <Fragment>
       <nav aria-label="...">

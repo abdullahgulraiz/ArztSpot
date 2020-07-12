@@ -1,6 +1,7 @@
 export default (state, action) => {
   switch (action.type) {
     case "GET_DOCTORS":
+      console.log(action.payload.doctors)
       return {
         ...state,
         doctors: action.payload.doctors,

@@ -5,7 +5,10 @@ import dashboardReducer from "./dashboardReducer";
 
 const DashboardState = (props) => {
   const initialState = {
-    doctor: {},
+    doctor: {
+      specialization: "",
+      hospital: {}
+    },
     reviews: {},
     appointments: {},
     error: null

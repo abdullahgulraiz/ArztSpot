@@ -13,7 +13,6 @@ const Dashboard = () => {
     const doctorId = pathname.split('/')[2]
     // search doctor at start
     getDoctorById(doctorId)
-    console.log(error)
   }, [])
 
   return (

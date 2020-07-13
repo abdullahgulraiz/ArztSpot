@@ -5,6 +5,9 @@ import DatePicker from "react-datepicker";
 import moment from 'moment'
 
 import "react-datepicker/dist/react-datepicker.css";
+import {reverse} from "named-urls";
+import routes from "../../../routes";
+import {Link} from "react-router-dom";
 
 export const PrescriptionsCreate = (props) => {
 
@@ -71,6 +74,7 @@ export const PrescriptionsCreate = (props) => {
   const [state, setState] = useState(initial_state);
 
   useEffect(() => {
+    console.log("Patient ID", props.match.params.patientId);
     setTimeout(() => {
       setState({
         ...state,
@@ -205,7 +209,7 @@ export const PrescriptionsCreate = (props) => {
             <>
             <div className="row">
               <div className="col-12">
-                <button className="btn btn-secondary btn-sm"><i className="icofont-arrow-left"></i> Back</button>
+                <Link to={reverse(routes.doctor.prescriptions.patient, { patientId: props.match.params.patientId })} className="btn btn-secondary btn-sm"><i className="icofont-arrow-left"></i> Back</Link>
               </div>
             </div>
               <div className="row" style={{marginTop: "1em"}}>

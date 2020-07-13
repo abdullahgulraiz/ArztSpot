@@ -76,9 +76,7 @@ export const PrescriptionsPatient = (props) => {
             <>
             <div className="row">
               <div className="col-12">
-                <button className="btn btn-secondary btn-sm" onClick={() => props.history.goBack()}><i
-                    className="icofont-arrow-left"></i> Back
-                </button>
+                <Link to={reverse(routes.doctor.prescriptions.search)} className="btn btn-secondary btn-sm"><i className="icofont-arrow-left"></i> Back</Link>
               </div>
             </div>
 
@@ -96,7 +94,7 @@ export const PrescriptionsPatient = (props) => {
               </div>
               <div className="form-group col-md-3 offset-5 text-right">
               <Link to={{
-              pathname: reverse(routes.doctor.prescriptions.create, {patientId: 1})
+              pathname: reverse(routes.doctor.prescriptions.create, {patientId: props.match.params.patientId})
             }} className={"btn btn-secondary"} style={{marginTop: "13%"}}>New Prescription</Link>
               </div>
               </div>

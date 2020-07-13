@@ -5,6 +5,11 @@ export default (state, action) => {
         ...state,
         doctor: action.payload,
       };
+    case "DOCTOR_ERROR_404":
+      return {
+        ...state,
+        error: action.payload
+      }
     default:
       return state;
   }

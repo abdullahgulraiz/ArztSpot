@@ -9,6 +9,10 @@ const DashboardState = (props) => {
       specialization: "",
       hospital: {}
     },
+    selectedDate: {
+      day: null,
+      timeSlot: "Choose an appointment"
+    },
     reviews: {},
     appointments: {},
     error: null
@@ -29,6 +33,9 @@ const DashboardState = (props) => {
       dispatch({type: "DOCTOR_ERROR_404", payload: e})
     }
   };
+  const setAppointment = (appointment) => {
+    dispatch({type: "SET_SELECTED_APPOINTMENT", payload: appointment})
+  }
 
   return (
     <DashboardContext.Provider
@@ -36,9 +43,11 @@ const DashboardState = (props) => {
         doctor: state.doctor,
         reviews: state.reviews,
         appointments: state.appointments,
+        selectedDate: state.selectedDate,
         error: state.error,
         setCurrentDoctor,
-        getDoctorById
+        getDoctorById,
+        setAppointment
       }}
     >
       {props.children}

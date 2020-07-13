@@ -1,11 +1,15 @@
 export default (state, action) => {
   switch (action.type) {
     case "SET_CURRENT_DOCTOR":
-      console.log(action.payload)
       return {
         ...state,
         doctor: action.payload,
       };
+    case "SET_SELECTED_APPOINTMENT":
+      return {
+        ...state,
+        selectedDate: action.payload
+      }
     case "DOCTOR_ERROR_404":
       return {
         ...state,

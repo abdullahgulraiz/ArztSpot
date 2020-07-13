@@ -20,18 +20,18 @@ export const PrescriptionsCreate = (props) => {
         {id: 2, issuedOn: "July 10, 2019", symptoms: ["Asthma", "COPD", "Headache"]}
       ],
       searchResults: [
-        {
-          'name': 'Medicine 1',
-          'manufacturer': 'GSK',
-        },
-        {
-          'name': 'Medicine 2',
-          'manufacturer': 'AB Pharma',
-        },
-        {
-          'name': 'Medicine 3',
-          'manufacturer': 'ABC Pharmaceuticals',
-        }
+        // {
+        //   'name': 'Medicine 1',
+        //   'manufacturer': 'GSK',
+        // },
+        // {
+        //   'name': 'Medicine 2',
+        //   'manufacturer': 'AB Pharma',
+        // },
+        // {
+        //   'name': 'Medicine 3',
+        //   'manufacturer': 'ABC Pharmaceuticals',
+        // }
       ]
     },
     prescription: {
@@ -55,6 +55,13 @@ export const PrescriptionsCreate = (props) => {
           recurrenceNum: 1,
           recurrenceType: "Daily",
           until: "2020-12-20"
+        },
+        {
+          name: 'Medicine 4',
+          quantity: 5,
+          recurrenceNum: 6,
+          recurrenceType: "Weekly",
+          until: "2020-12-21"
         }
       ],
       additionalNotes: ''
@@ -139,16 +146,30 @@ export const PrescriptionsCreate = (props) => {
     });
   }
 
-  const onClickDeleteMedicationDataItem = (e) => {
-    const key = e.target.getAttribute('data-key');
-    // TODO: Filter records here
+  const DeleteMedicationDataItem = (key) => {
     let mDsAll = state.prescription.medicationData;
     mDsAll = mDsAll.filter((mD, idx) => {
-      if (idx !== key) {
-        return mD;
+      return idx !== key;
+    })
+    setState({
+      ...state,
+      prescription: {
+        ...state.prescription,
+        medicationData: mDsAll,
       }
     });
-    console.log("Check 2", mDsAll)
+  }
+
+  const AddSearchDataItem = (key) => {
+    let searchResult = state.search.searchResults[key];
+    let mDsAll = state.prescription.medicationData;
+    mDsAll.push({
+      name: searchResult.name + " (" + searchResult.manufacturer + ")",
+      quantity: 0,
+      recurrenceNum: 0,
+      recurrenceType: "Daily",
+      until: moment().format("YYYY-MM-DD")
+    });
     setState({
       ...state,
       prescription: {
@@ -192,11 +213,11 @@ export const PrescriptionsCreate = (props) => {
               <h4>Search</h4>
               <div className="form-group">
               <label htmlFor="searchTerm">Medicine Directory</label>
-              <input type="text" className="form-control" name={"searchTerm"} id={"searchTerm"} onChange={onChangeSearch} value={state.search.searchTerm} />
+              <input type="text" className="form-control" name={"searchTerm"} id={"searchTerm"} onChange={onChangeSearch} value={state.search.searchTerm} placeholder={"Query"} />
               </div>
               <div className="form-group">
               <label htmlFor="selectedPrescription">Or, select from previous prescriptions</label>
-              <select id="selectedPrescription" className="form-control" name={"selectedPrescription"} defaultValue={state.search.selectedPrescription} onChange={onChangeSearch}>
+              <select id="selectedPrescription" className="form-control" name={"selectedPrescription"} value={state.search.selectedPrescription} onChange={onChangeSearch}>
                 <option value={"none"} disabled={"disabled"}>Choose...</option>
                 {
                   state.search.allPrescriptions.map((p, idx) => {
@@ -207,7 +228,9 @@ export const PrescriptionsCreate = (props) => {
                 }
               </select>
               </div>
-              <br />
+              <p className={"text-center"}>
+                <button type={"button"} className="btn btn-secondary btn-sm"><i className="icofont-ui-search"></i> Search</button>
+              </p>
               <label>Search results</label>
               <table className="table table-hover">
               <thead>
@@ -227,7 +250,7 @@ export const PrescriptionsCreate = (props) => {
                         <td>{sr.name}</td>
                         <td>{sr.manufacturer}</td>
                         <td className="text-center">
-                          <button type="button" className="btn btn-secondary btn-sm"><i className="icofont-ui-add"></i></button>
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {AddSearchDataItem(idx)}}><i className="icofont-ui-add"></i></button>
                         </td>
                       </tr>
                   )
@@ -235,7 +258,7 @@ export const PrescriptionsCreate = (props) => {
               }
               {state.search.searchResults.length <= 0 &&
                 <tr>
-                  <td colSpan={4} className={"text-center"}>0 items found.</td>
+                <td className={"text-center"} colSpan={4}>No items here.<br/><span style={{fontSize: "12px"}}>Search results after you click <i className="icofont-ui-search"></i> will appear here.</span></td>
                 </tr>
               }
               </tbody>
@@ -312,7 +335,7 @@ export const PrescriptionsCreate = (props) => {
                           />
                         </td>
                         <td className="text-center">
-                          <button type="button" data-key={idx} className="btn btn-secondary btn-sm" onClick={onClickDeleteMedicationDataItem}><i className="icofont-trash"></i></button>
+                          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {DeleteMedicationDataItem(idx)}}><i className="icofont-trash"></i></button>
                         </td>
                       </tr>
                   )
@@ -327,8 +350,8 @@ export const PrescriptionsCreate = (props) => {
               </table>
               </div>
               <div className="form-group">
-              <label htmlFor="inputAddress13">Additional Notes for Patient</label>
-              <textarea className="form-control" id="inputAddress13" placeholder="Additional Notes" />
+              <label htmlFor="additionalNotes">Additional Notes for Patient</label>
+              <textarea className="form-control" id="additionalNotes" name={"additionalNotes"} placeholder="Additional Notes" onChange={onChangePrescription} />
               </div>
               </div>
               </div>

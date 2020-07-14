@@ -9,13 +9,16 @@ import TimeSlot from "../dashboard/TimeSlot";
 
 const Dashboard = () => {
   const dashboardContext = useContext(DashboardContext);
-  const { error, getDoctorById } = dashboardContext;
+  const { error, getDoctorById, selectedDate } = dashboardContext;
   const location = useLocation();
   useEffect(() => {
     const { pathname } = location;
     const doctorId = pathname.split("/")[2];
     // search doctor at start
     getDoctorById(doctorId);
+
+    // avoid warning because missing dependency
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -35,7 +38,7 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="row">
-            <TimeSlot/>
+            {selectedDate.day && <TimeSlot/>}
           </div>
         </div>
       ) : (

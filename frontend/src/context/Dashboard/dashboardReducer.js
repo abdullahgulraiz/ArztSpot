@@ -9,6 +9,11 @@ export default (state, action) => {
       return {
         ...state,
         selectedDate: action.payload
+      };
+    case "SET_POSSIBLE_SLOTS":
+      return {
+        ...state,
+        slots: action.payload
       }
     case "DOCTOR_ERROR_404":
       return {

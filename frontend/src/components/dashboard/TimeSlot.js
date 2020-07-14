@@ -1,12 +1,16 @@
 import React, { Fragment, useContext, useEffect } from "react";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
-import createTimeSlots from "../../utils/appointmentUtils";
 import TimeSlotItem from "./TimeSlotItem";
+
 const TimeSlot = () => {
   const dashboardContext = useContext(DashboardContext);
-  const { setAppointment, selectedDate } = dashboardContext;
-  const slots = createTimeSlots();
-  const { timeSlot } = selectedDate;
+  const {selectedDate, setPossibleAppointments, slots, doctor } = dashboardContext;
+  const { timeSlot, day } = selectedDate;
+  useEffect(() => {
+    setPossibleAppointments(day, doctor);
+    // avoid warning because missing dependency
+    // eslint-disable-next-line
+  }, [])
   return (
     <Fragment>
       <div className="btn-group">
@@ -22,9 +26,9 @@ const TimeSlot = () => {
         <div
           className="dropdown-menu"
           style={{
-            height: "auto",
-            "max-height": "200px",
-            "overflow-x": "hidden",
+            "height": "auto",
+            "maxHeight": "200px",
+            "overflowX": "hidden",
           }}
         >
           {slots.map((slot, i) => (

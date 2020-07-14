@@ -15,8 +15,17 @@ exports.getDoctors = asyncHandler(async (req, res, next) => {
 //@route  GET /api/v1/doctors/:id
 //@access Public
 exports.getDoctor = asyncHandler(async (req, res, next) => {
-  const doctors = await User.find({ role: "doctor", _id: req.params.id });
-  res.status(200).json({ success: true, data: doctors });
+  const doctor = await User.findById({
+    role: "doctor",
+    _id: req.params.id,
+  }).populate("hospital");
+
+  if (!doctor) {
+    return next(
+      new ErrorResponse(`Doctor with id ${req.params.id} not found`, 404)
+    );
+  }
+  res.status(200).json({ success: true, data: doctor });
 });
 
 // @desc  Add doctor to Hospital

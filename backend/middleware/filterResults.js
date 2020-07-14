@@ -141,7 +141,7 @@ const filterResults = (model, populate) => async (req, res, next) => {
 
   res.filterResults = {
     success: true,
-    count: results.length,
+    count: total,
     pagination,
     data: results,
   };

@@ -2,7 +2,8 @@ const express = require("express");
 
 const {
   createAppointment,
-  getAppointment,
+  getAppointmentForDoctor,
+  getAppointmentById,
   getAppointmentForUser,
   updateAppointment,
   deleteAppointment,
@@ -20,8 +21,9 @@ router
   .get(protectRoute, filterResults(Appointment), getAppointmentForUser);
 router
   .route("/:id")
-  .get(protectRoute, getAppointment)
+  .get(protectRoute, getAppointmentById)
   .put(protectRoute, updateAppointment)
   .delete(protectRoute, deleteAppointment);
+router.route("/:hospitalId/:doctorId").get(getAppointmentForDoctor);
 
 module.exports = router;

@@ -7,7 +7,9 @@
     "email": "marioperez@hotmail.com",
     "role": "doctor",
     "specialization": "dermatology",
-    "languages": ["spanish", "german"]
+    "languages": ["spanish", "german"],
+    "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus.",
+    "hospital": "5ee7b9683431feba57523d01"
   },
   {
     "_id": "5ee7b96a3431feba57523d02",
@@ -17,6 +19,7 @@
     "email": "kevinhart@hotmail.com",
     "role": "doctor",
     "specialization": "traumatology",
+    "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["english", "chinese"],
     "hospital": "5ee7b9683431feba57523d01"
   },
@@ -28,6 +31,7 @@
     "email": "willsmith@hotmail.com",
     "role": "doctor",
     "specialization": "cardiology",
+    "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["japanese", "german"],
     "hospital": "5ee7b9683431feba57523d01"
   },
@@ -50,6 +54,7 @@
     "email": "chrisanderson@hotmail.com",
     "role": "doctor",
     "specialization": "radiology",
+    "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["english", "italian"],
     "hospital": "5ee7b9683431feba57523d00"
   },
@@ -61,6 +66,7 @@
     "email": "jamesjohnson@hotmail.com",
     "role": "doctor",
     "specialization": "family",
+    "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus.",
     "languages": ["french", "arabic"],
     "hospital": "5ee7b9683431feba57523d00"
   },

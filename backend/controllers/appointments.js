@@ -49,12 +49,10 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
 });
 
 // @desc  Get Appointments for a given Doctor
-//@route  GET /api/v1/appointments/doctors/:doctorId
+//@route  GET /api/v1/appointments/:hospitalId/:doctorId
 //@access Public
 exports.getAppointmentForDoctor = asyncHandler(async (req, res, next) => {
-  const { startTime, finishTime } = req.body;
   const { doctorId, hospitalId } = req.params;
-  let appointment;
   // find the doctor that works in the given hospital
   const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
   if (!doctor) {
@@ -66,19 +64,10 @@ exports.getAppointmentForDoctor = asyncHandler(async (req, res, next) => {
     );
   }
   // TODO: Add validation is the appointment starting at :00 or :30
-  if (startTime && finishTime) {
-    appointment = await Appointment.findOne({
+  const appointment = await Appointment.find({
       hospital: hospitalId,
       doctor: doctorId,
-      startTime: startTime,
-      finishTime: finishTime,
-    });
-  } else {
-    appointment = await Appointment.find({
-      hospital: hospitalId,
-      doctor: doctorId,
-    });
-  }
+  })
 
   // if the appointment does not exist it will return null
   res.status(200).json({ success: true, appointment });

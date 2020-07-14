@@ -62,7 +62,8 @@ const DashboardState = (props) => {
       "/api/v1/appointments/" + doctor.hospital._id + "/" + doctor._id;
     const res = await axios.get(url);
     const slotsArr = createTimeSlots(day);
-    await slotsArr.map(async (slot) => {
+    slotsArr.map((slot) => {
+      let newSlot = { time: null, appointmentTaken: false };
       // momentAppointment -> Day selected and hour for all possible appointments in that day
       startTime = moment(
         dayString + " " + slot.format("kk:mm"),
@@ -83,11 +84,13 @@ const DashboardState = (props) => {
           existingAppointmentStart === startTime.toDate().getTime() &&
           existingAppointmentFinish === finishTime.toDate().getTime()
         ) {
-          slots.push({ time: slot.format("kk:mm"), appointmentTaken: true });
+          newSlot = { ...newSlot, appointmentTaken: true };
         } else {
-          slots.push({ time: slot.format("kk:mm"), appointmentTaken: false });
+          newSlot = { ...newSlot, appointmentTaken: false };
         }
       });
+      newSlot = { ...newSlot, time: slot.format("kk:mm") };
+      slots.push(newSlot);
     });
     dispatch({ type: "SET_POSSIBLE_SLOTS", payload: slots });
   };

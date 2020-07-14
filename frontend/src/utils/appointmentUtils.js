@@ -15,7 +15,6 @@ const createTimeSlots = (day) => {
   const diff = now - now.clone().startOf("hour");
   // if a person wants to book an appointment for the same day
   // only the future dates should shown up
-  console.log(day.isSame(now, 'day'))
   if (day.isSame(now, 'day')) {
     // if current time is 9:24 -> start is 9:30
     // if current time is 9:34 -> start is 10:00

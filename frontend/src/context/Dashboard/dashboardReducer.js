@@ -11,6 +11,7 @@ export default (state, action) => {
         selectedDate: action.payload,
       };
     case "SET_POSSIBLE_SLOTS":
+      console.log(action.payload)
       return {
         ...state,
         slots: action.payload,

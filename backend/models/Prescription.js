@@ -2,43 +2,63 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const prescriptionSchema = new Schema({
-    patient_name: {
-        name: String,
-        email: String,
-        required: true
+    doctor: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        required: true,
     },
-    doctor_name: {
-        type: String,
-        required: true
+    patient: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        required: true,
     },
     date: {
         type: Date,
+        default: Date.now,
         required: true
     },
-    receipt_number:{
-        type: Number,
-        required: true
-    },
-    medicines_json:{
-        type: String
-    },
-    validity:{
+    prescriptionData: [new Schema({
+        name: {
+            type: String,
+            required: true
+        },
+        quantity: {
+            type: mongoose.Decimal128,
+            required: true,
+        },
+        recurrenceNum: {
+            type: mongoose.Decimal128,
+            required: true,
+        },
+        recurrenceType: {
+            type: String,
+            required: true,
+            enum: ["Daily", "Weekly", "Fortnightly", "Monthly", "Yearly"]
+        },
+        until: {
+            type: Date,
+            default: Date.now,
+            required: true
+        },
+    })],
+    validity: {
         type: String,
         required: true,
-        enum: ["Valid", "Expired"]
+        enum: ["1 day", "3 days", "7 days", "15 days"]
     },
-    fee_type:{
+    feeType: {
         type: String,
         required: true,
-        enum: ["First Visit", "Regular Patient Fee"]
+        enum: ["Public Insurance", "Private Insurance", "Self Paid"]
     },
-    is_approved:{
+    isSent: {
         type: Boolean,
-        required: true
+        required: true,
+        default: false
     },
-    additional_message:{
+    additionalNotes: {
         type: String
-    }
+    },
 },{
         timestamps: true,
 });

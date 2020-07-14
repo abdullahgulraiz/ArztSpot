@@ -5,7 +5,7 @@ import moment from "moment";
 const CalendarItem = () => {
   const dashboardContext = useContext(DashboardContext);
   const { setAppointment, selectedDate } = dashboardContext;
-  const { day } = selectedDate
+  const { day } = selectedDate;
   const onChange = (value) => {
     // Calendar component returns value not event like:
     // Thu Jul 16 2020 00:00:00 GMT+0200.

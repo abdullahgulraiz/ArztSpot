@@ -41,6 +41,14 @@ const DashboardState = (props) => {
       dispatch({ type: "DOCTOR_ERROR_404", payload: e });
     }
   };
+  // Clear State of selected date
+  const clearSelectedDate = () => {
+    dispatch({ type: "CLEAR_SELECTED_DATE" });
+  };
+  // Clear State of slots
+  const clearSlots = () => {
+    dispatch({ type: "CLEAR_SLOTS" });
+  };
 
   const setPossibleAppointments = async (day, doctor) => {
     // We get the day of the consultation and for that day we check if appointment
@@ -64,8 +72,12 @@ const DashboardState = (props) => {
       res.data.appointment.map((existingAppointment) => {
         // get milliseconds from existing appointments
         // Date in JS returns a string by default, we must create a new Date.
-        const existingAppointmentStart = new Date(existingAppointment.startTime).getTime()
-        const existingAppointmentFinish = new Date(existingAppointment.finishTime).getTime()
+        const existingAppointmentStart = new Date(
+          existingAppointment.startTime
+        ).getTime();
+        const existingAppointmentFinish = new Date(
+          existingAppointment.finishTime
+        ).getTime();
 
         if (
           existingAppointmentStart === startTime.toDate().getTime() &&
@@ -93,6 +105,8 @@ const DashboardState = (props) => {
         selectedDate: state.selectedDate,
         slots: state.slots,
         error: state.error,
+        clearSelectedDate,
+        clearSlots,
         setCurrentDoctor,
         getDoctorById,
         setAppointment,

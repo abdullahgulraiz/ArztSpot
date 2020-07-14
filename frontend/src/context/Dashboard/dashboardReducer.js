@@ -8,13 +8,31 @@ export default (state, action) => {
     case "SET_SELECTED_APPOINTMENT":
       return {
         ...state,
-        selectedDate: action.payload
+        selectedDate: action.payload,
       };
     case "SET_POSSIBLE_SLOTS":
       return {
         ...state,
-        slots: action.payload
-      }
+        slots: action.payload,
+      };
+    case "CLEAR_SELECTED_DATE":
+      return {
+        ...state,
+        selectedDate: {
+          day: null,
+          timeSlot: "Choose an appointment",
+        },
+      };
+    case "CLEAR_SLOTS":
+      return {
+        ...state,
+        slots: [
+          {
+            time: null,
+            appointmentTaken: false,
+          },
+        ],
+      };
     case "DOCTOR_ERROR_404":
       return {
         ...state,

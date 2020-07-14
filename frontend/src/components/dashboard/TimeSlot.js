@@ -4,13 +4,18 @@ import TimeSlotItem from "./TimeSlotItem";
 
 const TimeSlot = () => {
   const dashboardContext = useContext(DashboardContext);
-  const {selectedDate, setPossibleAppointments, slots, doctor } = dashboardContext;
+  const {
+    selectedDate,
+    setPossibleAppointments,
+    slots,
+    doctor,
+  } = dashboardContext;
   const { timeSlot, day } = selectedDate;
   useEffect(() => {
     setPossibleAppointments(day, doctor);
-    // avoid warning because missing dependency
+    // update when day changes
     // eslint-disable-next-line
-  }, [])
+  }, [day]);
   return (
     <Fragment>
       <div className="btn-group">
@@ -26,9 +31,9 @@ const TimeSlot = () => {
         <div
           className="dropdown-menu"
           style={{
-            "height": "auto",
-            "maxHeight": "200px",
-            "overflowX": "hidden",
+            height: "auto",
+            maxHeight: "200px",
+            overflowX: "hidden",
           }}
         >
           {slots.map((slot, i) => (

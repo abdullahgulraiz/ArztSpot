@@ -3,7 +3,8 @@ const express = require("express");
 const {
   getDoctors,
   getDoctor,
-  addDoctorToHospital
+  addDoctorToHospital,
+  getDoctorPatients
 } = require("../controllers/doctors");
 
 const User = require("../models/User");
@@ -20,5 +21,9 @@ router
   .post(protectRoute,authorize('doctor', 'admin'), addDoctorToHospital);
 
 router.route("/:id").get(getDoctor);
+
+router
+    .route("/mypatients")
+    .post(protectRoute,authorize('doctor', 'admin'), getDoctorPatients);
 
 module.exports = router;

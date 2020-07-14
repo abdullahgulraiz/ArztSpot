@@ -10,7 +10,7 @@ const Hospital = require("../models/Hospital");
 //@access Public
 exports.createAppointment = asyncHandler(async (req, res, next) => {
   let appointment;
-  const { hospitalId, doctorId, startTime, finishTime } = req.body;
+  const { hospitalId, doctorId, userId, startTime, finishTime } = req.body;
   // find the doctor that works in the given hospital
   const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
   if (!doctor) {
@@ -30,6 +30,7 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   appointment = await Appointment.create({
     hospital: hospitalId,
     doctor: doctorId,
+    user: userId,
     startTime: startTime,
     finishTime: finishTime,
   });

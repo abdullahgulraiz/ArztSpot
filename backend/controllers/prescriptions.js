@@ -8,7 +8,7 @@ const User = require("../models/User");
 // @access Private/doctor
 exports.createPrescription = asyncHandler(async (req, res, next) => {
   let prescription;
-  const { patientId, doctorId, prescriptionData, validity, feeType, additionalNotes, isSent } = req.body;
+  const { patientId, doctorId, appointmentId, prescriptionData, validity, feeType, additionalNotes, isSent } = req.body;
   // find the doctor making prescription
   const doctor = await User.findOne({ _id: doctorId });
   if (!doctor) {
@@ -19,10 +19,16 @@ exports.createPrescription = asyncHandler(async (req, res, next) => {
   if (!patient) {
     return next(new ErrorResponse(`Patient not found with id of ${patientId}`, 404));
   }
+  // find the appointment for which prescription is being made
+  const appointment = await User.findOne({ _id: appointmentId });
+  if (!appointment) {
+    return next(new ErrorResponse(`Appointment not found with id of ${appointmentId}`, 404));
+  }
   // create prescription
   prescription = await Prescription.create({
     doctor: doctorId,
     patient: patientId,
+    appointment: appointmentId,
     prescriptionData: prescriptionData,
     validity: validity,
     feeType: feeType,

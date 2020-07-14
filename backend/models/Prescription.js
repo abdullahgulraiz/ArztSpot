@@ -12,6 +12,11 @@ const prescriptionSchema = new Schema({
         ref: "User",
         required: true,
     },
+    appointment: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Appointment",
+        required: true,
+    },
     date: {
         type: Date,
         default: Date.now,

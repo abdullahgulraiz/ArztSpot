@@ -23,7 +23,9 @@ function App() {
                 <Route path={routes.contact} component={components.general.Contact} />
                 <Route path={routes.search} component={components.general.Search} />
                 <Route path={routes.dashboard} component={components.general.Dashboard} />
-                {/* Doctor */}
+                <Route path={routes.questionnaire} component={components.general.Questionnaire} />
+
+                  {/* Doctor */}
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
                 <DoctorRoute path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
                 <DoctorRoute path={routes.doctor.prescriptions.search} component={components.doctor.prescriptions.PrescriptionsSearch} />

@@ -9,6 +9,7 @@ export default {
     contact: "/contact",
     search: "/search",
     dashboard: "/doctors/:doctorId",
+    questionnaire: "/questionnaire",
 
     // auth
     auth: include('/auth', {

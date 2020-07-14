@@ -19,6 +19,7 @@ import PrescriptionsCreate from "./doctor/prescriptions/create.component"
 /* General Search (Doctors, Hospitals) */
 import Search from "./general/search.component";
 import Dashboard from "./general/dashboard.component";
+import Questionnaire from "./questionnaire/questionnaire.component";
 
 export default {
     general: {
@@ -32,7 +33,8 @@ export default {
         NotFound,
         Unauthorized,
         Search,
-        Dashboard
+        Dashboard,
+        Questionnaire
     },
     auth: {
         Login,

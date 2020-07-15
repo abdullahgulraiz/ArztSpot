@@ -6,6 +6,7 @@ import DashboardContext from "../../context/Dashboard/dashboardContext";
 import NotFound from "./notfound.component";
 import { useLocation } from "react-router-dom";
 import TimeSlot from "../dashboard/TimeSlot";
+import BookAppointment from "../dashboard/BookAppointment";
 
 const Dashboard = () => {
   const dashboardContext = useContext(DashboardContext);
@@ -45,9 +46,16 @@ const Dashboard = () => {
             </div>
             <div className="col-md-6 mt-5">
               <CalendarItem />
+              <br/>
+              <div className="">
+                {selectedDate.day && <TimeSlot />}
+                <br/>
+                <br/>
+                {selectedDate.timeSlot && <BookAppointment />}
+              </div>
+
             </div>
           </div>
-          <div className="row">{selectedDate.day && <TimeSlot />}</div>
         </div>
       ) : (
         <NotFound />

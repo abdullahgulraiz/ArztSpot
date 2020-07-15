@@ -21,7 +21,7 @@ export default (state, action) => {
         ...state,
         selectedDate: {
           day: null,
-          timeSlot: "Choose an appointment",
+          timeSlot: null,
         },
       };
     case "CLEAR_SLOTS":

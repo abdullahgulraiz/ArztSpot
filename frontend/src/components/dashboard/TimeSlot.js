@@ -11,6 +11,7 @@ const TimeSlot = () => {
     doctor,
   } = dashboardContext;
   const { timeSlot, day } = selectedDate;
+  console.log(timeSlot)
   useEffect(() => {
     setPossibleAppointments(day, doctor);
     // update when day changes
@@ -18,7 +19,7 @@ const TimeSlot = () => {
   }, [day]);
   return (
     <Fragment>
-      <div className="btn-group">
+      <div className="btn-group btn-block">
         <button
           type="button"
           className="btn btn-primary dropdown-toggle"
@@ -26,10 +27,10 @@ const TimeSlot = () => {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          {timeSlot}
+          {timeSlot ? day.format('MMM Do YY') + ': ' + timeSlot : day.format('MMM Do YY') + ': ' + 'Choose an Appointment'}
         </button>
         <div
-          className="dropdown-menu"
+          className="dropdown-menu btn-block"
           style={{
             height: "auto",
             maxHeight: "200px",

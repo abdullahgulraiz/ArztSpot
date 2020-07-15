@@ -23,7 +23,7 @@ const SearchBar = () => {
           </label>
           <input
             className="form-check-input"
-            for="inlineRadio1"
+            htmlFor="inlineRadio1"
             type="radio"
             name="type"
             value="doctor"

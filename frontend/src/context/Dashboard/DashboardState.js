@@ -12,7 +12,7 @@ const DashboardState = (props) => {
     },
     selectedDate: {
       day: null,
-      timeSlot: "Choose an appointment",
+      timeSlot: null,
     },
     // slots available within a certain date
     slots: [
@@ -41,6 +41,7 @@ const DashboardState = (props) => {
       dispatch({ type: "DOCTOR_ERROR_404", payload: e });
     }
   };
+
   // Clear State of selected date
   const clearSelectedDate = () => {
     dispatch({ type: "CLEAR_SELECTED_DATE" });
@@ -60,6 +61,7 @@ const DashboardState = (props) => {
     let finishTime;
     const url =
       "/api/v1/appointments/" + doctor.hospital._id + "/" + doctor._id;
+    // TODO ADD TRY/CATCH
     const res = await axios.get(url);
     const slotsArr = createTimeSlots(day);
     slotsArr.map((slot) => {
@@ -97,6 +99,30 @@ const DashboardState = (props) => {
   // change appointment once is selected
   const setAppointment = (appointment) => {
     dispatch({ type: "SET_SELECTED_APPOINTMENT", payload: appointment });
+  };
+
+  // book appointment
+  const createAppointment = async (doctor, user, selectedDate) => {
+    const finishTime = selectedDate.timeSlot.clone().format("x").toDate();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+
+    const reqBody = {
+      hospitalId: doctor.hospital._id,
+      doctorId: doctor._id,
+      startTime: selectedDate.timeSlot.toDate(),
+      finishTime: finishTime,
+    };
+    const url = "/api/appointments";
+    try {
+      const res = await axios.post(url, reqBody, config);
+      // dispatch (?)
+    } catch (e) {
+      // dispatch err
+    }
   };
 
   return (

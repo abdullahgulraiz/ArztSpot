@@ -62,7 +62,11 @@ export const PrescriptionsSearch = (props) => {
           }
         })
         .catch(error => {
-          setState({ ...state, errorMessage: error.response.data.error, statusMessage: '', search_results: [] });
+          if (error.response) {
+            setState({ ...state, errorMessage: error.response.data.error, statusMessage: '', search_results: [] });
+          } else {
+            setState({ ...state, errorMessage: 'An unknown error occured.', statusMessage: '', search_results: [] });
+          }
         });
   }
 

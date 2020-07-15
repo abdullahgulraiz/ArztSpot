@@ -1,45 +1,60 @@
-import React, {Component, useEffect, useState} from 'react';
+import React, {Component, useContext, useEffect, useState} from 'react';
 import {reverse} from "named-urls";
 import routes from "../../../routes";
 import {Link, Redirect} from "react-router-dom";
 import {isEmptyObj} from "../../../utils/isEmptyObj";
 import NotFound from "../../general/notfound.component";
+import axios from "axios";
+import {AuthContext} from "../../../auth/AuthState";
+import moment from "moment";
 
 export const PrescriptionsPatient = (props) => {
 
   const initial_state = {
-    patient: {},
     show: 'all',
     error404: false,
-    searchResults: [
-      {
-        'id': '1',
-        'appointmentDate': 'July 10, 2020',
-        'issuedOn': "July 12, 2020",
-        'symptoms': ["Asthma", "COPD", "Headache"],
-        'status': "Sent"
-      },
-      {
-        'id': '2',
-        'appointmentDate': 'July 05, 2019',
-        'issuedOn': "July 08, 2019",
-        'symptoms': ["Body pain", "Cough", "Fever"],
-        'status': "Pending"
-      },
-    ]
+    searchResults: []
   }
 
   const [state, setState] = useState(initial_state);
+  const [patient, setPatient] = useState({});
+
+  const { bearerToken } = useContext(AuthContext);
 
   useEffect(() => {
-    setTimeout(() => {
-      setState({
-        ...state,
-        patient: {
-          name: "John Smith"
-        },
-      });
-    }, 3000)
+    const axiosInstance = axios.create({
+      timeout: 1000,
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`
+      }
+    });
+    axiosInstance
+        .get("/api/v1/doctors/mypatients/" + props.match.params.patientId)
+        .then(response => {
+          if (response.data.success) {
+            setPatient(response.data.data);
+            return axiosInstance.get("/api/v1/prescriptions?patient=" + props.match.params.patientId);
+          } else {
+            setState({ ...state, error404: true });
+          }
+        })
+        .then(response => {
+          let search_results = [];
+          response.data.data.map(d => {
+            search_results.push({
+              'id': d._id,
+              'appointmentDate': moment(d.appointment.startTime).format("YYYY-MM-DD"),
+              'issuedOn': moment(d.date).format("YYYY-MM-DD"),
+              'symptoms': d.appointment.symptoms ? d.appointment.symptoms.map(s => s.name) : ["Not defined"],
+              'status': d.isSent ? "Sent" : "Pending"
+            });
+          });
+          setState({...state, searchResults: search_results });
+        })
+        .catch(error => {
+          console.log("Error", error, error.response);
+          setState({ ...state, error404: true, patient: {} });
+        });
   }, []);
 
   const onChange = (e) => {
@@ -47,7 +62,28 @@ export const PrescriptionsPatient = (props) => {
   }
 
   const downloadReport = (id) => {
-    console.log("Downloading report for id", id);
+      const axiosInstance = axios.create({
+          headers: {
+              'Authorization': `Bearer ${bearerToken}`
+          }
+      });
+      axiosInstance
+          .get('/api/v1/prescriptions/'+id+'/download', {responseType: 'blob'})
+          .then(response => {
+              //Create a Blob from the PDF Stream
+              const file = new Blob(
+                  [response.data],
+                  {type: 'application/pdf'});//Build a URL from the file
+              const fileURL = URL.createObjectURL(file);//Open the URL on new Window
+              window.open(fileURL);
+          })
+          .catch(error => {
+              console.log("Error generation PDF: ", error);
+          });
+  }
+
+  const sendReport = (id) => {
+    console.log("Sending report for id", id);
   }
 
   if (state.error404) {
@@ -65,14 +101,14 @@ export const PrescriptionsPatient = (props) => {
 
             <div className="section-title">
               <h2>Prescriptions</h2>
-              {!isEmptyObj(state.patient) &&
-              <p>Manage prescriptions for {state.patient.name}</p>
+              {!isEmptyObj(patient) &&
+              <p>Manage prescriptions for {patient.firstname} {patient.lastname}</p>
               }
-              {isEmptyObj(state.patient) &&
+              {isEmptyObj(patient) &&
               <p>Loading prescriptions...</p>
               }
             </div>
-            {!isEmptyObj(state.patient) &&
+            {!isEmptyObj(patient) &&
             <>
             <div className="row">
               <div className="col-12">
@@ -128,7 +164,7 @@ export const PrescriptionsPatient = (props) => {
                     })
                     .map((searchResult, index) => {
                       return (
-                          <SearchResultRow result={searchResult} index={index} downloadReport={downloadReport}/>
+                          <SearchResultRow result={searchResult} index={index} downloadReport={downloadReport} sendReport={sendReport} />
                       );
                     })
               }
@@ -163,8 +199,13 @@ const SearchResultRow = props => {
         <td>{searchResult.issuedOn}</td>
         <td>{searchResult.symptoms.join(", ")}</td>
         <td>{searchResult.status}</td>
-        <td><button type="button" className="btn btn-secondary btn-sm" onClick={() => {props.downloadReport(searchResult.id)}}>
-          <i className="icofont-download"></i></button></td>
+        <td>
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {props.downloadReport(searchResult.id)}}>
+          <i className="icofont-download"></i></button>
+          {searchResult.status === "Pending" &&
+            <button type="button" className="btn btn-secondary btn-sm" style={{marginLeft: '2%'}} onClick={() => {props.sendReport(searchResult.id)}}>Send</button>
+          }
+        </td>
       </tr>
   )
 }

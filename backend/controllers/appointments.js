@@ -3,6 +3,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
 const Hospital = require("../models/Hospital");
+const Symptom = require("../models/Symptom");
 
 // @desc  Create new appointment
 //@route  POST /api/v1/appointment
@@ -10,7 +11,7 @@ const Hospital = require("../models/Hospital");
 //@access Public
 exports.createAppointment = asyncHandler(async (req, res, next) => {
   let appointment;
-  const { hospitalId, doctorId, userId, startTime, finishTime } = req.body;
+  const { hospitalId, doctorId, userId, startTime, finishTime, symptoms } = req.body;
   // find the doctor that works in the given hospital
   const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
   if (!doctor) {
@@ -27,12 +28,27 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   if(appointment) {
     return next(new ErrorResponse(`Appointment already exists`, 400));
   }
+  // get symptom ids of each symptom
+  let symptomIds = [];
+  for (const symptom_ of symptoms) {
+    let symptom = await Symptom.findOne({name: symptom_});
+    if (symptom) {
+      symptomIds.push(symptom._id.toString());
+    } else {
+      symptom = await Symptom.create({
+        name: symptom_
+      });
+      symptomIds.push(symptom._id.toString());
+    }
+  }
+  // create appointment
   appointment = await Appointment.create({
     hospital: hospitalId,
     doctor: doctorId,
     user: userId,
     startTime: startTime,
     finishTime: finishTime,
+    symptoms: symptomIds
   });
   res.status(200).json({ success: true, appointment });
 });

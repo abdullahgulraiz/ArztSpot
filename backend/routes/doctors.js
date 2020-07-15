@@ -4,7 +4,8 @@ const {
   getDoctors,
   getDoctor,
   addDoctorToHospital,
-  getDoctorPatients
+  getDoctorPatients,
+  getDoctorSinglePatient
 } = require("../controllers/doctors");
 
 const User = require("../models/User");
@@ -25,5 +26,9 @@ router.route("/:id").get(getDoctor);
 router
     .route("/mypatients")
     .post(protectRoute,authorize('doctor', 'admin'), getDoctorPatients);
+
+router
+    .route("/mypatients/:patientId")
+    .get(protectRoute,authorize('doctor', 'admin'), getDoctorSinglePatient);
 
 module.exports = router;

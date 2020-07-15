@@ -20,8 +20,8 @@ exports.getDoctor = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: doctors });
 });
 
-// @desc  Get patients associated with a single doctor
-//@route  POST /api/v1/doctors/patients
+// @desc  Get all patients associated with a single doctor
+//@route  POST /api/v1/doctors/mypatients
 //@access Public
 exports.getDoctorPatients = asyncHandler(async (req, res, next) => {
   const { searchCriteria, searchValue } = req.body;
@@ -65,6 +65,35 @@ exports.getDoctorPatients = asyncHandler(async (req, res, next) => {
     return p;
   });
   res.status(200).json({ success: true, data: patients });
+});
+
+// @desc  Get single patient associated with a single doctor
+//@route  POST /api/v1/doctors/mypatients/:patientId
+//@access Public
+exports.getDoctorSinglePatient = asyncHandler(async (req, res, next) => {
+  // get patient
+  let patient = await User.findById(req.params.patientId);
+  if (!patient) {
+    return next(
+        new ErrorResponse(
+            `Patient not found with id of ${req.params.patientId}`,
+            404
+        )
+    );
+  }
+  // check if the doctor has at least had one appointment with the patient
+  const appointments = await Appointment
+      .find({doctor: req.user._id.toString(), user: req.params.patientId})
+      .distinct('user');
+  if (appointments.length < 1) {
+    return next(
+        new ErrorResponse(
+            `No appointment held with patient of Id: ${req.params.patientId}`,
+            404
+        )
+    );
+  }
+  res.status(200).json({ success: true, data: patient });
 });
 
 // @desc  Add doctor to Hospital

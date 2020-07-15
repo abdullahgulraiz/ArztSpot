@@ -89,8 +89,6 @@ const DashboardState = (props) => {
           existingAppointmentFinish === finishTime.toDate().getTime()
         ) {
           newSlot = { ...newSlot, appointmentTaken: true };
-        } else {
-          newSlot = { ...newSlot, appointmentTaken: false };
         }
       });
       newSlot = { ...newSlot, time: slot.format("kk:mm") };

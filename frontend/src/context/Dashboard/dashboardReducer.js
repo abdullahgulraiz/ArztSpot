@@ -20,6 +20,11 @@ export default (state, action) => {
         ...state,
         appointmentCreated: action.payload
       }
+    case "CREATE_APPOINTMENT":
+      return {
+        ...state,
+        appointment: action.payload
+      }
     case "CLEAR_SELECTED_DATE":
       return {
         ...state,

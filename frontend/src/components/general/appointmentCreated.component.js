@@ -8,11 +8,14 @@ import DashboardContext from "../../context/Dashboard/dashboardContext";
 const Success = () => {
   const authContext = useContext(AuthContext);
   const dashboardContext = useContext(DashboardContext);
-  const { setAppointmentCreated } = dashboardContext;
+  const { setAppointmentCreated, clearSelectedDate } = dashboardContext;
   const { user } = authContext;
   useEffect(() => {
     // reset original state
+    // so that users can book more than one appointment
     setAppointmentCreated(false);
+    // clear selected date
+    clearSelectedDate()
   }, []);
   return (
     <Fragment>

@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, {Fragment, useContext, useEffect} from "react";
 import routes from "../../routes";
 import { Link } from "react-router-dom";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
@@ -11,13 +11,13 @@ const BookAppointment = () => {
     createAppointment,
     doctor,
     selectedDate,
-    setAppointmentCreated,
+    setAppointmentCreated
   } = dashboardContext;
   const authContext = useContext(AuthContext);
   const { user, bearerToken } = authContext;
-  const onClick = (e) => {
-    createAppointment(doctor, user, selectedDate, bearerToken);
-    setAppointmentCreated(true);
+  const onClick = async (e) => {
+    createAppointment(doctor, user, selectedDate, bearerToken)
+    setAppointmentCreated(true)
   };
   return (
     <Fragment>

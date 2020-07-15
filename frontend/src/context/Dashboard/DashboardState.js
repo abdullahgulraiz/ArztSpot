@@ -22,10 +22,9 @@ const DashboardState = (props) => {
         appointmentTaken: false,
       },
     ],
-    reviews: {},
-    appointments: {},
+    appointmentCreated: false,
     error: null,
-    alert: null
+    alert: null,
   };
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
@@ -100,9 +99,12 @@ const DashboardState = (props) => {
   const setAppointment = (appointment) => {
     dispatch({ type: "SET_SELECTED_APPOINTMENT", payload: appointment });
   };
+  const setAppointmentCreated = (appointmentCreated) => {
+    dispatch({ type: "SET_APPOINTMENT_CREATED", payload: appointmentCreated });
+  };
   const setAlert = (alert) => {
-    dispatch({type: "SET_ALERT", payload: alert})
-  }
+    dispatch({ type: "SET_ALERT", payload: alert });
+  };
 
   // book appointment
   const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
@@ -125,13 +127,13 @@ const DashboardState = (props) => {
     };
     const url = "/api/v1/appointments";
     try {
-      const res = await axios.post(url, reqBody, config);
+      await axios.post(url, reqBody, config);
     } catch (e) {
-      dispatch({type: "SET_ALERT", payload: true})
+      dispatch({ type: "SET_ALERT", payload: true });
       // make alert disappear after a couple seconds
       setTimeout(() => {
-        dispatch({type: "SET_ALERT", payload: false})
-      }, 5000)
+        dispatch({ type: "SET_ALERT", payload: false });
+      }, 5000);
     }
   };
 
@@ -140,8 +142,8 @@ const DashboardState = (props) => {
       value={{
         doctor: state.doctor,
         reviews: state.reviews,
-        appointments: state.appointments,
         selectedDate: state.selectedDate,
+        appointmentCreated: state.appointmentCreated,
         slots: state.slots,
         error: state.error,
         alert: state.alert,
@@ -151,8 +153,9 @@ const DashboardState = (props) => {
         getDoctorById,
         setAppointment,
         setPossibleAppointments,
+        setAppointmentCreated,
         createAppointment,
-        setAlert
+        setAlert,
       }}
     >
       {props.children}

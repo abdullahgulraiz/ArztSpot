@@ -8,6 +8,7 @@ const Doctors = () => {
   const { search, doctors, setResultsLoaded } = searchContext;
   useEffect(() => {
     setTimeout(() =>{setResultsLoaded({ ...search, resultsLoaded: true })}, 2000);
+    // eslint-disable-next-line
   },[])
   return (
     <Fragment>

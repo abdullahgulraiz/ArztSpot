@@ -15,6 +15,11 @@ export default (state, action) => {
         ...state,
         slots: action.payload,
       };
+    case "SET_APPOINTMENT_CREATED":
+      return {
+        ...state,
+        appointmentCreated: action.payload
+      }
     case "CLEAR_SELECTED_DATE":
       return {
         ...state,

@@ -7,11 +7,17 @@ import { isEmptyObj } from "../../utils/isEmptyObj";
 
 const BookAppointment = () => {
   const dashboardContext = useContext(DashboardContext);
-  const {createAppointment, doctor, selectedDate} = dashboardContext
+  const {
+    createAppointment,
+    doctor,
+    selectedDate,
+    setAppointmentCreated,
+  } = dashboardContext;
   const authContext = useContext(AuthContext);
   const { user, bearerToken } = authContext;
   const onClick = (e) => {
-    createAppointment(doctor, user, selectedDate, bearerToken)
+    createAppointment(doctor, user, selectedDate, bearerToken);
+    setAppointmentCreated(true);
   };
   return (
     <Fragment>

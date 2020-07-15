@@ -1,71 +1,22 @@
 import React, { Fragment, useContext, useEffect } from "react";
-import Description from "../dashboard/Description";
-import CalendarItem from "../dashboard/CalendarItem";
 import "react-calendar/dist/Calendar.css";
+import routes from "../../routes";
+import Dashboard from "../dashboard/Dashboard";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
-import NotFound from "./notfound.component";
-import { useLocation } from "react-router-dom";
-import TimeSlot from "../dashboard/TimeSlot";
-import Alert from "../dashboard/Alert";
-import BookAppointment from "../dashboard/BookAppointment";
+import { Redirect } from "react-router-dom"
+import Success from "./appointmentCreated.component";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const dashboardContext = useContext(DashboardContext);
   const {
-    error,
-    alert,
-    getDoctorById,
-    selectedDate,
-    clearSlots,
-    clearSelectedDate,
+    appointmentCreated
   } = dashboardContext;
-  const location = useLocation();
-  useEffect(() => {
-    const { pathname } = location;
-    const doctorId = pathname.split("/")[2];
-    // clear state (selectedDate, etc)
-    // for example when changing from one doctor to the other
-    clearSlots();
-    clearSelectedDate();
-    // search doctor at start
-    getDoctorById(doctorId);
-
-    // avoid warning because missing dependency
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <Fragment>
-      {!error ? (
-        <div
-          className="container position-relative mt-xl-2 mt-5"
-          data-aos="fade-up"
-          data-aos-delay="100"
-        >
-          <div className="row">
-            <div className=" col-md-6">
-              <Description />
-            </div>
-            <div className="col-md-6 mt-5">
-              {alert && <Alert msg="Appointment already exists"/>}
-              <br/>
-              <CalendarItem />
-              <br/>
-              <div className="">
-                {selectedDate.day && <TimeSlot />}
-                <br/>
-                <br/>
-                {selectedDate.timeSlot && <BookAppointment />}
-              </div>
-
-            </div>
-          </div>
-        </div>
-      ) : (
-        <NotFound />
-      )}
+      {appointmentCreated ? <Redirect to={routes.appointmentCreated}/> : <Dashboard/>}
     </Fragment>
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

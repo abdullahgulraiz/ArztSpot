@@ -18,8 +18,9 @@ import PrescriptionsPatient from "./doctor/prescriptions/patient.component"
 import PrescriptionsCreate from "./doctor/prescriptions/create.component"
 /* General Search (Doctors, Hospitals) */
 import Search from "./general/search.component";
-import Dashboard from "./general/dashboard.component";
+import DashboardPage from "./general/dashboard.component";
 import Questionnaire from "./questionnaire/questionnaire.component";
+import Success from "./general/appointmentCreated.component";
 
 export default {
     general: {
@@ -33,8 +34,9 @@ export default {
         NotFound,
         Unauthorized,
         Search,
-        Dashboard,
-        Questionnaire
+        DashboardPage,
+        Questionnaire,
+        Success
     },
     auth: {
         Login,

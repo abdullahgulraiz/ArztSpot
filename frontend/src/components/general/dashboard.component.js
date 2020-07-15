@@ -4,7 +4,6 @@ import routes from "../../routes";
 import Dashboard from "../dashboard/Dashboard";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
 import { Redirect } from "react-router-dom"
-import Success from "./appointmentCreated.component";
 
 const DashboardPage = () => {
   const dashboardContext = useContext(DashboardContext);

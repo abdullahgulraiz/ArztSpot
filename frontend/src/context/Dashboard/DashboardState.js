@@ -5,6 +5,7 @@ import dashboardReducer from "./dashboardReducer";
 import createTimeSlots from "../../utils/appointmentUtils";
 import moment from "moment";
 import createStartAndFinishTime from "../../utils/createStartAndFinishTime";
+import {isEmptyObj} from "../../utils/isEmptyObj";
 const DashboardState = (props) => {
   const initialState = {
     doctor: {
@@ -22,6 +23,13 @@ const DashboardState = (props) => {
         appointmentTaken: false,
       },
     ],
+    appointment: {
+      userId: "",
+      doctorId: "",
+      hospitalId: "",
+      startTime: "",
+      finishTime: "",
+    },
     appointmentCreated: false,
     error: null,
     alert: null,
@@ -105,7 +113,6 @@ const DashboardState = (props) => {
   const setAlert = (alert) => {
     dispatch({ type: "SET_ALERT", payload: alert });
   };
-
   // book appointment
   const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
     const { startTime, finishTime } = createStartAndFinishTime(
@@ -125,6 +132,7 @@ const DashboardState = (props) => {
       startTime: startTime.toDate(),
       finishTime: finishTime.toDate(),
     };
+    console.log(reqBody)
     const url = "/api/v1/appointments";
     try {
       await axios.post(url, reqBody, config);
@@ -136,6 +144,89 @@ const DashboardState = (props) => {
       }, 5000);
     }
   };
+  // const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
+  //   // So if the user is not signed in we
+  //   // want to maintain appointment in the context
+  //   // so that when logging is finished we can book the appointment
+  //   const { startTime, finishTime } = createStartAndFinishTime(
+  //     selectedDate.day,
+  //     selectedDate.timeSlot
+  //   );
+  //
+  //   if (isEmptyObj(user) && !bearerToken) {
+  //     dispatch({
+  //       type: "CREATE_APPOINTMENT",
+  //       payload: {
+  //         hospitalId: doctor.hospital._id,
+  //         doctorId: doctor._id,
+  //         startTime: startTime.toDate(),
+  //         finishTime: finishTime.toDate(),
+  //       }
+  //   }) } else if (!isEmptyObj(user) && bearerToken) {
+  //     const config = {
+  //       headers: {
+  //         "Content-type": "application/json",
+  //         Authorization: `Bearer ${bearerToken}`,
+  //       },
+  //     };
+  //     const reqBody = {
+  //       userId: user._id,
+  //       hospitalId: doctor.hospital._id,
+  //       doctorId: doctor._id,
+  //       startTime: startTime.toDate(),
+  //       finishTime: finishTime.toDate(),
+  //     };
+  //     const url = "/api/v1/appointments";
+  //     try {
+  //       await axios.post(url, reqBody, config);
+  //     } catch (e) {
+  //       dispatch({ type: "SET_ALERT", payload: true });
+  //       // make alert disappear after a couple seconds
+  //       setTimeout(() => {
+  //         dispatch({ type: "SET_ALERT", payload: false });
+  //       }, 5000);
+  //     }
+  //   }
+  // };
+  // book appointment
+  const bookAppointment = async (user, bearerToken, appointment) => {
+    console.log(appointment)
+    // const config = {
+    //   headers: {
+    //     "Content-type": "application/json",
+    //     Authorization: `Bearer ${bearerToken}`,
+    //   },
+    // };
+    // console.log("Appointment")
+    // console.log(appointment);
+    // const reqBody = {
+    //   ...appointment,
+    //   userId: user._id,
+    // };
+    // console.log(reqBody);
+    // const url = "/api/v1/appointments";
+    // try {
+    //   const res = await axios.post(url, reqBody, config);
+    //   console.log(res);
+    //   console.log(reqBody);
+    //   dispatch({
+    //     type: "CLEAR_APPOINTMENT",
+    //     payload: {
+    //       userId: "",
+    //       doctorId: "",
+    //       hospitalId: "",
+    //       startTime: "",
+    //       finishTime: "",
+    //     },
+    //   });
+    // } catch (e) {
+    //   dispatch({ type: "SET_ALERT", payload: true });
+    //   // make alert disappear after a couple seconds
+    //   setTimeout(() => {
+    //     dispatch({ type: "SET_ALERT", payload: false });
+    //   }, 5000);
+    // }
+  };
 
   return (
     <DashboardContext.Provider
@@ -143,6 +234,7 @@ const DashboardState = (props) => {
         doctor: state.doctor,
         reviews: state.reviews,
         selectedDate: state.selectedDate,
+        appointment: state.appointment,
         appointmentCreated: state.appointmentCreated,
         slots: state.slots,
         error: state.error,
@@ -150,6 +242,7 @@ const DashboardState = (props) => {
         clearSelectedDate,
         clearSlots,
         setCurrentDoctor,
+        bookAppointment,
         getDoctorById,
         setAppointment,
         setPossibleAppointments,

@@ -16,6 +16,7 @@ const Dashboard = () => {
     alert,
     getDoctorById,
     selectedDate,
+    doctor,
     clearSlots,
     clearSelectedDate,
   } = dashboardContext;
@@ -25,11 +26,12 @@ const Dashboard = () => {
     const doctorId = pathname.split("/")[2];
     // clear state (selectedDate, etc)
     // for example when changing from one doctor to the other
-    clearSlots();
-    clearSelectedDate();
+    // clearSlots();
+    // clearSelectedDate();
     // search doctor at start
-    getDoctorById(doctorId);
-
+    if(!doctor._id) {
+      getDoctorById(doctorId);
+    }
     // avoid warning because missing dependency
     // eslint-disable-next-line
   }, []);

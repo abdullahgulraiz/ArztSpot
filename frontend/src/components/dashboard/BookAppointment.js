@@ -1,22 +1,17 @@
 import React, { Fragment, useContext } from "react";
 import routes from "../../routes";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
 import { AuthContext } from "../../auth/AuthState";
 import { isEmptyObj } from "../../utils/isEmptyObj";
 
 const BookAppointment = () => {
   const dashboardContext = useContext(DashboardContext);
+  const {createAppointment, doctor, selectedDate} = dashboardContext
   const authContext = useContext(AuthContext);
-  const { user } = authContext;
-  let clicked = false;
+  const { user, bearerToken } = authContext;
   const onClick = (e) => {
-    clicked = true;
-    if (isEmptyObj(user)) {
-      console.log("Redirect to login");
-    } else {
-      console.log("Create new appointment");
-    }
+    createAppointment(doctor, user, selectedDate, bearerToken)
   };
   return (
     <Fragment>

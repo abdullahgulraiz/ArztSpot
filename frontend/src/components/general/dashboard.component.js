@@ -6,12 +6,14 @@ import DashboardContext from "../../context/Dashboard/dashboardContext";
 import NotFound from "./notfound.component";
 import { useLocation } from "react-router-dom";
 import TimeSlot from "../dashboard/TimeSlot";
+import Alert from "../dashboard/Alert";
 import BookAppointment from "../dashboard/BookAppointment";
 
 const Dashboard = () => {
   const dashboardContext = useContext(DashboardContext);
   const {
     error,
+    alert,
     getDoctorById,
     selectedDate,
     clearSlots,
@@ -45,6 +47,8 @@ const Dashboard = () => {
               <Description />
             </div>
             <div className="col-md-6 mt-5">
+              {alert && <Alert msg="Appointment already exists"/>}
+              <br/>
               <CalendarItem />
               <br/>
               <div className="">

@@ -11,7 +11,6 @@ const TimeSlot = () => {
     doctor,
   } = dashboardContext;
   const { timeSlot, day } = selectedDate;
-  console.log(timeSlot)
   useEffect(() => {
     setPossibleAppointments(day, doctor);
     // update when day changes

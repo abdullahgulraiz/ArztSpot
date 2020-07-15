@@ -11,7 +11,6 @@ export default (state, action) => {
         selectedDate: action.payload,
       };
     case "SET_POSSIBLE_SLOTS":
-      console.log(action.payload)
       return {
         ...state,
         slots: action.payload,
@@ -39,6 +38,11 @@ export default (state, action) => {
         ...state,
         error: action.payload,
       };
+    case "SET_ALERT":
+      return {
+        ...state,
+        alert: action.payload
+      }
     default:
       return state;
   }

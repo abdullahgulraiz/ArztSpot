@@ -4,6 +4,7 @@ import DashboardContext from "./dashboardContext";
 import dashboardReducer from "./dashboardReducer";
 import createTimeSlots from "../../utils/appointmentUtils";
 import moment from "moment";
+import createStartAndFinishTime from "../../utils/createStartAndFinishTime";
 const DashboardState = (props) => {
   const initialState = {
     doctor: {
@@ -24,6 +25,7 @@ const DashboardState = (props) => {
     reviews: {},
     appointments: {},
     error: null,
+    alert: null
   };
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
@@ -100,28 +102,38 @@ const DashboardState = (props) => {
   const setAppointment = (appointment) => {
     dispatch({ type: "SET_SELECTED_APPOINTMENT", payload: appointment });
   };
+  const setAlert = (alert) => {
+    dispatch({type: "SET_ALERT", payload: alert})
+  }
 
   // book appointment
-  const createAppointment = async (doctor, user, selectedDate) => {
-    const finishTime = selectedDate.timeSlot.clone().format("x").toDate();
+  const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
+    const { startTime, finishTime } = createStartAndFinishTime(
+      selectedDate.day,
+      selectedDate.timeSlot
+    );
     const config = {
       headers: {
         "Content-type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
       },
     };
-
     const reqBody = {
+      userId: user._id,
       hospitalId: doctor.hospital._id,
       doctorId: doctor._id,
-      startTime: selectedDate.timeSlot.toDate(),
-      finishTime: finishTime,
+      startTime: startTime.toDate(),
+      finishTime: finishTime.toDate(),
     };
-    const url = "/api/appointments";
+    const url = "/api/v1/appointments";
     try {
       const res = await axios.post(url, reqBody, config);
-      // dispatch (?)
     } catch (e) {
-      // dispatch err
+      dispatch({type: "SET_ALERT", payload: true})
+      // make alert disappear after a couple seconds
+      setTimeout(() => {
+        dispatch({type: "SET_ALERT", payload: false})
+      }, 5000)
     }
   };
 
@@ -134,12 +146,15 @@ const DashboardState = (props) => {
         selectedDate: state.selectedDate,
         slots: state.slots,
         error: state.error,
+        alert: state.alert,
         clearSelectedDate,
         clearSlots,
         setCurrentDoctor,
         getDoctorById,
         setAppointment,
         setPossibleAppointments,
+        createAppointment,
+        setAlert
       }}
     >
       {props.children}

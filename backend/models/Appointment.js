@@ -54,7 +54,7 @@ const AppointmentSchema = new mongoose.Schema({
   symptoms: [{
       type: mongoose.Schema.ObjectId,
       ref: "Symptom",
-      required: true,
+      required: false,
   }]
 });
 

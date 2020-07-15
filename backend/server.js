@@ -18,7 +18,7 @@ const doctors = require("./routes/doctors");
 const appointments = require("./routes/appointments");
 const insurances = require("./routes/insurance");
 const questions = require('./routes/question');
-//const prescriptions = require('./routes/prescription');
+const prescriptions = require('./routes/prescriptions');
 
 const app = express();
 
@@ -42,6 +42,7 @@ app.use("/api/v1/doctors", doctors);
 app.use("/api/v1/appointments", appointments);
 app.use("/api/v1/insurances", insurances);
 app.use("/api/v1/questions", questions);
+app.use("/api/v1/prescriptions", prescriptions);
 
 // Error handler middleware
 app.use(errorHandler)

@@ -51,6 +51,11 @@ const AppointmentSchema = new mongoose.Schema({
     ],
     required: [true, "Please select a finishing time"],
   },
+  symptoms: [{
+      type: mongoose.Schema.ObjectId,
+      ref: "Symptom",
+      required: true,
+  }]
 });
 
 module.exports = mongoose.model("Appointment", AppointmentSchema);

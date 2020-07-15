@@ -59,10 +59,10 @@ exports.updateHospital = asyncHandler(async (req, res, next) => {
     );
   }
   // only update these fields
-  const { name, phone, is_private_practice } = req.body;
+  const { name, phone, is_private_practice, practiceNumber } = req.body;
   hospital = await Hospital.findByIdAndUpdate(
     req.params.id,
-    { name, phone, is_private_practice },
+    { name, phone, is_private_practice, practiceNumber },
     {
       new: true,
       runValidators: true,

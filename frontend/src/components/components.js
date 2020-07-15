@@ -14,8 +14,8 @@ import Register from "./auth/register.component"
 import ForgotPassword from "./auth/forgot.component"
 /* Doctors */
 import {PrescriptionsSearch} from "./doctor/prescriptions/search.component"
-import PrescriptionsPatient from "./doctor/prescriptions/patient.component"
-import PrescriptionsCreate from "./doctor/prescriptions/create.component"
+import {PrescriptionsPatient} from "./doctor/prescriptions/patient.component"
+import {PrescriptionsCreate} from "./doctor/prescriptions/create.component"
 /* General Search (Doctors, Hospitals) */
 import Search from "./general/search.component";
 import DashboardPage from "./general/dashboard.component";

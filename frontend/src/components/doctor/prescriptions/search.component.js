@@ -2,78 +2,110 @@ import React, {useState, Component, useContext} from 'react';
 import { Link } from 'react-router-dom';
 import { reverse } from 'named-urls'
 import routes from "../../../routes";
+import axios from "axios";
+import Cookies from "js-cookie";
 import {AuthContext} from "../../../auth/AuthState";
+import moment from "moment";
 
 export const PrescriptionsSearch = (props) => {
 
-  const state = {
+  const initial_state = {
     query: '',
-    criteria: 'first_name',
-    search_results: [
-      {
-        'patient_id': '12345deasds',
-        'first_name': "ABC",
-        'last_name': "CDE",
-        'dob': "12-04-1998",
-        'last_appointment': "15-06-2020"
-      },
-      {
-        'patient_id': '12345deaasdasdgs',
-        'first_name': "FGH",
-        'last_name': "GHI",
-        'dob': "13-06-1994",
-        'last_appointment': "15-05-2020"
-      }
-    ]
+    criteria: 'firstname',
+    search_results: [],
+    errorMessage: '',
+    statusMessage: '',
   }
 
-  const onChangeQuery = (e) => {
-    // this.setState({
-    //   query: e.target.value
-    // })
-  }
+  const [state, setState] = useState(initial_state);
 
-  const onChangeCriteria = (e) => {
-    // this.setState({
-    //   criteria: e.target.value
-    // })
+  const { bearerToken } = useContext(AuthContext);
+
+  const onChange = (e) => {
+    setState({ ...state, [e.target.name]: e.target.value });
   }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    // const search_query = {
-    //   username: this.state.query,
-    //   criteria: this.state.criteria,
-    // }
-    // console.log(search_query);
+    const search_query = {
+      searchValue: state.query,
+      searchCriteria: state.criteria,
+    }
+    const axiosInstance = axios.create({
+      timeout: 1000,
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`
+      }
+    });
+    axiosInstance
+        .post("/api/v1/doctors/mypatients", search_query)
+        .then(response => {
+          if (response.data.success) {
+            let searchResults = [];
+            response.data.data.map(r => {
+              searchResults.push({
+                patient_id: r._id,
+                first_name: r.firstname,
+                last_name: r.lastname,
+                dob: moment(r.birthday).format("YYYY-MM-DD"),
+                last_appointment: moment(r.lastAppointment).format("YYYY-MM-DD")
+              });
+            });
+            setState({
+              ...state,
+              search_results: searchResults,
+              statusMessage: `Search returned ${response.data.data.length} results.`,
+              errorMessage: ''
+            });
+          } else {
+            setState({ ...state, errorMessage: response.data.error, search_results: [], statusMessage: '' });
+          }
+        })
+        .catch(error => {
+          if (error.response) {
+            setState({ ...state, errorMessage: error.response.data.error, statusMessage: '', search_results: [] });
+          } else {
+            setState({ ...state, errorMessage: 'An unknown error occured.', statusMessage: '', search_results: [] });
+          }
+        });
   }
 
   return (
 
       <main id="main">
 
-        <section id="contact" class="contact">
-          <div class="container" data-aos="fade-up">
+        <section id="contact" className="contact">
+          <div className="container" data-aos="fade-up">
 
-            <div class="section-title">
+            <div className="section-title">
               <h2>Prescriptions</h2>
               <p>Search for a Patient to browse their prescriptions.</p>
             </div>
 
             <div className="row">
               <div className="col-8 offset-2">
+                {state.errorMessage !== "" &&
+                <div className="alert alert-danger" role="alert">
+                  {state.errorMessage}
+                </div>
+                }
+                {state.statusMessage !== "" &&
+                <div className="alert alert-info" role="alert">
+                  {state.statusMessage}
+                </div>
+                }
                 <h4>Search</h4>
                 <form onSubmit={onSubmit}>
                   <div className="form-group">
-                    <label htmlFor="inputAddress1">Query</label>
-                    <input type="text" className="form-control" id="inputAddress1" placeholder="Query" onChange={onChangeQuery} />
+                    <label htmlFor="query">Query</label>
+                    <input type="text" className="form-control" id="query" name={"query"} placeholder="Query" onChange={onChange} required={"required"} />
                   </div>
                   <div className="form-group">
-                    <label htmlFor="inputAddress">Criteria</label>
-                    <select id="inputAddress" className="form-control" onChange={onChangeCriteria}>
-                      <option selected value="first_name">First Name</option>
-                      <option value="last_name">Last Name</option>
-                      <option value="dob">Date of Birth</option>
+                    <label htmlFor="criteria">Criteria</label>
+                    <select id="criteria" className="form-control" name={"criteria"} onChange={onChange} required={"required"}>
+                      <option value="firstname">First Name</option>
+                      <option value="lastname">Last Name</option>
+                      <option value="birthday">Date of Birth</option>
                     </select>
                   </div>
                   <div className="row" style={{marginTop: "3%"}}>
@@ -101,18 +133,7 @@ export const PrescriptionsSearch = (props) => {
                     {
                       state.search_results.map((search_result, index) => {
                         return (
-                            <tr>
-                              <th scope="row">{index + 1}</th>
-                              <td>{search_result.first_name}</td>
-                              <td>{search_result.last_name}</td>
-                              <td>{search_result.dob}</td>
-                              <td>{search_result.last_appointment}</td>
-                              <td>
-                                <Link to={{
-                                  pathname: reverse(routes.doctor.prescriptions.patient, { patientId: search_result.patient_id })
-                                }} className={"btn btn-secondary btn-sm"}>View</Link>
-                              </td>
-                            </tr>
+                            <SearchResultRow result={search_result} index={index} />
                         );
                       })
                     }
@@ -129,4 +150,23 @@ export const PrescriptionsSearch = (props) => {
 
   );
 
+}
+
+const SearchResultRow = props => {
+  const search_result = props.result;
+  const index = props.index;
+  return (
+      <tr key={index}>
+        <th scope="row">{index + 1}</th>
+        <td>{search_result.first_name}</td>
+        <td>{search_result.last_name}</td>
+        <td>{search_result.dob}</td>
+        <td>{search_result.last_appointment}</td>
+        <td>
+          <Link to={{
+            pathname: reverse(routes.doctor.prescriptions.patient, { patientId: search_result.patient_id })
+          }} className={"btn btn-secondary btn-sm"}>View</Link>
+        </td>
+      </tr>
+  )
 }

@@ -132,6 +132,7 @@ const DashboardState = (props) => {
       doctorId: doctor._id,
       startTime: startTime.toDate(),
       finishTime: finishTime.toDate(),
+      symptoms: []
     };
     console.log(reqBody)
     const url = "/api/v1/appointments";

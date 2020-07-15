@@ -6,7 +6,8 @@ const {
   getPrescriptionforUser,
   updatePrescription,
   deletePrescription,
-  downloadPrescription
+  downloadPrescription,
+  sendPrescription
 } = require("../controllers/prescriptions");
 
 const router = express.Router();
@@ -31,5 +32,9 @@ router
 router
     .route("/:id/download")
     .get(protectRoute,authorize("doctor", "admin"),downloadPrescription);
+
+router
+    .route("/:id/send")
+    .post(protectRoute,authorize("doctor", "admin"),sendPrescription);
 
 module.exports = router;

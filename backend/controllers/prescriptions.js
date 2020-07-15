@@ -4,6 +4,7 @@ const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
 const Appointment = require("../models/Appointment");
 const moment = require('moment');
+const sendEmail = require("../utils/sendEmail");
 
 // @desc  Create new prescription
 // @route  POST /api/v1/prescription
@@ -92,11 +93,11 @@ exports.updatePrescription = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`You are not authorized to update this prescription`, 401)
     );
   }
-  prescription.prescriptionData = prescriptionData;
-  prescription.validity = validity;
-  prescription.feeType = feeType;
-  prescription.additionalNotes = additionalNotes;
-  prescription.isSent = isSent;
+  prescription.prescriptionData = prescriptionData !== undefined ? prescriptionData : prescription.prescriptionData;
+  prescription.validity = validity !== undefined ? validity : prescription.validity;;
+  prescription.feeType = feeType !== undefined ? feeType : prescription.feeType;;
+  prescription.additionalNotes = additionalNotes !== undefined ? additionalNotes : prescription.additionalNotes;;
+  prescription.isSent = isSent !== undefined ? isSent : prescription.isSent;;
   await prescription.save()
   await res.status(200).json({ success: true, prescription });
 });
@@ -128,6 +129,66 @@ exports.deletePrescription = asyncHandler(async (req, res, next) => {
   });
 })
 
+// @desc  Send prescription to patient by email
+//@route  POST /api/v1/prescriptions/:id/send
+//@access Private/doctor
+exports.sendPrescription = asyncHandler(async (req, res, next) => {
+  const prescription = await Prescription.findById(req.params.id)
+      .populate({
+        path: "appointment",
+        populate: [
+          { path: "user" },
+          { path: "doctor" },
+          { path: "hospital" },
+        ]
+      })
+      .populate({
+        path: "patient"
+      });
+  if (!prescription) {
+    return next(
+        new ErrorResponse(`Prescription not found with id ${req.params.id} `, 404)
+    );
+  }
+  // only doctor and patient of the prescription should have access to it
+  if (
+      prescription.doctor.toString() !== req.user.id &&
+      prescription.user.toString() !== req.user.id &&
+      req.user.role !== "admin"
+  ) {
+    return next(
+        new ErrorResponse(`You are not authorized to see this prescription`, 401)
+    );
+  }
+  // send email to patient
+  const message = `
+  Dear ${prescription.patient.firstname} ${prescription.patient.lastname},
+  
+  Your doctor just added a new Prescription for you regarding your appointment on ${moment(prescription.appointment.startTime).format("YYYY-MM-DD")}.
+  To see all your prescriptions, visit <a href="https://www.arztspot.de/user/prescriptions">https://www.arztspot.de/user/prescriptions</a>.
+  
+  Best regards,
+  The ArztSpot Team
+  `;
+  try {
+    await sendEmail({
+      email: prescription.patient.email,
+      subject: "Prescription for Appointment on " + moment(prescription.appointment.startTime).format("YYYY-MM-DD"),
+      message,
+    });
+  } catch (err) {
+    console.log(err);
+    return next(new ErrorResponse("Email could not be sent", 500));
+  }
+  // change prescription sent status
+  prescription.isSent = true;
+  await prescription.save();
+  await res.status(200).json({ success: true, prescription });
+});
+
+// @desc  Download prescription PDF
+//@route  GET /api/v1/prescriptions/:id/download
+//@access Private/doctor
 exports.downloadPrescription = asyncHandler(async (req, res, next) => {
   const prescription = await Prescription.findById(req.params.id)
       .populate({
@@ -245,7 +306,9 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
     let binaryResult = await createPdf(docDefinition);
     res.contentType('application/pdf').send(binaryResult);
   } catch(err){
-    res.send('<h2>There was an error displaying the PDF document.</h2>Error message: ' + err.message);
+    return next(
+        new ErrorResponse(`There was an error displaying the PDF document: ${err.message}`, 500)
+    );
   }
 });
 

@@ -13,7 +13,10 @@ export const PrescriptionsPatient = (props) => {
   const initial_state = {
     show: 'all',
     error404: false,
-    searchResults: []
+    searchResults: [],
+    errorDownload: false,
+    errorSend: false,
+    successSend: false
   }
 
   const [state, setState] = useState(initial_state);
@@ -70,6 +73,12 @@ export const PrescriptionsPatient = (props) => {
       axiosInstance
           .get('/api/v1/prescriptions/'+id+'/download', {responseType: 'blob'})
           .then(response => {
+              setState({
+                  ...state,
+                  errorDownload: false,
+                  errorSend: false,
+                  successSend: false
+              })
               //Create a Blob from the PDF Stream
               const file = new Blob(
                   [response.data],
@@ -79,11 +88,56 @@ export const PrescriptionsPatient = (props) => {
           })
           .catch(error => {
               console.log("Error generation PDF: ", error);
+              setState({
+                  ...state,
+                  errorDownload: true,
+                  errorSend: false,
+                  successSend: false
+              })
           });
   }
 
   const sendReport = (id) => {
     console.log("Sending report for id", id);
+      const axiosInstance = axios.create({
+          headers: {
+              'Authorization': `Bearer ${bearerToken}`
+          }
+      });
+      axiosInstance
+          .post('/api/v1/prescriptions/'+id+'/send')
+          .then(response => {
+              setState({
+                  ...state,
+                  errorDownload: false,
+                  errorSend: false,
+                  successSend: false
+              });
+              if (response.data.success) {
+                  let updatedSearchResults = state.searchResults.map(r => {
+                      if (r.id === id) {
+                          r.status = "Sent";
+                      }
+                      return r;
+                  });
+                  setState({
+                      ...state,
+                      errorDownload: false,
+                      errorSend: false,
+                      successSend: true,
+                      searchResults: updatedSearchResults
+                  });
+              }
+          })
+          .catch(error => {
+              console.log("Error sending email: ", error);
+              setState({
+                  ...state,
+                  errorDownload: false,
+                  errorSend: true,
+                  successSend: false,
+              })
+          });
   }
 
   if (state.error404) {
@@ -118,6 +172,21 @@ export const PrescriptionsPatient = (props) => {
 
               <div className="row" style={{marginTop: "1em"}}>
               <div className="col-12">
+              {state.errorDownload &&
+                  <div className="alert alert-danger" role="alert">
+                      Sorry, there was an error while downloading file from the server. Please try again later, or contact us if the problem persists.
+                  </div>
+              }
+              {state.successSend &&
+              <div className="alert alert-info" role="alert">
+                  The prescription was sent to patient successfully.
+              </div>
+              }
+              {state.errorSend &&
+              <div className="alert alert-danger" role="alert">
+                  Sorry, there was an error while sending prescription to the patient. Please try again later, or contact us if the problem persists.
+              </div>
+              }
               <h4>Patient Record</h4>
               <div className="form-row">
               <div className="form-group col-md-4">

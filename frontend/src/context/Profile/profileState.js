@@ -2,6 +2,7 @@ import React, { useReducer } from "react";
 import axios from "axios";
 import ProfileContext from "./profileContext";
 import profileReducer from "./profileReducer";
+import moment from "moment";
 
 
 const ProfileState = (props) => {
@@ -20,10 +21,17 @@ const ProfileState = (props) => {
       },
     };
     try {
-      const res = await axios.get(url, config)
+      let res = await axios.get(url, config)
+      // convert from string to moment for better handling in frontend
+      res.data.data.map((appointment) => {
+          appointment.startTime = moment(new Date(appointment.startTime).getTime())
+      })
+      res.data.data.map((appointment) => {
+        appointment.finishTime = moment(new Date(appointment.finishTime).getTime())
+      })
       dispatch({type: "SET_APPOINTMENTS_FOR_USER", payload: res.data.data})
     } catch (e) {
-      console.log(e.response)
+      console.log(e)
     }
   }
   // update appointments

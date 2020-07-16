@@ -5,6 +5,12 @@ export default (state, action) => {
         ...state,
         appointments: action.payload,
       };
+    case "SET_UPDATING": {
+      return {
+        ...state,
+        updating: action.payload
+      }
+    }
     case "DELETE_APPOINTMENT":
       return {
         ...state,

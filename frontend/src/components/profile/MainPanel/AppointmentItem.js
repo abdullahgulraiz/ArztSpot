@@ -1,9 +1,18 @@
-import React from "react";
+import React, { Fragment, useContext } from "react";
 import Info from "./Info";
 import UpdateAppointment from "./UpdateAppointment";
 import DeleteAppointment from "./DeleteAppointment";
+import ProfileContext from "../../../context/Profile/profileContext";
+import TimeSlot from "../../dashboard/SelectDate/TimeSlot";
+import Alert from "../../dashboard/Alert";
+import CalendarItem from "../../dashboard/SelectDate/CalendarItem";
+import DashboardContext from "../../../context/Dashboard/dashboardContext";
+import SelectDateMain from "../../dashboard/SelectDate/SelectDateMain";
 
 const AppointmentItem = ({ appointment }) => {
+  const profileContext = useContext(ProfileContext);
+  const dashboardContext = useContext(DashboardContext);
+  const { updating } = profileContext;
   const { doctor, hospital } = appointment;
   return (
     <div className="card mb-3">
@@ -24,8 +33,11 @@ const AppointmentItem = ({ appointment }) => {
             label="Address"
             value={hospital.address_geojson.formattedAddress}
           />
+          {updating === appointment._id && <SelectDateMain doctor={doctor} hospital={hospital}/>}
           <UpdateAppointment appointment={appointment} />
-          <DeleteAppointment appointment={appointment} />
+          {updating !== appointment._id && (
+            <DeleteAppointment appointment={appointment} />
+          )}
         </div>
       </div>
     </div>

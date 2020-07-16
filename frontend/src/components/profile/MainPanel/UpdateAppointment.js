@@ -1,14 +1,21 @@
-import React, { Fragment, useContext } from "react";
+import React, { useContext } from "react";
 import ProfileContext from "../../../context/Profile/profileContext";
 import { AuthContext } from "../../../auth/AuthState";
+import DashboardContext from "../../../context/Dashboard/dashboardContext";
 
 const UpdateAppointment = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
+  const dashboardContext = useContext(DashboardContext);
+  const { setAppointment } = dashboardContext;
   const { bearerToken } = authContext;
-  const { updateAppointment } = profileContext;
+  const { setUpdating, updateAppointment } = profileContext;
   const onClick = (e) => {
-    updateAppointment(bearerToken, appointment);
+    // set current doctor we are updating the appointment
+    // so that we can get his/her timeslots
+    setAppointment({day: appointment.startTime, timeSlot: appointment.startTime.format("kk:mm")})
+    setUpdating(appointment._id);
+    // updateAppointment(bearerToken, appointment);
   };
   return (
     <button

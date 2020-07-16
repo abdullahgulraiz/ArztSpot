@@ -1,24 +1,21 @@
 import React, { Fragment, useContext, useEffect } from "react";
-import DashboardContext from "../../context/Dashboard/dashboardContext";
+import DashboardContext from "../../../context/Dashboard/dashboardContext";
 import TimeSlotItem from "./TimeSlotItem";
 
-const TimeSlot = () => {
+const TimeSlot = ({day, timeSlot, doctor, hospital}) => {
   const dashboardContext = useContext(DashboardContext);
   const {
-    selectedDate,
     setPossibleAppointments,
     slots,
-    doctor,
   } = dashboardContext;
-  const { timeSlot, day } = selectedDate;
   useEffect(() => {
-    setPossibleAppointments(day, doctor);
+    setPossibleAppointments(day, doctor, hospital);
     // update when day changes
     // eslint-disable-next-line
   }, [day]);
   return (
     <Fragment>
-      <div className="btn-group btn-block">
+      <div className="btn-group btn-block mb-2">
         <button
           type="button"
           className="btn btn-primary dropdown-toggle"

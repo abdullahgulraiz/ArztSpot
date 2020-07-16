@@ -64,7 +64,6 @@ const MainPanel = ({appointments}) => {
           role="tabpanel"
           aria-labelledby="profile-tab"
         >
-          {/*{appointments.length >= 1 && <Appointment appointments={["hello", "my", "darling"]}/>}*/}
           <Appointment appointments={appointments}/>
         </div>
       </div>

@@ -16,7 +16,9 @@ export const PrescriptionsPatient = (props) => {
     searchResults: [],
     errorDownload: false,
     errorSend: false,
-    successSend: false
+    successSend: false,
+    errorDelete: false,
+    successDelete: false,
   }
 
   const [state, setState] = useState(initial_state);
@@ -77,7 +79,9 @@ export const PrescriptionsPatient = (props) => {
                   ...state,
                   errorDownload: false,
                   errorSend: false,
-                  successSend: false
+                  successSend: false,
+                  errorDelete: false,
+                  successDelete: false
               })
               //Create a Blob from the PDF Stream
               const file = new Blob(
@@ -92,7 +96,9 @@ export const PrescriptionsPatient = (props) => {
                   ...state,
                   errorDownload: true,
                   errorSend: false,
-                  successSend: false
+                  successSend: false,
+                  errorDelete: false,
+                  successDelete: false
               })
           });
   }
@@ -111,7 +117,9 @@ export const PrescriptionsPatient = (props) => {
                   ...state,
                   errorDownload: false,
                   errorSend: false,
-                  successSend: false
+                  successSend: false,
+                  errorDelete: false,
+                  successDelete: false
               });
               if (response.data.success) {
                   let updatedSearchResults = state.searchResults.map(r => {
@@ -125,7 +133,9 @@ export const PrescriptionsPatient = (props) => {
                       errorDownload: false,
                       errorSend: false,
                       successSend: true,
-                      searchResults: updatedSearchResults
+                      searchResults: updatedSearchResults,
+                      errorDelete: false,
+                      successDelete: false
                   });
               }
           })
@@ -136,6 +146,54 @@ export const PrescriptionsPatient = (props) => {
                   errorDownload: false,
                   errorSend: true,
                   successSend: false,
+                  errorDelete: false,
+                  successDelete: false
+              })
+          });
+  }
+
+  const deletePrescription = (id) => {
+      console.log("Delete prescription", id);
+      const axiosInstance = axios.create({
+          headers: {
+              'Authorization': `Bearer ${bearerToken}`
+          }
+      });
+      axiosInstance
+          .delete('/api/v1/prescriptions/'+id)
+          .then(response => {
+              setState({
+                  ...state,
+                  errorDownload: false,
+                  errorSend: false,
+                  successSend: false,
+                  errorDelete: false,
+                  successDelete: false
+              });
+              if (response.data.success) {
+                  let updatedSearchResults = state.searchResults.filter(r => {
+                      return r.id !== id;
+                  });
+                  setState({
+                      ...state,
+                      errorDownload: false,
+                      errorSend: false,
+                      successSend: false,
+                      searchResults: updatedSearchResults,
+                      errorDelete: false,
+                      successDelete: true
+                  });
+              }
+          })
+          .catch(error => {
+              console.log("Error deleting prescription: ", error);
+              setState({
+                  ...state,
+                  errorDownload: false,
+                  errorSend: false,
+                  successSend: false,
+                  errorDelete: true,
+                  successDelete: false
               })
           });
   }
@@ -187,6 +245,16 @@ export const PrescriptionsPatient = (props) => {
                   Sorry, there was an error while sending prescription to the patient. Please try again later, or contact us if the problem persists.
               </div>
               }
+              {state.successDelete &&
+              <div className="alert alert-info" role="alert">
+                  The prescription was deleted successfully.
+              </div>
+              }
+              {state.errorDelete &&
+              <div className="alert alert-danger" role="alert">
+                  Sorry, there was an error while deleting the prescription. Please try again later, or contact us if the problem persists.
+              </div>
+              }
               <h4>Patient Record</h4>
               <div className="form-row">
               <div className="form-group col-md-4">
@@ -233,7 +301,7 @@ export const PrescriptionsPatient = (props) => {
                     })
                     .map((searchResult, index) => {
                       return (
-                          <SearchResultRow result={searchResult} index={index} downloadReport={downloadReport} sendReport={sendReport} />
+                          <SearchResultRow result={searchResult} index={index} downloadReport={downloadReport} sendReport={sendReport} deletePrescription={deletePrescription} />
                       );
                     })
               }
@@ -272,7 +340,10 @@ const SearchResultRow = props => {
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => {props.downloadReport(searchResult.id)}}>
           <i className="icofont-download"></i></button>
           {searchResult.status === "Pending" &&
+          <>
+            <button type="button" className="btn btn-secondary btn-sm" style={{marginLeft: '2%'}} onClick={() => {props.deletePrescription(searchResult.id)}}><i className="icofont-trash"></i></button>
             <button type="button" className="btn btn-secondary btn-sm" style={{marginLeft: '2%'}} onClick={() => {props.sendReport(searchResult.id)}}>Send</button>
+          </>
           }
         </td>
       </tr>

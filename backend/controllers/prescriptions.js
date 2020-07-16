@@ -94,11 +94,11 @@ exports.updatePrescription = asyncHandler(async (req, res, next) => {
     );
   }
   prescription.prescriptionData = prescriptionData !== undefined ? prescriptionData : prescription.prescriptionData;
-  prescription.validity = validity !== undefined ? validity : prescription.validity;;
-  prescription.feeType = feeType !== undefined ? feeType : prescription.feeType;;
-  prescription.additionalNotes = additionalNotes !== undefined ? additionalNotes : prescription.additionalNotes;;
-  prescription.isSent = isSent !== undefined ? isSent : prescription.isSent;;
-  await prescription.save()
+  prescription.validity = validity !== undefined ? validity : prescription.validity;
+  prescription.feeType = feeType !== undefined ? feeType : prescription.feeType;
+  prescription.additionalNotes = additionalNotes !== undefined ? additionalNotes : prescription.additionalNotes;
+  prescription.isSent = isSent !== undefined ? isSent : prescription.isSent;
+  await prescription.save();
   await res.status(200).json({ success: true, prescription });
 });
 
@@ -120,6 +120,11 @@ exports.deletePrescription = asyncHandler(async (req, res, next) => {
   ) {
     return next(
         new ErrorResponse(`You are not authorized to update this prescription`, 401)
+    );
+  }
+  if (prescription.isSent) {
+    return next(
+        new ErrorResponse(`You cannot delete a prescription that has been sent to a user.`, 401)
     );
   }
   await prescription.remove();

@@ -11,6 +11,7 @@ export default {
     dashboard: "/doctors/:doctorId",
     questionnaire: "/questionnaire",
     appointmentCreated: "/success",
+    profile: "/profile",
 
     // auth
     auth: include('/auth', {

@@ -6,12 +6,14 @@ import { AuthProvider } from "./auth/AuthState";
 import SearchState from "./context/Search/SearchState";
 import DashboardState from "./context/Dashboard/DashboardState";
 import { DoctorRoute, PatientRoute } from "./auth/ProtectedRoutes";
+import ProfileState from "./context/Profile/profileState";
 
 function App() {
   return (
     <AuthProvider>
       <SearchState>
         <DashboardState>
+          <ProfileState>
         <Router>
               <components.general.Navbar />
               <Switch>
@@ -25,6 +27,7 @@ function App() {
                 <Route path={routes.dashboard} component={components.general.DashboardPage} />
                 <Route path={routes.appointmentCreated} component={components.general.Success} />
                 <Route path={routes.questionnaire} component={components.general.Questionnaire} />
+                <PatientRoute path={routes.profile} component={components.general.UserProfilePage} />
 
                   {/* Doctor */}
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
@@ -39,6 +42,7 @@ function App() {
               </Switch>
               <components.general.Footer />
         </Router>
+          </ProfileState>
         </DashboardState>
       </SearchState>
     </AuthProvider>

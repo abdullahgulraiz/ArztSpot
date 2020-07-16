@@ -134,7 +134,6 @@ const DashboardState = (props) => {
       finishTime: finishTime.toDate(),
       symptoms: []
     };
-    console.log(reqBody)
     const url = "/api/v1/appointments";
     try {
       await axios.post(url, reqBody, config);

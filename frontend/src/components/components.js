@@ -21,6 +21,7 @@ import Search from "./general/search.component";
 import DashboardPage from "./general/dashboard.component";
 import Questionnaire from "./questionnaire/questionnaire.component";
 import Success from "./general/appointmentCreated.component";
+import UserProfilePage from "./general/userprofile.component";
 
 export default {
     general: {
@@ -36,7 +37,8 @@ export default {
         Search,
         DashboardPage,
         Questionnaire,
-        Success
+        Success,
+        UserProfilePage
     },
     auth: {
         Login,

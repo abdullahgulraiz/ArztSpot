@@ -23,7 +23,7 @@ router.use("/:hospitalId/doctors", doctorsRouter);
 
 router
   .route("/")
-  .get(filterResults(Hospital, "doctors"), getHospitals)
+  .get(filterResults(Hospital, ["doctors"]), getHospitals)
   .post(protectRoute, authorize("doctor", "admin"), createHospital);
 
 router

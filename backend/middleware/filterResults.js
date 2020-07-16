@@ -115,8 +115,13 @@ const filterResults = (model, populate) => async (req, res, next) => {
 
   query = query.skip(startIndex).limit(limit);
 
-  if (populate) {
-    query = query.populate(populate);
+  // if (populate) {
+  //   query = query.populate(populate);
+  // }
+  if (populate.length >= 1) {
+    populate.map((modelToPopulate) => {
+      query = query.populate(modelToPopulate)
+    })
   }
 
   // Executing query

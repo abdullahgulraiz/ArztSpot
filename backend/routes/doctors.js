@@ -18,7 +18,7 @@ const { protectRoute, authorize } = require("../middleware/auth");
 
 router
   .route("/")
-  .get(filterResults(User, 'hospital'), getDoctors)
+  .get(filterResults(User, ['hospital']), getDoctors)
   .post(protectRoute,authorize('doctor', 'admin'), addDoctorToHospital);
 
 router.route("/:id").get(getDoctor);

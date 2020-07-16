@@ -35,9 +35,29 @@ const ProfileState = (props) => {
     }
   }
   // update appointments
-  const updateAppointment = (userId, appointment) => {}
+  const updateAppointment = (bearerToken, appointment) => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    };
+  }
   // delete appointments
-  const deleteAppointment = (userId, appointment) => {}
+  const deleteAppointment = async (bearerToken, appointment) => {
+    const url = `/api/v1/appointments/${appointment._id}`;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    };
+    try {
+      await axios.delete(url, config);
+      dispatch({type: "DELETE_APPOINTMENT", payload: appointment._id})
+    } catch (e) {
+      console.log(e)
+      // dispatch({type: ""})
+    }
+  }
 
 
 

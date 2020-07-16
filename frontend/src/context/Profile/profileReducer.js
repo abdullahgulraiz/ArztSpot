@@ -3,9 +3,16 @@ export default (state, action) => {
     case "SET_APPOINTMENTS_FOR_USER":
       return {
         ...state,
-        appointments: action.payload
-      }
+        appointments: action.payload,
+      };
+    case "DELETE_APPOINTMENT":
+      return {
+        ...state,
+        appointments: state.appointments.filter(
+          (appointment) => appointment._id !== action.payload
+        ),
+      };
     default:
       return state;
   }
-}
+};

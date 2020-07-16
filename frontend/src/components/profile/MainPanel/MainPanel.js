@@ -5,13 +5,8 @@ import Appointment from "./Appointment";
 import Info from "./Info";
 
 const MainPanel = ({appointments}) => {
-  const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
-  const {
-    updateAppointment,
-    deleteAppointment,
-  } = profileContext;
-  const { user, bearerToken } = authContext;
+  const { user } = authContext;
   return (
     <Fragment>
       <div className="profile-head">

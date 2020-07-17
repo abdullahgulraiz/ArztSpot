@@ -6,7 +6,8 @@ const initialState = {
     questions: [
         {id: 1, text: 'What does it hurt?', answer: 'Leg'},
         {id: 2, text: 'How severe is the pain?', answer: 'Severe'}
-    ]
+    ],
+    type: 'multiple'
 }
 
 // Create context
@@ -16,6 +17,7 @@ export const QuestionnaireContext = createContext(initialState);
 // Provider component
 export const QuestionnaireProvider = ({ children }) => {
     const [state, dispatch] = useReducer(QuestionnaireReducer, initialState);
+
 // Actions
     function deleteQuestion(id) {
         dispatch({
@@ -31,10 +33,19 @@ export const QuestionnaireProvider = ({ children }) => {
         });
     }
 
+// Set Questionnaire Components
+    const setType = (type) => {
+        dispatch({
+            type: "SET_TYPE",
+            payload: type });
+    };
+
     return(<QuestionnaireContext.Provider value = {{
         questions: state.questions,
+        type: state.type,
         deleteQuestion,
-        addQuestion
+        addQuestion,
+        setType
     }}>
         {children}
     </QuestionnaireContext.Provider>);

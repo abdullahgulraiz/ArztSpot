@@ -10,6 +10,11 @@ export default (state, action) => {
                 ...state,
                 questions: [action.payload, ...state.questions]
             }
+        case 'SET_TYPE':
+            return {
+                ...state,
+                type: action.payload
+            }
         default:
             return state;
     }

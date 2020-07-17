@@ -44,8 +44,7 @@ const QuestionTraumatology = () => {
                         <form className="range-field">
                             <input type="range" min="0" max="10" step="1" style={{width: "100%"}}/>
                         </form>
-                        {/*<img src={require('../../../ankle1.png')} className="rounded float-left" alt="..."/>*/}
-                        {/*<img src={require('../../../ankle2.png')} className="rounded float-right" alt="..."/>*/}
+
                         <div className="form-group justify-content-center">
                             <label htmlFor="exampleFormControlSelect2">It hurts when I do...</label>
                             <div className="form-check">
@@ -68,7 +67,6 @@ const QuestionTraumatology = () => {
                             </div>
                         </div>
                     </form>
-
 
                     <nav aria-label="Page navigation" style={{marginTop: "3%"}}>
                         <ul className="pagination justify-content-center">

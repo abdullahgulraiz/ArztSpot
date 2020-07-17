@@ -39,7 +39,6 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   appointment = await Appointment.findOne({
     hospital: hospitalId,
     doctor: doctorId,
-    user: user,
     startTime: startTime,
     finishTime: finishTime,
   });

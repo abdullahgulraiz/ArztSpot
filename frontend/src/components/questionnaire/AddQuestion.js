@@ -27,10 +27,10 @@ export const AddQuestion = () => {
                 <label htmlFor="inputCity">Question</label>
                 <input type="text" className="form-control" value= {text} onChange={(e)=>setText(e.target.value)} placeholder="Enter text..."/>
             </div>
-            <div className="form-group">
-                <label htmlFor="inputCity">Answer</label>
-                <input type="text" className="form-control" value= {answer} onChange={(e)=>setAnswer(e.target.value)} placeholder="Enter text..."/>
-            </div>
+            {/*<div className="form-group">*/}
+            {/*    <label htmlFor="inputCity">Answer</label>*/}
+            {/*    <input type="text" className="form-control" value= {answer} onChange={(e)=>setAnswer(e.target.value)} placeholder="Enter text..."/>*/}
+            {/*</div>*/}
 
             <div className="row" style={{marginTop: "6%"}}>
                 <div className="col-6 offset-3 text-center">

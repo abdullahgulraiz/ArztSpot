@@ -13,8 +13,8 @@ const Questionnaire = () => {
                 <div className="col-6 offset-3">
                     <form>
                         <div className="form-group justify-content-center">
-                            <h5>In order to finalise your booking, please answer the following questions.</h5>
-                            <p>This will take only a few minutes.</p>
+                            <h4>My questionnaire</h4>
+                            <h6>These are the questions your patients will be asked to answer when booking an appointment.</h6>
                         </div>
                         <div className="form-group justify-content-center">
                             {questions.map(question => ( <Question key = {question.id} question = {question}/>))}

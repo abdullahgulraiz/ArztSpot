@@ -5,6 +5,7 @@ import { reverse } from 'named-urls'
 import { AuthContext } from '../../auth/AuthState';
 import Cookies from "js-cookie";
 import {isEmptyObj} from "../../utils/isEmptyObj";
+import components from "../components";
 
 const DoctorButton = props => (
     <div className="dropdown">
@@ -14,9 +15,9 @@ const DoctorButton = props => (
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <Link className="dropdown-item" to="#">Appointments</Link>
             <Link className="dropdown-item" to="#">Patients</Link>
-            <Link className="dropdown-item" to="#">Questionnaires</Link>
+            <Link className="dropdown-item" to='#'>Questionnaires</Link>
             <Link className="dropdown-item" to={reverse(routes.doctor.prescriptions.search)}>Prescriptions</Link>
-            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to="#" >Logout</Link>
+            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to={reverse(routes.auth.login)} >Logout</Link>
         </div>
     </div>
   )
@@ -29,7 +30,7 @@ const DoctorButton = props => (
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <Link className="dropdown-item" to="#">Appointments</Link>
             <Link className="dropdown-item" to="#">Prescriptions</Link>
-            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to="#" >Logout</Link>
+            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to={reverse(routes.auth.login)}>Logout</Link>
         </div>
     </div>
   )

@@ -9,8 +9,8 @@ export default {
     contact: "/contact",
     search: "/search",
     dashboard: "/doctors/:doctorId",
-    questionnaire: "/questionnaire",
     // editQuestionnaire: "/editQuestionnaire",
+    questionnaire: "/questionnaire",
     appointmentCreated: "/success",
     profile: "/profile",
 

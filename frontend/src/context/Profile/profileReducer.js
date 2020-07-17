@@ -13,6 +13,12 @@ export default (state, action) => {
         updating: action.payload,
       };
     }
+    case "SET_EDIT_INFO": {
+      return {
+        ...state,
+        isEditing: action.payload
+      }
+    }
     case "UPDATE_APPOINTMENT":
       return {
         ...state,

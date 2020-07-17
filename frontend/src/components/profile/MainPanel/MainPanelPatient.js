@@ -1,12 +1,17 @@
 import React, { Fragment, useContext } from "react";
-import ProfileContext from "../../../context/Profile/profileContext";
 import { AuthContext } from "../../../auth/AuthState";
+import ProfileContext from "../../../context/Profile/profileContext";
 import Appointment from "./Appointment";
 import Info from "./Info";
+import EditPersonalInfo from "./EditPersonalInfo";
 
-const MainPanelPatient = ({appointments}) => {
+const MainPanelPatient = ({ appointments }) => {
   const authContext = useContext(AuthContext);
-  const { user } = authContext;
+  const { user, isEditing, setIsEditing } = authContext;
+  const onClick = (e) => {
+    e.preventDefault();
+    setIsEditing(!isEditing);
+  };
   return (
     <Fragment>
       <div className="profile-head">
@@ -48,15 +53,44 @@ const MainPanelPatient = ({appointments}) => {
           role="tabpanel"
           aria-labelledby="home-tab"
         >
-          <Info label="Name" value={`${user.firstname} ${user.lastname}`} />
-          <Info label="Email" value={`${user.email}`} />
-          <Info
-            label="Address"
-            value={`${user.address_geojson.formattedAddress}`}
-          />
-          <Info label="Insurance Company" value={`${user.insurance_company}`} />
-          <Info label="Insurance Number" value={`${user.insurance_number}`} />
-          <Info label="Phone Number" value={`${user.phone}`} />
+          {isEditing ? (
+            <EditPersonalInfo user={user} />
+          ) : (
+            <Fragment>
+              <Info label="Name" value={`${user.firstname} ${user.lastname}`} />
+              <Info label="Email" value={`${user.email}`} />
+              <Info
+                label="Address"
+                value={`${user.address_geojson.formattedAddress}`}
+              />
+              <Info
+                label="Insurance Company"
+                value={`${user.insurance_company}`}
+              />
+              <Info
+                label="Insurance Number"
+                value={`${user.insurance_number}`}
+              />
+              <Info label="Phone Number" value={`${user.phone}`} />
+            </Fragment>
+          )}
+          {isEditing ? (
+            <button
+              type="submit"
+              onClick={onClick}
+              className="btn btn-block btn-outline-danger"
+            >
+              Cancel
+            </button>
+          ) : (
+            <button
+              type="submit"
+              onClick={onClick}
+              className="btn btn-outline-secondary btn-block"
+            >
+              Edit info
+            </button>
+          )}
         </div>
         <div
           className="tab-pane fade"
@@ -64,7 +98,7 @@ const MainPanelPatient = ({appointments}) => {
           role="tabpanel"
           aria-labelledby="profile-tab"
         >
-          <Appointment appointments={appointments}/>
+          <Appointment appointments={appointments} />
         </div>
       </div>
     </Fragment>

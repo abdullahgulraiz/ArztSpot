@@ -26,6 +26,7 @@ const ProfileState = (props) => {
     };
     try {
       let res = await axios.get(url, config);
+      console.log(res)
       // convert from string to moment for better handling in frontend
       res.data.data.map((appointment) => {
         appointment.startTime = moment(

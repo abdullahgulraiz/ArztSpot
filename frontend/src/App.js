@@ -5,7 +5,7 @@ import components from "./components/components";
 import { AuthProvider } from "./auth/AuthState";
 import SearchState from "./context/Search/SearchState";
 import DashboardState from "./context/Dashboard/DashboardState";
-import { DoctorRoute, PatientRoute } from "./auth/ProtectedRoutes";
+import {DoctorRoute, AuthRoute, PatientRoute} from "./auth/ProtectedRoutes";
 import ProfileState from "./context/Profile/profileState";
 import {QuestionnaireProvider} from "./context/Questionnaire/QuestionnaireState";
 
@@ -30,7 +30,7 @@ function App() {
                 <Route path={routes.appointmentCreated} component={components.general.Success} />
                 <Route path={routes.questionnaire} component={components.general.Questionnaire} />
                 {/*<Route path={routes.editQuestionnaire} component={components.general.EditQuestionnaire} />*/}
-                <PatientRoute path={routes.profile} component={components.general.UserProfilePage} />
+                <AuthRoute path={routes.profile} component={components.general.UserProfilePage} />
 
                   {/* Doctor */}
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />

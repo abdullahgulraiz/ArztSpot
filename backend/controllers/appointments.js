@@ -11,7 +11,14 @@ const Symptom = require("../models/Symptom");
 //@access Public
 exports.createAppointment = asyncHandler(async (req, res, next) => {
   let appointment;
-  const { hospitalId, doctorId, userId, startTime, finishTime, symptoms } = req.body;
+  const {
+    hospitalId,
+    doctorId,
+    userId,
+    startTime,
+    finishTime,
+    symptoms,
+  } = req.body;
   const user = await User.findById(userId);
   // find the doctor that works in the given hospital
   const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
@@ -33,8 +40,8 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
     hospital: hospitalId,
     doctor: doctorId,
     user: user,
-    startTime: startTime ,
-    finishTime: finishTime
+    startTime: startTime,
+    finishTime: finishTime,
   });
   if (appointment) {
     return next(new ErrorResponse(`Appointment already exists`, 400));
@@ -42,12 +49,12 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   // get symptom ids of each symptom
   let symptomIds = [];
   for (const symptom_ of symptoms) {
-    let symptom = await Symptom.findOne({name: symptom_});
+    let symptom = await Symptom.findOne({ name: symptom_ });
     if (symptom) {
       symptomIds.push(symptom._id.toString());
     } else {
       symptom = await Symptom.create({
-        name: symptom_
+        name: symptom_,
       });
       symptomIds.push(symptom._id.toString());
     }
@@ -60,7 +67,7 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
     user: userId,
     startTime: startTime,
     finishTime: finishTime,
-    symptoms: symptomIds
+    symptoms: symptomIds,
   });
   res.status(200).json({ success: true, appointment });
 });
@@ -82,9 +89,9 @@ exports.getAppointmentForDoctor = asyncHandler(async (req, res, next) => {
   }
   // TODO: Add validation is the appointment starting at :00 or :30
   const appointment = await Appointment.find({
-      hospital: hospitalId,
-      doctor: doctorId,
-  })
+    hospital: hospitalId,
+    doctor: doctorId,
+  });
 
   // if the appointment does not exist it will return null
   res.status(200).json({ success: true, appointment });
@@ -125,7 +132,9 @@ exports.getAppointmentById = asyncHandler(async (req, res, next) => {
 //@access Private
 exports.updateAppointment = asyncHandler(async (req, res, next) => {
   let appointment;
-  appointment = await Appointment.findById(req.params.id);
+  appointment = await Appointment.findById(req.params.id)
+    .populate("doctor")
+    .populate("hospital");
   const { startTime, finishTime } = req.body;
   if (!appointment) {
     return next(
@@ -148,8 +157,8 @@ exports.updateAppointment = asyncHandler(async (req, res, next) => {
   // check that there are no clashing appointments
   // for that doctor in the given time window
   const clashingAppointments = await Appointment.find({
-    hospital: appointment.hospital,
-    doctor: appointment.doctor,
+    hospital: appointment.hospital._id,
+    doctor: appointment.doctor._id,
     ...findClashQuery(startTime, finishTime),
   });
   if (clashingAppointments.length > 0) {

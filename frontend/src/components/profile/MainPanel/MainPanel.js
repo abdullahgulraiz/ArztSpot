@@ -5,13 +5,8 @@ import Appointment from "./Appointment";
 import Info from "./Info";
 
 const MainPanel = ({appointments}) => {
-  const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
-  const {
-    updateAppointment,
-    deleteAppointment,
-  } = profileContext;
-  const { user, bearerToken } = authContext;
+  const { user } = authContext;
   return (
     <Fragment>
       <div className="profile-head">
@@ -69,7 +64,6 @@ const MainPanel = ({appointments}) => {
           role="tabpanel"
           aria-labelledby="profile-tab"
         >
-          {/*{appointments.length >= 1 && <Appointment appointments={["hello", "my", "darling"]}/>}*/}
           <Appointment appointments={appointments}/>
         </div>
       </div>

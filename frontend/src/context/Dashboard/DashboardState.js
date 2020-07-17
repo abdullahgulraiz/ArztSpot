@@ -5,7 +5,6 @@ import dashboardReducer from "./dashboardReducer";
 import createTimeSlots from "../../utils/appointmentUtils";
 import moment from "moment";
 import createStartAndFinishTime from "../../utils/createStartAndFinishTime";
-import {isEmptyObj} from "../../utils/isEmptyObj";
 const DashboardState = (props) => {
   const initialState = {
     doctor: {
@@ -23,24 +22,25 @@ const DashboardState = (props) => {
         appointmentTaken: false,
       },
     ],
+    questions: [],
     appointment: {
       userId: "",
       doctorId: "",
       hospitalId: "",
       startTime: "",
       finishTime: "",
-      symptoms: []
+      symptoms: [],
     },
     appointmentCreated: false,
     error: null,
     alert: null,
+    alertMsg: "",
   };
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
-  const setCurrentDoctor = (doctor) => {
+  const setCurrentDoctor = (doctor, bearerToken) => {
     dispatch({ type: "SET_CURRENT_DOCTOR", payload: doctor });
   };
-
   // get doctor by id
   const getDoctorById = async (doctorId) => {
     const url = encodeURI("/api/v1/doctors" + "/" + doctorId);
@@ -52,6 +52,11 @@ const DashboardState = (props) => {
     }
   };
 
+  // Set Selected Date
+  const setSelectedDate = (selectedDate) => {
+    dispatch({ type: "SET_SELECTED_DATE", payload: selectedDate });
+  };
+
   // Clear State of selected date
   const clearSelectedDate = () => {
     dispatch({ type: "CLEAR_SELECTED_DATE" });
@@ -61,7 +66,7 @@ const DashboardState = (props) => {
     dispatch({ type: "CLEAR_SLOTS" });
   };
 
-  const setPossibleAppointments = async (day, doctor) => {
+  const setPossibleAppointments = async (day, doctor, hospital) => {
     // We get the day of the consultation and for that day we check if appointment
     // is booked or not for all possible slots
     const dayString = day.format("DD-MM-YYY");
@@ -69,8 +74,7 @@ const DashboardState = (props) => {
     let slots = [];
     let startTime;
     let finishTime;
-    const url =
-      "/api/v1/appointments/" + doctor.hospital._id + "/" + doctor._id;
+    const url = "/api/v1/appointments/" + hospital._id + "/" + doctor._id;
     // TODO ADD TRY/CATCH
     const res = await axios.get(url);
     const slotsArr = createTimeSlots(day);
@@ -111,8 +115,16 @@ const DashboardState = (props) => {
   const setAppointmentCreated = (appointmentCreated) => {
     dispatch({ type: "SET_APPOINTMENT_CREATED", payload: appointmentCreated });
   };
-  const setAlert = (alert) => {
-    dispatch({ type: "SET_ALERT", payload: alert });
+  const setAlert = (alert, msg) => {
+    dispatch({ type: "SET_ALERT", payload: { alert: alert, alertMsg: msg } });
+    setTimeout(
+      () =>
+        dispatch({
+          type: "SET_ALERT",
+          payload: { alert: false, alertMsg: "" },
+        }),
+      5000
+    );
   };
   // book appointment
   const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
@@ -132,17 +144,17 @@ const DashboardState = (props) => {
       doctorId: doctor._id,
       startTime: startTime.toDate(),
       finishTime: finishTime.toDate(),
-      symptoms: []
+      symptoms: [],
     };
     const url = "/api/v1/appointments";
     try {
       await axios.post(url, reqBody, config);
+      setAppointmentCreated(true);
     } catch (e) {
-      dispatch({ type: "SET_ALERT", payload: true });
-      // make alert disappear after a couple seconds
-      setTimeout(() => {
-        dispatch({ type: "SET_ALERT", payload: false });
-      }, 5000);
+      setAlert(
+        true,
+        "It seems this appointment has already been taken. Please reload the page"
+      );
     }
   };
 
@@ -157,6 +169,7 @@ const DashboardState = (props) => {
         slots: state.slots,
         error: state.error,
         alert: state.alert,
+        alertMsg: state.alertMsg,
         clearSelectedDate,
         clearSlots,
         setCurrentDoctor,

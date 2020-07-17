@@ -1,5 +1,5 @@
 import React, {Fragment, useContext, useEffect} from "react";
-import DashboardContext from "../../context/Dashboard/dashboardContext";
+import DashboardContext from "../../../context/Dashboard/dashboardContext";
 import moment from "moment";
 
 const TimeSlotItem = ({ slot }) => {

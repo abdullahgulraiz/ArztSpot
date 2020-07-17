@@ -48,7 +48,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/auth/me
 //@access Private
 exports.getCurrentUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  // populate hospital in case it is a doctor (mongoose does not
+  // return an error if the field is not present)
+  const user = await User.findById(req.user.id).populate("hospital");
   res.status(200).json({
     success: true,
     data: user,

@@ -4,7 +4,7 @@ import { AuthContext } from "../../../auth/AuthState";
 import Appointment from "./Appointment";
 import Info from "./Info";
 
-const MainPanel = ({appointments}) => {
+const MainPanelPatient = ({appointments}) => {
   const authContext = useContext(AuthContext);
   const { user } = authContext;
   return (
@@ -71,4 +71,4 @@ const MainPanel = ({appointments}) => {
   );
 };
 
-export default MainPanel;
+export default MainPanelPatient;

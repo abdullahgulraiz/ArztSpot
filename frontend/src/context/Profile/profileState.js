@@ -35,7 +35,12 @@ const ProfileState = (props) => {
           new Date(appointment.finishTime).getTime()
         );
       });
-      dispatch({ type: "SET_APPOINTMENTS_FOR_USER", payload: res.data.data });
+      dispatch({
+        type: "SET_APPOINTMENTS_FOR_USER",
+        payload: res.data.data.sort((a, b) => {
+          return moment(a.startTime).diff(b.startTime);
+        }),
+      });
     } catch (e) {
       console.log(e);
     }
@@ -77,7 +82,7 @@ const ProfileState = (props) => {
       res.data.appointment.finishTime = moment(
         new Date(res.data.appointment.finishTime).getTime()
       );
-      dispatch({type: "UPDATE_APPOINTMENT", payload: res.data.appointment})
+      dispatch({ type: "UPDATE_APPOINTMENT", payload: res.data.appointment });
     } catch (e) {
       console.log(e);
     }

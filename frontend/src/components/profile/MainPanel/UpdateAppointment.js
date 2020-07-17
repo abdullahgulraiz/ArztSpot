@@ -7,7 +7,7 @@ const UpdateAppointment = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
   const dashboardContext = useContext(DashboardContext);
-  const { setAppointment, selectedDate } = dashboardContext;
+  const { selectedDate } = dashboardContext;
   const { bearerToken } = authContext;
   const { setUpdating, updating, updateAppointment } = profileContext;
   const onClick = (e) => {

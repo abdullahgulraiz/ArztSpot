@@ -3,7 +3,9 @@ export default (state, action) => {
     case "SET_APPOINTMENTS_FOR_USER":
       return {
         ...state,
-        appointments: action.payload,
+        appointments: action.payload.filter((appointment) =>
+          appointment.startTime.isAfter()
+        ),
       };
     case "SET_UPDATING": {
       return {
@@ -12,7 +14,6 @@ export default (state, action) => {
       };
     }
     case "UPDATE_APPOINTMENT":
-      console.log(action.payload);
       return {
         ...state,
         appointments: state.appointments.map((appointment) =>

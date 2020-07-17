@@ -11,13 +11,13 @@ const BookAppointment = () => {
     createAppointment,
     doctor,
     selectedDate,
-    setAppointmentCreated
+    setAppointmentCreated,
+    alert
   } = dashboardContext;
   const authContext = useContext(AuthContext);
   const { user, bearerToken } = authContext;
   const onClick = async (e) => {
-    createAppointment(doctor, user, selectedDate, bearerToken)
-    setAppointmentCreated(true)
+    await createAppointment(doctor, user, selectedDate, bearerToken)
   };
   return (
     <Fragment>

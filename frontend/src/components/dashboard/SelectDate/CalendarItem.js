@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Calendar from "react-calendar";
-import DashboardContext from "../../context/Dashboard/dashboardContext";
+import DashboardContext from "../../../context/Dashboard/dashboardContext";
 import moment from "moment";
 const CalendarItem = () => {
   const dashboardContext = useContext(DashboardContext);
@@ -14,9 +14,10 @@ const CalendarItem = () => {
     setAppointment({ ...selectedDate, day: momentDate });
   };
   return (
-    <div className="offset-sm-2 offset-lg-2 offset-sm-0 offset-lg-0">
+    <div className=" offset-lg-2 offset-2  offset-md-0 offset-lg-0 offset-0">
       <Calendar className="rounded" onChange={onChange} minDate={new Date()} value={day ? day.toDate() : null} />
     </div>
+
   );
 };
 

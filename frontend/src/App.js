@@ -7,6 +7,7 @@ import SearchState from "./context/Search/SearchState";
 import DashboardState from "./context/Dashboard/DashboardState";
 import { DoctorRoute, PatientRoute } from "./auth/ProtectedRoutes";
 import ProfileState from "./context/Profile/profileState";
+import {QuestionnaireProvider} from "./context/Questionnaire/QuestionnaireState";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <SearchState>
         <DashboardState>
           <ProfileState>
+            <QuestionnaireProvider>
         <Router>
               <components.general.Navbar />
               <Switch>
@@ -27,6 +29,7 @@ function App() {
                 <Route path={routes.dashboard} component={components.general.DashboardPage} />
                 <Route path={routes.appointmentCreated} component={components.general.Success} />
                 <Route path={routes.questionnaire} component={components.general.Questionnaire} />
+                {/*<Route path={routes.editQuestionnaire} component={components.general.EditQuestionnaire} />*/}
                 <PatientRoute path={routes.profile} component={components.general.UserProfilePage} />
 
                   {/* Doctor */}
@@ -42,6 +45,7 @@ function App() {
               </Switch>
               <components.general.Footer />
         </Router>
+            </QuestionnaireProvider>
           </ProfileState>
         </DashboardState>
       </SearchState>

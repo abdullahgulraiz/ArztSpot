@@ -20,6 +20,7 @@ import {PrescriptionsCreate} from "./doctor/prescriptions/create.component"
 import Search from "./general/search.component";
 import DashboardPage from "./general/dashboard.component";
 import Questionnaire from "./questionnaire/questionnaire.component";
+// import EditQuestionnaire from ".questionnaire/editQuestionnaire.component";
 import Success from "./general/appointmentCreated.component";
 import UserProfilePage from "./general/userprofile.component";
 
@@ -37,6 +38,7 @@ export default {
         Search,
         DashboardPage,
         Questionnaire,
+        // EditQuestionnaire,
         Success,
         UserProfilePage
     },

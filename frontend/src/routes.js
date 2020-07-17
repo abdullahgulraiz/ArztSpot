@@ -10,6 +10,7 @@ export default {
     search: "/search",
     dashboard: "/doctors/:doctorId",
     questionnaire: "/questionnaire",
+    // editQuestionnaire: "/editQuestionnaire",
     appointmentCreated: "/success",
     profile: "/profile",
 

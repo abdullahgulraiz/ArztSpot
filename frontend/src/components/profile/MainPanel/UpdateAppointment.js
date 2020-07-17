@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { Fragment, useContext } from "react";
 import ProfileContext from "../../../context/Profile/profileContext";
 import { AuthContext } from "../../../auth/AuthState";
 import DashboardContext from "../../../context/Dashboard/dashboardContext";
@@ -21,7 +21,6 @@ const UpdateAppointment = ({ appointment }) => {
       selectedDate.timeSlot !== null
     ) {
       updateAppointment(bearerToken, appointment._id, selectedDate);
-
     }
     if (
       updating === appointment._id &&
@@ -30,14 +29,28 @@ const UpdateAppointment = ({ appointment }) => {
       setAlert(true, "Please select a date");
     }
   };
+  const onClickCancel = (e) => {
+    setUpdating("");
+  };
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="btn btn-block btn-outline-info"
-    >
-      Update
-    </button>
+    <Fragment>
+      <button
+        type="button"
+        onClick={onClick}
+        className="btn btn-block btn-outline-info mb-2"
+      >
+        Update
+      </button>
+      {updating === appointment._id && (
+        <button
+          type="button"
+          onClick={onClickCancel}
+          className="btn btn-block btn-outline-secondary"
+        >
+          Cancel
+        </button>
+      )}
+    </Fragment>
   );
 };
 

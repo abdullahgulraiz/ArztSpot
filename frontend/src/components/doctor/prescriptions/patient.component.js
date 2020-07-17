@@ -255,6 +255,11 @@ export const PrescriptionsPatient = (props) => {
                   Sorry, there was an error while deleting the prescription. Please try again later, or contact us if the problem persists.
               </div>
               }
+              {props.location.state && props.location.state.prescriptionCreatedSuccess &&
+              <div className="alert alert-info" role="alert">
+                  The defined prescription was created successfully.
+              </div>
+              }
               <h4>Patient Record</h4>
               <div className="form-row">
               <div className="form-group col-md-4">

@@ -18,7 +18,7 @@ const { protectRoute } = require("../middleware/auth");
 router
   .route("/")
   .post(protectRoute, createAppointment)
-  .get(protectRoute, filterResults(Appointment, ['hospital', 'doctor']), getAppointmentForUser);
+  .get(protectRoute, filterResults(Appointment, ['hospital', 'doctor', 'symptoms']), getAppointmentForUser);
 router
   .route("/:id")
   .get(protectRoute, getAppointmentById)

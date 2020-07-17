@@ -10,7 +10,7 @@
     "languages": ["spanish", "german"],
     "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus.",
     "hospital": "5ee7b9683431feba57523d01",
-    "symptoms": ["Chills", "Fever", "Sleepy", "Sweaty"]
+    "arztNumber": "6837616200"
   },
   {
     "_id": "5ee7b96a3431feba57523d02",
@@ -23,7 +23,7 @@
     "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["english", "chinese"],
     "hospital": "5ee7b9683431feba57523d01",
-    "symptoms": ["Deformity", "Agnosia", "Delusion", "Confusion"]
+    "arztNumber": "9162236816"
   },
   {
     "_id": "816c8e3576d9fac927e1ab96",
@@ -36,7 +36,7 @@
     "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["japanese", "german"],
     "hospital": "5ee7b9683431feba57523d01",
-    "symptoms": ["Sciatica", "Opisthotonus", "Anxiety", "Confusion"]
+    "arztNumber": "9272353963"
   },
   {
     "_id": "669b0d7ddcd112d072ed43a9",
@@ -49,7 +49,7 @@
     "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["english"],
     "hospital": "5ee7b9683431feba57523d01",
-    "symptoms": ["Confabulation", "Dysarthria", "Akathisia", "Dystonia"]
+    "arztNumber": "7447376248"
   },
   {
     "_id": "2b95d5cb58b5ebbe568462e0",
@@ -62,7 +62,7 @@
     "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus. ",
     "languages": ["english", "italian"],
     "hospital": "5ee7b9683431feba57523d00",
-    "symptoms": ["Irritability", "Dysarthria", "Hallucination", "Ballismus"]
+    "arztNumber": "2415494618"
   },
   {
     "_id": "1633ede88f420f0e89f673c9",
@@ -75,7 +75,7 @@
     "experience": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi at condimentum ante. Cras lobortis interdum lorem at egestas. Sed fermentum viverra metus, a ultrices ante malesuada id. Duis sit amet facilisis massa, vel auctor libero. Quisque lorem justo, scelerisque eget lacus eu, molestie tincidunt diam. Aliquam consectetur vestibulum sapien vitae consectetur. Donec sit amet urna et libero lacinia volutpat. Etiam varius nisl ante, quis porttitor lacus dignissim eu. Vivamus semper et nisi tincidunt facilisis. Suspendisse potenti. Aenean suscipit sem ut sagittis tempor. Praesent non magna tellus.",
     "languages": ["french", "arabic"],
     "hospital": "5ee7b9683431feba57523d00",
-    "symptoms": ["Fasciculation", "Tremor", "Hematospermia", "Amnesia"]
+    "arztNumber": "4411476206"
   },
   {
     "_id": "7c5d98685ee0f21c963f63cb",
@@ -88,8 +88,7 @@
     "address": "Barer Str, 80799",
     "birthday": "1967-01-01",
     "insurance_company": "AOK",
-    "insurance_number": "123456789",
-    "symptoms": ["Alopecia", "Petechia", "Thirsty", "Apraxia"]
+    "insurance_number": "123456789"
   },
   {
     "_id": "0f34bc7599638c93b361fb2f",
@@ -102,7 +101,6 @@
     "address": "Franz-Joseph-Str, Munich, 80801",
     "birthday": "1905-01-01",
     "insurance_company": "GEK",
-    "insurance_number": "123456789",
-    "symptoms": ["Hallucination", "Athetosis", "Fasciculation", "Depression"]
+    "insurance_number": "123456789"
   }
 ]

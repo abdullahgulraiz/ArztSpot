@@ -27,6 +27,10 @@ exports.createPrescription = asyncHandler(async (req, res, next) => {
   if (!appointment) {
     return next(new ErrorResponse(`Appointment not found with id of ${appointmentId}`, 404));
   }
+  if (appointment.doctor._id.toString() !== doctorId) {
+    return next(new ErrorResponse(`You are not authorized to create a prescription for appointment 
+    id of ${appointmentId}`, 403));
+  }
   // create prescription
   prescription = await Prescription.create({
     doctor: doctorId,
@@ -211,8 +215,8 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
   }
   let prescriptionData = prescription.prescriptionData.map((p,idx) =>
       [
-          idx + 1,
-        p.name,
+        idx + 1,
+        p.name + " (" + p.details + ")",
         p.quantity.toString(),
         p.recurrenceNum.toString() + ' ' + p.recurrenceType,
         moment(p.until).format("YYYY-MM-DD")

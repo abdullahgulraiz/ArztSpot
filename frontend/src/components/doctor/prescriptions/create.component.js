@@ -7,7 +7,7 @@ import moment from 'moment'
 import "react-datepicker/dist/react-datepicker.css";
 import {reverse} from "named-urls";
 import routes from "../../../routes";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import axios from "axios";
 import {AuthContext} from "../../../auth/AuthState";
 
@@ -36,9 +36,12 @@ export const PrescriptionsCreate = (props) => {
         {name: '7 days'},
         {name: '15 days'},
       ],
+      selectedAppointment: 'none',
+      allAppointments: [],
       medicationData: [],
       additionalNotes: '',
-      patientPrescriptions: []
+      patientPrescriptions: [],
+      prescriptionCreated: false,
     }
   }
 
@@ -46,12 +49,11 @@ export const PrescriptionsCreate = (props) => {
   const [patient, setPatient] = useState({});
   const [messages, setMessages] = useState({
     errorSearchQuery: '',
-    errorSearchResults: '',
     infoSearchResults: '',
-    errorPrescriptions: '',
+    errorPrescriptions: [],
   })
 
-  const { bearerToken } = useContext(AuthContext);
+  const { bearerToken, user } = useContext(AuthContext);
 
   useEffect(() => {
     const axiosInstance = axios.create({
@@ -86,6 +88,16 @@ export const PrescriptionsCreate = (props) => {
               allPrescriptions: all_prescriptions
             },
             patientPrescriptions: response.data.data
+          });
+          return axiosInstance.get("/api/v1/appointments?user=" + props.match.params.patientId);
+        })
+        .then(response => {
+          setState({
+            ...state,
+            prescription: {
+              ...state.prescription,
+              allAppointments: response.data.data,
+            },
           });
         })
         .catch(error => {
@@ -177,7 +189,8 @@ export const PrescriptionsCreate = (props) => {
     let searchResult = state.search.searchResults[key];
     let mDsAll = state.prescription.medicationData;
     mDsAll.push({
-      name: searchResult.name + " (" + searchResult.details + ")",
+      name: searchResult.name,
+      details: searchResult.details,
       quantity: 0,
       recurrenceNum: 0,
       recurrenceType: "Daily",
@@ -252,6 +265,8 @@ export const PrescriptionsCreate = (props) => {
                 errorSearchQuery: '',
                 infoSearchResults: "Search returned 0 results.",
               });
+              // reset search results
+              setState({...state, search: {...state.search, searchResults: []}});
             });
       }
     } else if (state.search.criteria === 1) {
@@ -263,7 +278,7 @@ export const PrescriptionsCreate = (props) => {
           p.prescriptionData.map(md => {
             search_results.push({
               'name': md.name,
-              'details': md.name
+              'details': md.details
             });
           });
         }
@@ -282,7 +297,128 @@ export const PrescriptionsCreate = (props) => {
       });
     } else {
       console.log("Error with search criteria");
+      setMessages({
+        ...messages,
+        errorSearchQuery: 'Invalid search criteria.',
+        infoSearchResults: "",
+      });
+      // reset search results
+      setState({...state, search: {...state.search, searchResults: []}});
     }
+  }
+
+  const validatePrescriptionFields = () => {
+    let fields_to_validate = [];
+    if (state.prescription.selectedAppointment === 'none') fields_to_validate.push("Please select a valid value for the field Appointment.");
+    if (state.prescription.selectedFeeType === 'none') fields_to_validate.push("Please select a valid value for the field Fee Type");
+    if (state.prescription.selectedValidity === 'none') fields_to_validate.push("Please select a valid value for the field Validity");
+    if (state.prescription.medicationData.length <= 0)  fields_to_validate.push("Please add at least one medication to the prescription.");
+    if (state.prescription.medicationData) {
+      state.prescription.medicationData.map((md,idx) => {
+        if (md.quantity <= 0) fields_to_validate.push("Medication " + (idx + 1).toString() + ": Quantity of a medication should be greater than 0.");
+        if (md.recurrenceNum <= 0) fields_to_validate.push("Medication " + (idx + 1).toString() + ": Recurrence number of a medication should be greater than 0.");
+        if (!moment(md.until).isAfter(new Date())) fields_to_validate.push("Medication " + (idx + 1).toString() + ": Until date of a medication should be after than the current date.");
+      });
+    }
+    if (fields_to_validate.length > 0) {
+      setMessages({
+        ...messages,
+        errorPrescriptions: fields_to_validate
+      });
+      return false;
+    }
+    return true;
+  }
+
+  const getPrescriptionJson = (sentStatus) => {
+    return {
+      doctorId: user._id,
+      patientId: patient._id,
+      appointmentId: state.prescription.selectedAppointment,
+      prescriptionData: state.prescription.medicationData,
+      validity: state.prescription.selectedValidity,
+      feeType: state.prescription.selectedFeeType,
+      additionalNotes: state.prescription.additionalNotes,
+      isSent: sentStatus
+    }
+  }
+
+  const savePrescriptionInDatabase = (new_prescription) => {
+    // make request
+    const axiosInstance = axios.create({
+      timeout: 1000,
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`
+      }
+    });
+    axiosInstance
+        .post("/api/v1/prescriptions", new_prescription)
+        .then(response => {
+          if (response.data.success) {
+            // set state value to redirect back
+            setState({
+              ...state,
+              prescriptionCreated: true
+            });
+          } else {
+            // set error messages
+            setMessages({
+              ...messages,
+              errorPrescriptions: ["Sorry, there was an error while creating the prescription. Please try again later, or contact us if the problem persists."],
+            });
+          }
+        })
+        .catch(error => {
+          console.log("Error", error, error.response);
+          setMessages({
+            ...messages,
+            errorPrescriptions: ["Sorry, there was an error while creating the prescription. Please try again later, or contact us if the problem persists."],
+          });
+        });
+  }
+
+  const onSubmitSaveForLater = (e) => {
+    e.preventDefault();
+    if (!validatePrescriptionFields()) {
+      // stop proceeding with the request
+      return;
+    }
+    // reset error messages
+    setMessages({
+      ...messages,
+      errorPrescriptions: []
+    });
+    // get prescription JSON
+    const new_prescription = getPrescriptionJson(false);
+    // save in database
+    savePrescriptionInDatabase(new_prescription);
+    // redirect
+    setState({
+      ...state,
+      prescriptionCreated: true
+    });
+  }
+
+  const onSubmitSendToPatient = (e) => {
+    e.preventDefault();
+    if (!validatePrescriptionFields()) {
+      // stop proceeding with the request
+      return;
+    }
+    // reset error messages
+    setMessages({
+      ...messages,
+      errorPrescriptions: []
+    });
+    // get prescription JSON
+    const new_prescription = getPrescriptionJson(true);
+    // save in database
+    savePrescriptionInDatabase(new_prescription);
+    // redirect
+    setState({
+      ...state,
+      prescriptionCreated: true
+    });
   }
 
   const getApiUrl = (search, limit=50) => {
@@ -293,6 +429,17 @@ export const PrescriptionsCreate = (props) => {
   if (state.error404) {
     return (
         <NotFound />
+    )
+  }
+
+  if (state.prescriptionCreated) {
+    return (
+        <Redirect
+            to={{
+              pathname: reverse(routes.doctor.prescriptions.patient, { patientId: props.match.params.patientId }),
+              state: { prescriptionCreatedSuccess: true }
+            }}
+        />
     )
   }
 
@@ -389,6 +536,31 @@ export const PrescriptionsCreate = (props) => {
               </div>
               <div className="col-7">
               <h4>Prescription</h4>
+              {messages.errorPrescriptions && messages.errorPrescriptions.length > 0 &&
+              <div className="alert alert-danger" role="alert">
+                <ul>
+                {messages.errorPrescriptions.map(err => {
+                  return (
+                      <li>{err}</li>
+                  )
+                })
+                }
+                </ul>
+              </div>
+              }
+              <div className="form-group">
+                <label htmlFor="appointment">Appointment</label>
+                <select id="appointment" className="form-control" name={"selectedAppointment"} defaultValue={state.prescription.selectedAppointment} onChange={onChangePrescription}>
+                  <option value={"none"} disabled={"disabled"}>Choose...</option>
+                  {
+                    state.prescription.allAppointments.map((f, idx) => {
+                      return (
+                          <option key={idx} value={f._id}>{moment(f.startTime).format("YYYY-MM-DD")} {f.symptoms ? "(" + [f.symptoms.map(s => s.name)].join(", ") + ")" : ""}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
               <div className="form-row">
               <div className="form-group col-md-6">
               <label htmlFor="selectedFeeType">Fee type</label>
@@ -435,7 +607,7 @@ export const PrescriptionsCreate = (props) => {
                   return (
                       <tr key={idx}>
                         <th scope="row">{idx + 1}</th>
-                        <td>{d.name}</td>
+                        <td>{d.name} ({d.details})</td>
                         <td>
                           <input type={"number"} name={"quantity"} data-key={idx} className={"form-control"} value={d.quantity} step={0.1} onChange={onChangeMedicationData} min={0}/>
                         </td>
@@ -480,8 +652,8 @@ export const PrescriptionsCreate = (props) => {
               </div>
               <div className="row" style={{marginTop: "3%"}}>
               <div className="col-6 offset-3 text-center">
-              <button type="submit" className="btn btn-secondary">Save for later</button>&nbsp;&nbsp;
-              <button type="submit" className="btn btn-primary">Send to Patient</button>
+              <button type="button" onClick={onSubmitSaveForLater} className="btn btn-secondary">Save for later</button>&nbsp;&nbsp;
+              <button type="button" onClick={onSubmitSendToPatient} className="btn btn-primary">Send to Patient</button>
               </div>
               </div>
             </>

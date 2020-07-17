@@ -7,7 +7,7 @@ const UpdateAppointment = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
   const dashboardContext = useContext(DashboardContext);
-  const { selectedDate } = dashboardContext;
+  const { selectedDate, setAlert } = dashboardContext;
   const { bearerToken } = authContext;
   const { setUpdating, updating, updateAppointment } = profileContext;
   const onClick = (e) => {
@@ -17,11 +17,17 @@ const UpdateAppointment = ({ appointment }) => {
     setUpdating(appointment._id);
     if (
       updating === appointment._id &&
-      selectedDate.day !== "" &&
-      selectedDate.timeSlot !== ""
+      selectedDate.day !== null &&
+      selectedDate.timeSlot !== null
     ) {
       updateAppointment(bearerToken, appointment._id, selectedDate);
       setUpdating("");
+    }
+    if (
+      updating === appointment._id &&
+      (selectedDate.day === null || selectedDate.timeSlot === null)
+    ) {
+      setAlert(true, "Please select a date");
     }
   };
   return (

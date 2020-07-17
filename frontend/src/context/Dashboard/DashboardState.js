@@ -29,11 +29,12 @@ const DashboardState = (props) => {
       hospitalId: "",
       startTime: "",
       finishTime: "",
-      symptoms: []
+      symptoms: [],
     },
     appointmentCreated: false,
     error: null,
     alert: null,
+    alertMsg: "",
   };
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
@@ -53,8 +54,8 @@ const DashboardState = (props) => {
 
   // Set Selected Date
   const setSelectedDate = (selectedDate) => {
-    dispatch({type:"SET_SELECTED_DATE", payload: selectedDate})
-  }
+    dispatch({ type: "SET_SELECTED_DATE", payload: selectedDate });
+  };
 
   // Clear State of selected date
   const clearSelectedDate = () => {
@@ -73,8 +74,7 @@ const DashboardState = (props) => {
     let slots = [];
     let startTime;
     let finishTime;
-    const url =
-      "/api/v1/appointments/" + hospital._id + "/" + doctor._id;
+    const url = "/api/v1/appointments/" + hospital._id + "/" + doctor._id;
     // TODO ADD TRY/CATCH
     const res = await axios.get(url);
     const slotsArr = createTimeSlots(day);
@@ -115,8 +115,11 @@ const DashboardState = (props) => {
   const setAppointmentCreated = (appointmentCreated) => {
     dispatch({ type: "SET_APPOINTMENT_CREATED", payload: appointmentCreated });
   };
-  const setAlert = (alert) => {
-    dispatch({ type: "SET_ALERT", payload: alert });
+  const setAlert = (alert, msg) => {
+    dispatch({ type: "SET_ALERT", payload: { alert: alert, alertMsg: msg } });
+    setTimeout(() =>
+      dispatch({ type: "SET_ALERT", payload: { alert: false, alertMsg: "" } }), 5000
+    );
   };
   // book appointment
   const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
@@ -136,17 +139,14 @@ const DashboardState = (props) => {
       doctorId: doctor._id,
       startTime: startTime.toDate(),
       finishTime: finishTime.toDate(),
-      symptoms: []
+      symptoms: [],
     };
     const url = "/api/v1/appointments";
     try {
       await axios.post(url, reqBody, config);
+      setAppointmentCreated(true)
     } catch (e) {
-      dispatch({ type: "SET_ALERT", payload: true });
-      // make alert disappear after a couple seconds
-      setTimeout(() => {
-        dispatch({ type: "SET_ALERT", payload: false });
-      }, 5000);
+      setAlert(true, "It seems this appointment has already been taken. Please reload the page");
     }
   };
 
@@ -161,6 +161,7 @@ const DashboardState = (props) => {
         slots: state.slots,
         error: state.error,
         alert: state.alert,
+        alertMsg: state.alertMsg,
         clearSelectedDate,
         clearSlots,
         setCurrentDoctor,

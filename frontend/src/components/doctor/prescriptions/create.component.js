@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {isEmptyObj} from "../../../utils/isEmptyObj";
 import NotFound from "../../general/notfound.component";
 import DatePicker from "react-datepicker";
@@ -8,81 +8,90 @@ import "react-datepicker/dist/react-datepicker.css";
 import {reverse} from "named-urls";
 import routes from "../../../routes";
 import {Link} from "react-router-dom";
+import axios from "axios";
+import {AuthContext} from "../../../auth/AuthState";
 
 export const PrescriptionsCreate = (props) => {
 
   const initial_state = {
-    patient: {},
     error404: false,
     search: {
       searchTerm: '',
       selectedPrescription: 'none',
       criteria: 0, //0 for search term, 1 for prescriptions
-      allPrescriptions: [
-        {id: 1, issuedOn: "July 12, 2020", symptoms: ["Body pain", "Cough", "Fever"]},
-        {id: 2, issuedOn: "July 10, 2019", symptoms: ["Asthma", "COPD", "Headache"]}
-      ],
-      searchResults: [
-        // {
-        //   'name': 'Medicine 1',
-        //   'manufacturer': 'GSK',
-        // },
-        // {
-        //   'name': 'Medicine 2',
-        //   'manufacturer': 'AB Pharma',
-        // },
-        // {
-        //   'name': 'Medicine 3',
-        //   'manufacturer': 'ABC Pharmaceuticals',
-        // }
-      ]
+      allPrescriptions: [],
+      searchResults: []
     },
     prescription: {
       selectedFeeType: 'none',
       allFeeTypes: [
-        {id: 1, name: 'Public Insurance'},
-        {id: 2, name: 'Private Insurance'},
-        {id: 3, name: 'Self-paid'},
+        {name: 'Public Insurance'},
+        {name: 'Private Insurance'},
+        {name: 'Self-paid'},
       ],
       selectedValidity: 'none',
       allValidities: [
-        {id: 1, name: '1 day'},
-        {id: 2, name: '3 days'},
-        {id: 3, name: '7 days'},
-        {id: 4, name: '15 days'},
+        {name: '1 day'},
+        {name: '3 days'},
+        {name: '7 days'},
+        {name: '15 days'},
       ],
-      medicationData: [
-        {
-          name: 'Medicine 3',
-          quantity: 1,
-          recurrenceNum: 1,
-          recurrenceType: "Daily",
-          until: "2020-12-20"
-        },
-        {
-          name: 'Medicine 4',
-          quantity: 5,
-          recurrenceNum: 6,
-          recurrenceType: "Weekly",
-          until: "2020-12-21"
-        }
-      ],
-      additionalNotes: ''
+      medicationData: [],
+      additionalNotes: '',
+      patientPrescriptions: []
     }
   }
 
   const [state, setState] = useState(initial_state);
+  const [patient, setPatient] = useState({});
+  const [messages, setMessages] = useState({
+    errorSearchQuery: '',
+    errorSearchResults: '',
+    infoSearchResults: '',
+    errorPrescriptions: '',
+  })
+
+  const { bearerToken } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log("Patient ID", props.match.params.patientId);
-    setTimeout(() => {
-      setState({
-        ...state,
-        patient: {
-          name: "John Smith"
-        }
-      });
-    }, 0)
+    const axiosInstance = axios.create({
+      timeout: 1000,
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`
+      }
+    });
+    axiosInstance
+        .get("/api/v1/doctors/mypatients/" + props.match.params.patientId)
+        .then(response => {
+          if (response.data.success) {
+            setPatient(response.data.data);
+            return axiosInstance.get("/api/v1/prescriptions?patient=" + props.match.params.patientId);
+          } else {
+            setState({ ...state, error404: true });
+          }
+        })
+        .then(response => {
+          let all_prescriptions = [];
+          response.data.data.map(d => {
+            all_prescriptions.push({
+              'id': d._id,
+              'issuedOn': moment(d.date).format("YYYY-MM-DD"),
+              'symptoms': d.appointment.symptoms ? d.appointment.symptoms.map(s => s.name) : ["Symptoms undefined"],
+            });
+          });
+          setState({
+            ...state,
+            search: {
+              ...state.search,
+              allPrescriptions: all_prescriptions
+            },
+            patientPrescriptions: response.data.data
+          });
+        })
+        .catch(error => {
+          console.log("Error", error, error.response);
+          setState({ ...state, error404: true, patient: {} });
+        });
   }, []);
 
   const onChangeSearch = (e) => {
@@ -168,7 +177,7 @@ export const PrescriptionsCreate = (props) => {
     let searchResult = state.search.searchResults[key];
     let mDsAll = state.prescription.medicationData;
     mDsAll.push({
-      name: searchResult.name + " (" + searchResult.manufacturer + ")",
+      name: searchResult.name + " (" + searchResult.details + ")",
       quantity: 0,
       recurrenceNum: 0,
       recurrenceType: "Daily",
@@ -181,6 +190,104 @@ export const PrescriptionsCreate = (props) => {
         medicationData: mDsAll,
       }
     });
+  }
+
+  const searchMedicine = (e) => {
+    e.preventDefault();
+    if (state.search.criteria === 0) {
+      // search with search term
+      if (state.search.searchTerm.length <= 0) {
+        setMessages({
+          ...messages,
+          errorSearchQuery: "Please enter a valid search query.",
+          infoSearchResults: '',
+        });
+        setState({...state, search: {...state.search, searchResults: []}});
+      } else {
+        const apiUrl = getApiUrl(state.search.searchTerm);
+        const axiosInstance = axios.create({
+          timeout: 1000,
+          headers: {
+            'Authorization': `Bearer ${bearerToken}`
+          }
+        });
+        axiosInstance
+            .get(apiUrl)
+            .then(response => {
+              // reset search results
+              setState({...state, search: {...state.search, searchResults: []}});
+              if (response.data.results) {
+                const data = response.data.results;
+                setMessages({
+                  ...messages,
+                  errorSearchQuery: '',
+                  infoSearchResults: 'Search returned '+ data.length.toString() +' results.',
+                });
+                let search_results = [];
+                data.map(d => {
+                  search_results.push({
+                    'name': d.brand_name,
+                    'details': [d.active_ingredients.map(ai => { return ai.name + " (" + ai.strength + "), " + d.labeler_name })].join(","),
+                  });
+                });
+                setState({
+                  ...state,
+                  search: {
+                    ...state.search,
+                    searchResults: search_results
+                  }
+                });
+              } else {
+                setMessages({
+                  ...messages,
+                  errorSearchQuery: '',
+                  infoSearchResults: "Search returned 0 results.",
+                });
+              }
+            })
+            .catch(error => {
+              console.log("Error", error, error.response);
+              setMessages({
+                ...messages,
+                errorSearchQuery: '',
+                infoSearchResults: "Search returned 0 results.",
+              });
+            });
+      }
+    } else if (state.search.criteria === 1) {
+      // display prescriptions from medicine
+      const selectedPrescription = state.search.selectedPrescription;
+      let search_results = [];
+      state.patientPrescriptions.map(p => {
+        if (p._id === selectedPrescription) {
+          p.prescriptionData.map(md => {
+            search_results.push({
+              'name': md.name,
+              'details': md.name
+            });
+          });
+        }
+      });
+      setMessages({
+        ...messages,
+        errorSearchQuery: '',
+        infoSearchResults: "Search returned "+ search_results.length.toString() +" results.",
+      });
+      setState({
+        ...state,
+        search: {
+          ...state.search,
+          searchResults: search_results
+        }
+      });
+    } else {
+      console.log("Error with search criteria");
+    }
+  }
+
+  const getApiUrl = (search, limit=50) => {
+    // openFDA DRUG API -> https://open.fda.gov/apis/drug/ndc/example-api-queries/
+    return "https://api.fda.gov/drug/ndc.json?search=" + search + "&limit=" + limit.toString();
   }
 
   if (state.error404) {
@@ -198,14 +305,14 @@ export const PrescriptionsCreate = (props) => {
 
             <div className="section-title">
               <h2>Prescriptions</h2>
-              {!isEmptyObj(state.patient) &&
-              <p>Create a new prescription for {state.patient.name}</p>
+              {!isEmptyObj(patient) &&
+              <p>Create a new prescription for {patient.firstname} {patient.lastname}</p>
               }
-              {isEmptyObj(state.patient) &&
+              {isEmptyObj(patient) &&
               <p>Loading...</p>
               }
             </div>
-            {!isEmptyObj(state.patient) &&
+            {!isEmptyObj(patient) &&
             <>
             <div className="row">
               <div className="col-12">
@@ -215,9 +322,15 @@ export const PrescriptionsCreate = (props) => {
               <div className="row" style={{marginTop: "1em"}}>
               <div className="col-5">
               <h4>Search</h4>
+              {messages.errorSearchQuery &&
+              <div className="alert alert-danger" role="alert">
+                {messages.errorSearchQuery}
+              </div>
+              }
+              <form onSubmit={searchMedicine}>
               <div className="form-group">
               <label htmlFor="searchTerm">Medicine Directory</label>
-              <input type="text" className="form-control" name={"searchTerm"} id={"searchTerm"} onChange={onChangeSearch} value={state.search.searchTerm} placeholder={"Query"} />
+              <input type="text" className="form-control" name={"searchTerm"} id={"searchTerm"} required={state.search.criteria === 0} onChange={onChangeSearch} value={state.search.searchTerm} placeholder={"Query"} />
               </div>
               <div className="form-group">
               <label htmlFor="selectedPrescription">Or, select from previous prescriptions</label>
@@ -233,15 +346,21 @@ export const PrescriptionsCreate = (props) => {
               </select>
               </div>
               <p className={"text-center"}>
-                <button type={"button"} className="btn btn-secondary btn-sm"><i className="icofont-ui-search"></i> Search</button>
+                <button type={"submit"} className="btn btn-secondary btn-sm" onClick={searchMedicine}><i className="icofont-ui-search"></i> Search</button>
               </p>
+              </form>
+              {messages.infoSearchResults &&
+              <div className="alert alert-info" role="alert">
+                {messages.infoSearchResults}
+              </div>
+              }
               <label>Search results</label>
               <table className="table table-hover">
               <thead>
               <tr>
               <th scope="col">#</th>
               <th scope="col">Name</th>
-              <th scope="col">Manufacturer</th>
+              <th scope="col">Details</th>
               <th scope="col">Actions</th>
               </tr>
               </thead>
@@ -252,7 +371,7 @@ export const PrescriptionsCreate = (props) => {
                       <tr key={idx}>
                         <th scope="row">{idx + 1}</th>
                         <td>{sr.name}</td>
-                        <td>{sr.manufacturer}</td>
+                        <td>{sr.details}</td>
                         <td className="text-center">
                           <button type="button" className="btn btn-secondary btn-sm" onClick={() => {AddSearchDataItem(idx)}}><i className="icofont-ui-add"></i></button>
                         </td>
@@ -278,7 +397,7 @@ export const PrescriptionsCreate = (props) => {
                 {
                   state.prescription.allFeeTypes.map((f, idx) => {
                     return (
-                        <option key={idx} value={f.id}>{f.name}</option>
+                        <option key={idx} value={f.name}>{f.name}</option>
                     )
                   })
                 }
@@ -291,7 +410,7 @@ export const PrescriptionsCreate = (props) => {
                 {
                   state.prescription.allValidities.map((v, idx) => {
                     return (
-                        <option key={idx} value={v.id}>{v.name}</option>
+                        <option key={idx} value={v.name}>{v.name}</option>
                     )
                   })
                 }

@@ -117,8 +117,13 @@ const DashboardState = (props) => {
   };
   const setAlert = (alert, msg) => {
     dispatch({ type: "SET_ALERT", payload: { alert: alert, alertMsg: msg } });
-    setTimeout(() =>
-      dispatch({ type: "SET_ALERT", payload: { alert: false, alertMsg: "" } }), 5000
+    setTimeout(
+      () =>
+        dispatch({
+          type: "SET_ALERT",
+          payload: { alert: false, alertMsg: "" },
+        }),
+      5000
     );
   };
   // book appointment
@@ -144,9 +149,12 @@ const DashboardState = (props) => {
     const url = "/api/v1/appointments";
     try {
       await axios.post(url, reqBody, config);
-      setAppointmentCreated(true)
+      setAppointmentCreated(true);
     } catch (e) {
-      setAlert(true, "It seems this appointment has already been taken. Please reload the page");
+      setAlert(
+        true,
+        "It seems this appointment has already been taken. Please reload the page"
+      );
     }
   };
 

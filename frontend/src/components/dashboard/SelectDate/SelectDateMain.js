@@ -9,7 +9,6 @@ const SelectDateMain = ({ doctor, hospital }) => {
   const { selectedDate, alert, alertMsg } = dashboardContext;
   return (
     <Fragment>
-        {(alert && alertMsg !== "") && <Alert msg={alertMsg} />}
         <br />
         <CalendarItem />
         <br />

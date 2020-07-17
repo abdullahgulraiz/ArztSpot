@@ -27,6 +27,12 @@ export default (state, action) => {
           (appointment) => appointment._id !== action.payload
         ),
       };
+    case "SET_ALERT":
+      return {
+        ...state,
+        alert: action.payload.alert,
+        alertMsg: action.payload.alertMsg
+      }
     default:
       return state;
   }

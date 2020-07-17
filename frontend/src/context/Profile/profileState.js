@@ -10,6 +10,8 @@ const ProfileState = (props) => {
     appointments: [],
     updating: "",
     error: false,
+    alert: false,
+    alertMsg: "",
   };
 
   const [state, dispatch] = useReducer(profileReducer, initialState);
@@ -51,6 +53,18 @@ const ProfileState = (props) => {
   const setUpdating = (appointmentId) => {
     dispatch({ type: "SET_UPDATING", payload: appointmentId });
   };
+
+  const setAlert = (alert, msg) => {
+    dispatch({ type: "SET_ALERT", payload: { alert: alert, alertMsg: msg } });
+    setTimeout(
+      () =>
+        dispatch({
+          type: "SET_ALERT",
+          payload: { alert: false, alertMsg: "" },
+        }),
+      5000
+    );
+  };
   // update appointments
   const updateAppointment = async (
     bearerToken,
@@ -83,8 +97,12 @@ const ProfileState = (props) => {
         new Date(res.data.appointment.finishTime).getTime()
       );
       dispatch({ type: "UPDATE_APPOINTMENT", payload: res.data.appointment });
+      setUpdating("");
     } catch (e) {
-      console.log(e);
+      setAlert(
+        true,
+        "It seems this appointment has already been taken. Please reload the page"
+      );
     }
   };
   // delete appointments
@@ -109,10 +127,13 @@ const ProfileState = (props) => {
       value={{
         appointments: state.appointments,
         updating: state.updating,
+        alert: state.alert,
+        alertMsg: state.alertMsg,
         getAppointments,
         updateAppointment,
         deleteAppointment,
         setUpdating,
+        setAlert,
       }}
     >
       {props.children}

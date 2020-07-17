@@ -7,9 +7,9 @@ const UpdateAppointment = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
   const dashboardContext = useContext(DashboardContext);
-  const { selectedDate, setAlert } = dashboardContext;
+  const { selectedDate } = dashboardContext;
   const { bearerToken } = authContext;
-  const { setUpdating, updating, updateAppointment } = profileContext;
+  const { setUpdating, updating, updateAppointment, setAlert } = profileContext;
   const onClick = (e) => {
     // set current doctor we are updating the appointment
     // so that we can get his/her timeslots
@@ -21,7 +21,7 @@ const UpdateAppointment = ({ appointment }) => {
       selectedDate.timeSlot !== null
     ) {
       updateAppointment(bearerToken, appointment._id, selectedDate);
-      setUpdating("");
+
     }
     if (
       updating === appointment._id &&

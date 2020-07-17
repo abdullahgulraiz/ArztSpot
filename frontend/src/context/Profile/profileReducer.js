@@ -8,9 +8,17 @@ export default (state, action) => {
     case "SET_UPDATING": {
       return {
         ...state,
-        updating: action.payload
-      }
+        updating: action.payload,
+      };
     }
+    case "UPDATE_APPOINTMENT":
+      console.log(action.payload);
+      return {
+        ...state,
+        appointments: state.appointments.map((appointment) =>
+          appointment._id === action.payload._id ? action.payload : appointment
+        ),
+      };
     case "DELETE_APPOINTMENT":
       return {
         ...state,

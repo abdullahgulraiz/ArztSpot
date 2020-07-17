@@ -7,15 +7,22 @@ const UpdateAppointment = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
   const dashboardContext = useContext(DashboardContext);
-  const { setAppointment } = dashboardContext;
+  const { setAppointment, selectedDate } = dashboardContext;
   const { bearerToken } = authContext;
-  const { setUpdating, updateAppointment } = profileContext;
+  const { setUpdating, updating, updateAppointment } = profileContext;
   const onClick = (e) => {
     // set current doctor we are updating the appointment
     // so that we can get his/her timeslots
-    setAppointment({day: appointment.startTime, timeSlot: appointment.startTime.format("kk:mm")})
+    // setAppointment({day: appointment.startTime, timeSlot: appointment.startTime.format("kk:mm")})
     setUpdating(appointment._id);
-    // updateAppointment(bearerToken, appointment);
+    if (
+      updating === appointment._id &&
+      selectedDate.day !== "" &&
+      selectedDate.timeSlot !== ""
+    ) {
+      updateAppointment(bearerToken, appointment._id, selectedDate);
+      setUpdating("");
+    }
   };
   return (
     <button

@@ -3,6 +3,7 @@ import axios from "axios";
 import ProfileContext from "./profileContext";
 import profileReducer from "./profileReducer";
 import moment from "moment";
+import createStartAndFinishTime from "../../utils/createStartAndFinishTime";
 
 const ProfileState = (props) => {
   const initialState = {
@@ -46,12 +47,40 @@ const ProfileState = (props) => {
     dispatch({ type: "SET_UPDATING", payload: appointmentId });
   };
   // update appointments
-  const updateAppointment = (bearerToken, appointment) => {
+  const updateAppointment = async (
+    bearerToken,
+    appointmentId,
+    selectedDate
+  ) => {
     const config = {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
     };
+    const { startTime, finishTime } = createStartAndFinishTime(
+      selectedDate.day,
+      selectedDate.timeSlot
+    );
+    const reqBody = {
+      startTime: startTime.toDate(),
+      finishTime: finishTime.toDate(),
+    };
+    try {
+      const res = await axios.put(
+        `/api/v1/appointments/${appointmentId}`,
+        reqBody,
+        config
+      );
+      res.data.appointment.startTime = moment(
+        new Date(res.data.appointment.startTime).getTime()
+      );
+      res.data.appointment.finishTime = moment(
+        new Date(res.data.appointment.finishTime).getTime()
+      );
+      dispatch({type: "UPDATE_APPOINTMENT", payload: res.data.appointment})
+    } catch (e) {
+      console.log(e);
+    }
   };
   // delete appointments
   const deleteAppointment = async (bearerToken, appointment) => {
@@ -78,7 +107,7 @@ const ProfileState = (props) => {
         getAppointments,
         updateAppointment,
         deleteAppointment,
-        setUpdating
+        setUpdating,
       }}
     >
       {props.children}

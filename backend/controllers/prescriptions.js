@@ -42,6 +42,18 @@ exports.createPrescription = asyncHandler(async (req, res, next) => {
     additionalNotes: additionalNotes,
     isSent: isSent
   });
+  if (isSent) {
+    // get updated prescription with populated fields
+    let prescriptionUpdated = await Prescription
+        .findById(prescription.id)
+        .populate({path: "doctor"})
+        .populate({path: "patient"});
+    // send email to patient
+    const emailSuccess = await sendEmailToPatient(prescriptionUpdated);
+    if (!emailSuccess) {
+      return next(new ErrorResponse("Email could not be sent", 500));
+    }
+  }
   await res.status(200).json({ success: true, prescription });
 });
 
@@ -76,8 +88,8 @@ exports.getPrescription = asyncHandler(async (req, res, next) => {
   }
   // only doctor and patient of the prescription should have access to it
   if (
-    prescription.doctor.toString() !== req.user.id &&
-    prescription.patient.toString() !== req.user.id &&
+    prescription.doctor._id.toString() !== req.user.id &&
+    prescription.patient._id.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return next(
@@ -101,8 +113,8 @@ exports.updatePrescription = asyncHandler(async (req, res, next) => {
   }
   // only doctor and patient of that prescription should have access
   if (
-    prescription.doctor.toString() !== req.user.id &&
-    prescription.prescription.toString() !== req.user.id &&
+    prescription.doctor._id.toString() !== req.user.id &&
+    prescription.prescription._id.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return next(
@@ -130,8 +142,8 @@ exports.deletePrescription = asyncHandler(async (req, res, next) => {
   }
   // only doctor and patient of that prescription should have access
   if (
-      prescription.doctor.toString() !== req.user.id &&
-      prescription.user.toString() !== req.user.id &&
+      prescription.doctor._id.toString() !== req.user.id &&
+      prescription.patient._id.toString() !== req.user.id &&
       req.user.role !== "admin"
   ) {
     return next(
@@ -165,6 +177,8 @@ exports.sendPrescription = asyncHandler(async (req, res, next) => {
       })
       .populate({
         path: "patient"
+      }).populate({
+        path: "doctor"
       });
   if (!prescription) {
     return next(
@@ -173,8 +187,8 @@ exports.sendPrescription = asyncHandler(async (req, res, next) => {
   }
   // only doctor and patient of the prescription should have access to it
   if (
-      prescription.doctor.toString() !== req.user.id &&
-      prescription.user.toString() !== req.user.id &&
+      prescription.doctor._id.toString() !== req.user.id &&
+      prescription.patient._id.toString() !== req.user.id &&
       req.user.role !== "admin"
   ) {
     return next(
@@ -182,23 +196,8 @@ exports.sendPrescription = asyncHandler(async (req, res, next) => {
     );
   }
   // send email to patient
-  const message = `
-  Dear ${prescription.patient.firstname} ${prescription.patient.lastname},
-  
-  Your doctor just added a new Prescription for you regarding your appointment on ${moment(prescription.appointment.startTime).format("YYYY-MM-DD")}.
-  To see all your prescriptions, visit <a href="https://www.arztspot.de/user/prescriptions">https://www.arztspot.de/user/prescriptions</a>.
-  
-  Best regards,
-  The ArztSpot Team
-  `;
-  try {
-    await sendEmail({
-      email: prescription.patient.email,
-      subject: "Prescription for Appointment on " + moment(prescription.appointment.startTime).format("YYYY-MM-DD"),
-      message,
-    });
-  } catch (err) {
-    console.log(err);
+  const emailSuccess = await sendEmailToPatient(prescription);
+  if (!emailSuccess) {
     return next(new ErrorResponse("Email could not be sent", 500));
   }
   // change prescription sent status
@@ -236,8 +235,8 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
   );
   // only doctor and patient of the prescription should have access to it
   if (
-      prescription.doctor.toString() !== req.user.id &&
-      prescription.patient.toString() !== req.user.id &&
+      prescription.doctor._id.toString() !== req.user.id &&
+      prescription.patient._id.toString() !== req.user.id &&
       req.user.role !== "admin"
   ) {
     return next(
@@ -357,3 +356,26 @@ createPdf = async (docDefinition)=> {
     }
   });
 };
+
+const sendEmailToPatient = async (prescription) => {
+  const message = `
+  Dear ${prescription.patient.firstname} ${prescription.patient.lastname},
+  
+  Your doctor, ${prescription.doctor.firstname} ${prescription.doctor.lastname}, just added a new Prescription for you regarding your appointment on ${moment(prescription.appointment.startTime).format("YYYY-MM-DD")}.
+  To see all your prescriptions, visit <a href="https://www.arztspot.de/user/prescriptions">https://www.arztspot.de/user/prescriptions</a>.
+  
+  Best regards,
+  The ArztSpot Team
+  `;
+  try {
+    await sendEmail({
+      email: prescription.patient.email,
+      subject: "Prescription for Appointment on " + moment(prescription.appointment.startTime).format("YYYY-MM-DD"),
+      message,
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

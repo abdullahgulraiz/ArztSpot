@@ -34,6 +34,7 @@ export default (state, action) => {
         ),
       };
     case "SET_ALERT":
+      console.log(action.payload)
       return {
         ...state,
         alert: action.payload.alert,

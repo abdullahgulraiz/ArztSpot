@@ -5,6 +5,8 @@ import axios from "axios";
 // Initial state
 const initialState = {
   user: {},
+  alert: null,
+  alertMsg: "",
   bearerToken: undefined,
   infoToUpdate: {
     firstname: "",
@@ -117,9 +119,12 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       setBearerToken(res.data.token);
     } catch (e) {
-      console.log(e);
+      if (e.response.data.error.includes("Duplicate") ){
+        setAlert(true, "Email is already taken")
+      } else {
+        setAlert(true, "Error please try again later")
+      }
     }
-    clearUserToCreate();
   };
   // create doctor
   const createDoctor = async (doctor, hospitalToCreate, isHospital) => {
@@ -155,11 +160,17 @@ export const AuthProvider = ({ children }) => {
           res.data.user._id
         );
       }
+      clearUserToCreate();
+      clearHospitalToCreate();
     } catch (e) {
-      console.log(e.response);
+      if (e.response.data.error.includes("Duplicate") ){
+        setAlert(true, "Email is already taken")
+      } else {
+        setAlert(true, "Error please try again later")
+      }
     }
-    clearUserToCreate();
-    clearHospitalToCreate();
+
+
   };
   // clear userToCreate when finished
   const clearUserToCreate = () => {
@@ -218,7 +229,11 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.data);
       setIsEditing(false);
     } catch (e) {
-      console.log(e.response);
+      if (e.response.data.error.includes("Duplicate") ){
+        setAlert(true, "Email is already taken")
+      } else {
+        setAlert(true, "Error please try again later")
+      }
     }
   };
   // Typeahead component need
@@ -241,6 +256,17 @@ export const AuthProvider = ({ children }) => {
       type: "LOGOUT_USER",
     });
   }
+  const setAlert = (alert, msg) => {
+    dispatch({ type: "SET_ALERT", payload: { alert: alert, alertMsg: msg } });
+    setTimeout(
+      () =>
+        dispatch({
+          type: "SET_ALERT",
+          payload: { alert: false, alertMsg: "" },
+        }),
+      5000
+    );
+  };
 
   return (
     <AuthContext.Provider
@@ -253,6 +279,8 @@ export const AuthProvider = ({ children }) => {
         privatePractice: state.privatePractice,
         customErrors: state.customErrors,
         hospitalToCreate: state.hospitalToCreate,
+        alert: state.alert,
+        alertMsg: state.alertMsg,
         createPatient,
         createHospital,
         createDoctor,
@@ -263,6 +291,7 @@ export const AuthProvider = ({ children }) => {
         setIsEditing,
         clearCustomError,
         setPrivatePractice,
+        setAlert,
         setBearerToken,
         setUser,
         logoutUser,

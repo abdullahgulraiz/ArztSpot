@@ -2,13 +2,15 @@ import React, { Fragment, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../context/auth/AuthState";
 import TypeaheadSearch from "../../search/TypeaheadSearch";
+import Alert from "../../dashboard/Alert";
 import languages from "../../../data/languages";
 import specialization from "../../../data/specialization";
 import moment from "moment";
 const Register = () => {
   const authContext = useContext(AuthContext);
   const {
-    user,
+    alert,
+    alertMsg,
     privatePractice,
     userToCreate,
     setUserToCreate,
@@ -76,6 +78,7 @@ const Register = () => {
           <form>
             <div className="row">
               <div className="col-6 offset-3">
+                {alert && <Alert msg={alertMsg} />}
                 <div className="form-row">
                   <div className="form-group col-md-6">
                     <label htmlFor="inputName4">Name</label>
@@ -87,7 +90,7 @@ const Register = () => {
                       }`}
                       ref={register({ required: true, minLength: 2 })}
                       id={"name"}
-                      placeholder="Firstname"
+                      placeholder="First Name"
                       name="firstname"
                     />
                     {errors.firstname &&

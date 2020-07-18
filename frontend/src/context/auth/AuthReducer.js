@@ -86,6 +86,12 @@ export default (state, action) => {
         }
       }
     }
+    case "SET_ALERT":
+      return {
+        ...state,
+        alert: action.payload.alert,
+        alertMsg: action.payload.alertMsg
+      }
     case "LOGOUT_USER":
       Cookies.remove("bearer_token");
       return {

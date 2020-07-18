@@ -9,7 +9,7 @@ import {reverse} from "named-urls";
 import routes from "../../../routes";
 import {Link, Redirect} from "react-router-dom";
 import axios from "axios";
-import {AuthContext} from "../../../auth/AuthState";
+import {AuthContext} from "../../../context/auth/AuthState";
 
 export const PrescriptionsCreate = (props) => {
 

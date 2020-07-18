@@ -52,6 +52,18 @@ exports.getPrescriptionforUser = asyncHandler(async (req, res, next) => {
   await res.status(200).json(res.filterResults);
 });
 
+// @desc  Get Prescriptions made for logged-in patient
+// @route  GET /api/v1/prescriptions/myprescriptions
+// @access Private/patient
+exports.getPrescriptionforPatient = asyncHandler(async (req, res, next) => {
+  let prescriptions = await Prescription
+      .find({patient: req.user._id, isSent: true})
+      .sort('-date')
+      .populate({path: "appointment", populate: { path: "symptoms"}})
+      .populate({path: "doctor"});
+  await res.status(200).json({success: true, count: prescriptions.length, data: prescriptions});
+});
+
 // @desc  Get Prescription by Id
 //@route  GET /api/v1/prescriptions/:id
 //@access Private/doctor
@@ -65,7 +77,7 @@ exports.getPrescription = asyncHandler(async (req, res, next) => {
   // only doctor and patient of the prescription should have access to it
   if (
     prescription.doctor.toString() !== req.user.id &&
-    prescription.user.toString() !== req.user.id &&
+    prescription.patient.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return next(
@@ -90,7 +102,7 @@ exports.updatePrescription = asyncHandler(async (req, res, next) => {
   // only doctor and patient of that prescription should have access
   if (
     prescription.doctor.toString() !== req.user.id &&
-    prescription.user.toString() !== req.user.id &&
+    prescription.prescription.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return next(
@@ -225,7 +237,7 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
   // only doctor and patient of the prescription should have access to it
   if (
       prescription.doctor.toString() !== req.user.id &&
-      prescription.user.toString() !== req.user.id &&
+      prescription.patient.toString() !== req.user.id &&
       req.user.role !== "admin"
   ) {
     return next(

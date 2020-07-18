@@ -22,6 +22,8 @@ import DashboardPage from "./general/dashboard.component";
 import Questionnaire from "./questionnaire/questionnaire.component";
 import Success from "./general/appointmentCreated.component";
 import UserProfilePage from "./general/userprofile.component";
+/* Patients */
+import {PrescriptionsMainPatient} from "./patient/prescriptions/main.component"
 
 export default {
     general: {
@@ -50,6 +52,11 @@ export default {
             PrescriptionsSearch,
             PrescriptionsPatient,
             PrescriptionsCreate
+        }
+    },
+    patient: {
+        prescriptions: {
+            PrescriptionsMainPatient
         }
     },
 }

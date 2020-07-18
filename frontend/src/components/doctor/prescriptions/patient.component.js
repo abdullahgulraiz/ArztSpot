@@ -50,7 +50,7 @@ export const PrescriptionsPatient = (props) => {
               'id': d._id,
               'appointmentDate': moment(d.appointment.startTime).format("YYYY-MM-DD"),
               'issuedOn': moment(d.date).format("YYYY-MM-DD"),
-              'symptoms': d.appointment.symptoms ? d.appointment.symptoms.map(s => s.name) : ["Not defined"],
+              'symptoms': d.appointment.symptoms && d.appointment.symptoms.length > 0 ? d.appointment.symptoms.map(s => s.name) : ["Not defined"],
               'status': d.isSent ? "Sent" : "Pending"
             });
           });
@@ -281,8 +281,8 @@ export const PrescriptionsPatient = (props) => {
               <thead>
               <tr>
               <th scope="col">#</th>
-              <th scope="col">Appointment date</th>
               <th scope="col">Issued on</th>
+              <th scope="col">Appointment date</th>
               <th scope="col">Symptoms</th>
               <th scope="col">Status</th>
               <th scope="col">Actions</th>
@@ -337,8 +337,8 @@ const SearchResultRow = props => {
   return (
       <tr key={index}>
         <th scope="row">{index + 1}</th>
+          <td>{searchResult.issuedOn}</td>
         <td>{searchResult.appointmentDate}</td>
-        <td>{searchResult.issuedOn}</td>
         <td>{searchResult.symptoms.join(", ")}</td>
         <td>{searchResult.status}</td>
         <td>

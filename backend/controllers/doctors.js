@@ -54,7 +54,11 @@ exports.getDoctorPatients = asyncHandler(async (req, res, next) => {
   let query = { role: "user" };
   if (searchCriteria) {
     if (searchValue) {
-      query[searchCriteria] = searchValue;
+      if (searchCriteria === "firstname" || searchCriteria === "lastname") {
+        query[searchCriteria] = { $regex : new RegExp(searchValue, "i") };
+      } else {
+        query[searchCriteria] = searchValue;
+      }
     } else {
       return next(
           new ErrorResponse(

@@ -19,7 +19,7 @@ export const PrescriptionsCreate = (props) => {
       searchTerm: '',
       selectedPrescription: 'none',
       criteria: 0, //0 for search term, 1 for prescriptions
-      allPrescriptions: [],
+      // allPrescriptions: [],
       searchResults: []
     },
     prescription: {
@@ -40,7 +40,7 @@ export const PrescriptionsCreate = (props) => {
       allAppointments: [],
       medicationData: [],
       additionalNotes: '',
-      patientPrescriptions: [],
+      // patientPrescriptions: [],
       prescriptionCreated: false,
     }
   }
@@ -51,7 +51,8 @@ export const PrescriptionsCreate = (props) => {
     errorSearchQuery: '',
     infoSearchResults: '',
     errorPrescriptions: [],
-  })
+  });
+  const [patientPrescriptions, setPatientPrescriptions] = useState([]);
 
   const { bearerToken, user } = useContext(AuthContext);
 
@@ -73,22 +74,7 @@ export const PrescriptionsCreate = (props) => {
           }
         })
         .then(response => {
-          let all_prescriptions = [];
-          response.data.data.map(d => {
-            all_prescriptions.push({
-              'id': d._id,
-              'issuedOn': moment(d.date).format("YYYY-MM-DD"),
-              'symptoms': d.appointment.symptoms ? d.appointment.symptoms.map(s => s.name) : ["Symptoms undefined"],
-            });
-          });
-          setState({
-            ...state,
-            search: {
-              ...state.search,
-              allPrescriptions: all_prescriptions
-            },
-            patientPrescriptions: response.data.data
-          });
+          setPatientPrescriptions(response.data.data);
           return axiosInstance.get("/api/v1/appointments?user=" + props.match.params.patientId);
         })
         .then(response => {
@@ -273,7 +259,7 @@ export const PrescriptionsCreate = (props) => {
       // display prescriptions from medicine
       const selectedPrescription = state.search.selectedPrescription;
       let search_results = [];
-      state.patientPrescriptions.map(p => {
+      patientPrescriptions.map(p => {
         if (p._id === selectedPrescription) {
           p.prescriptionData.map(md => {
             search_results.push({
@@ -484,9 +470,9 @@ export const PrescriptionsCreate = (props) => {
               <select id="selectedPrescription" className="form-control" name={"selectedPrescription"} value={state.search.selectedPrescription} onChange={onChangeSearch}>
                 <option value={"none"} disabled={"disabled"}>Choose...</option>
                 {
-                  state.search.allPrescriptions.map((p, idx) => {
+                  patientPrescriptions.map((p, idx) => {
                     return (
-                      <option key={idx} value={p.id}>{p.issuedOn} ({p.symptoms.join(", ")})</option>
+                      <option key={idx} value={p._id}>{moment(p.date).format("YYYY-MM-DD")} ({p.appointment.symptoms && p.appointment.symptoms.length > 0 ? p.appointment.symptoms.map(s => s.name).join(", ") : "Not defined"})</option>
                     )
                   })
                 }
@@ -555,7 +541,7 @@ export const PrescriptionsCreate = (props) => {
                   {
                     state.prescription.allAppointments.map((f, idx) => {
                       return (
-                          <option key={idx} value={f._id}>{moment(f.startTime).format("YYYY-MM-DD")} {f.symptoms ? "(" + [f.symptoms.map(s => s.name)].join(", ") + ")" : ""}</option>
+                          <option key={idx} value={f._id}>{moment(f.startTime).format("YYYY-MM-DD")} {f.symptoms && f.symptoms.length > 0 ? "(" + f.symptoms.map(s => s.name).join(", ") + ")" : ""}</option>
                       )
                     })
                   }

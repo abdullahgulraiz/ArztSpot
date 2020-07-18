@@ -18,16 +18,19 @@ const initialState = {
     errorLanguages: false,
     errorSpecialization: false,
   },
-  userToCreate: {
-    zipcode: "",
+  hospitalToCreate: {
+    nameHospital: "",
     zipcodeHospital: "",
-    address: "",
-    city: "",
-    country: "",
     countryHospital: "",
     cityHospital: "",
     addressHospital: "",
     phoneHospital: "",
+  },
+  userToCreate: {
+    zipcode: "",
+    address: "",
+    city: "",
+    country: "",
     birthday: "",
     languages: [],
     specialization: "",
@@ -35,7 +38,7 @@ const initialState = {
     insurance_number: "",
     experience: "",
     phone: "",
-    role: null,
+    role: "user",
   },
 };
 
@@ -64,6 +67,10 @@ export const AuthProvider = ({ children }) => {
   const setUserToCreate = (userToCreate) => {
     dispatch({ type: "SET_USER_TO_CREATE", payload: userToCreate });
   };
+  // Hospital to create in register doctor
+  const setHospitalToCreate = (hospitalToCreate) => {
+    dispatch({ type: "SET_HOSPITAL_TO_CREATE", payload: hospitalToCreate });
+  };
   // Set the type of user to register to show one
   // form or the other
   const setPrivatePractice = (isPrivatePractice) => {
@@ -78,6 +85,121 @@ export const AuthProvider = ({ children }) => {
   const setIsEditing = (isEditing) => {
     dispatch({ type: "SET_IS_EDITING", payload: isEditing });
   };
+  // create patient
+  const createPatient = async (user) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    // user to post
+    const userToPost = {
+      firstname: user.firstname,
+      lastname: user.lastname,
+      email: user.email,
+      password: user.password,
+      phone: user.phone,
+      address:
+        user.address +
+        ", " +
+        user.city +
+        ", " +
+        user.zipcode +
+        ", " +
+        user.country,
+      birthday: user.birthday,
+      insurance_company: user.insurance_company,
+      insurance_number: user.insurance_number,
+      role: user.role,
+    };
+    try {
+      const res = await axios.post("/api/v1/auth/register", userToPost, config);
+      setUser(res.data.user);
+      setBearerToken(res.data.token);
+    } catch (e) {
+      console.log(e);
+    }
+    clearUserToCreate();
+  };
+  // create doctor
+  const createDoctor = async (doctor, hospitalToCreate, isHospital) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    // user to post
+    const doctorToPost = {
+      firstname: doctor.firstname,
+      lastname: doctor.lastname,
+      email: doctor.email,
+      password: doctor.password,
+      languages: doctor.languages,
+      specialization: doctor.specialization,
+      experience: doctor.experience,
+      role: doctor.role,
+    };
+    try {
+      const res = await axios.post(
+        "/api/v1/auth/register",
+        doctorToPost,
+        config
+      );
+      setUser(res.data.user);
+      setBearerToken(res.data.token);
+      // Create hospital also if isHospital
+      if (isHospital) {
+        await createHospital(
+          hospitalToCreate,
+          res.data.token,
+          res.data.user._id
+        );
+      }
+    } catch (e) {
+      console.log(e.response);
+    }
+    clearUserToCreate();
+    clearHospitalToCreate();
+  };
+  // clear userToCreate when finished
+  const clearUserToCreate = () => {
+    dispatch({ type: "CLEAR_USER_TO_CREATE" });
+  };
+  // some doctors create their practice straight away
+  const createHospital = async (hospital, bearerToken, userId) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    };
+
+    let hospitalToPost = {
+      name: hospital.nameHospital,
+      address:
+        hospital.addressHospital +
+        ", " +
+        hospital.cityHospital +
+        ", " +
+        hospital.zipcodeHospital +
+        ", " +
+        hospital.countryHospital,
+      phone: hospital.phoneHospital,
+      is_private_practice: true,
+      owner: userId,
+    };
+    console.log(hospitalToPost);
+
+    try {
+      await axios.post("/api/v1/hospitals", hospitalToPost, config);
+    } catch (e) {
+      console.log(e.response);
+    }
+  };
+  const clearHospitalToCreate = () => {
+    dispatch({ type: "CLEAR_HOSPITAL_TO_CREATE" });
+  };
+
   const updateUser = async (bearerToken, infoToUpdate) => {
     const url = "/api/v1/auth/details";
     const config = {
@@ -99,7 +221,7 @@ export const AuthProvider = ({ children }) => {
       console.log(e.response);
     }
   };
-  // Typehead component need
+  // Typeahead component need
   // custom validation
   const setCustomErrors = (error) => {
     dispatch({ type: "SET_CUSTOM_ERROR", payload: error });
@@ -130,6 +252,11 @@ export const AuthProvider = ({ children }) => {
         userToCreate: state.userToCreate,
         privatePractice: state.privatePractice,
         customErrors: state.customErrors,
+        hospitalToCreate: state.hospitalToCreate,
+        createPatient,
+        createHospital,
+        createDoctor,
+        setHospitalToCreate,
         setCustomErrors,
         setUserToCreate,
         setUpdateInfo,

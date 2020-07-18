@@ -77,7 +77,6 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Invalid update request", 400));
   }
   let user = await User.findById(req.user.id).populate("hospital");
-  console.log(user)
   Object.keys(toUpdate).forEach(key => {
     user[key] = toUpdate[key]
   })
@@ -207,5 +206,5 @@ const sendTokenResponse = (user, statusCode, res) => {
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, token });
+    .json({ success: true, token, user });
 };

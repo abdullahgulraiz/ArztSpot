@@ -8,12 +8,19 @@ import moment from "moment";
 const Register = () => {
   const authContext = useContext(AuthContext);
   const {
+    user,
     privatePractice,
     userToCreate,
     setUserToCreate,
     setPrivatePractice,
     customErrors,
     setCustomErrors,
+    setHospitalToCreate,
+    hospitalToCreate,
+    createHospital,
+    createDoctor,
+    createPatient,
+    clearCustomError,
   } = authContext;
   const { register, handleSubmit, errors } = useForm();
 
@@ -26,6 +33,13 @@ const Register = () => {
   };
   const onChangePracticeType = (e) => {
     setPrivatePractice(!privatePractice);
+  };
+  // fields related with hospital to create
+  const onChangeHospital = (e) => {
+    setHospitalToCreate({
+      ...hospitalToCreate,
+      [e.target.name]: e.target.value,
+    });
   };
   const validateDate = (birthday) => {
     // check age is between 18 and 95
@@ -42,12 +56,12 @@ const Register = () => {
       } else if (userToCreate.specialization === "") {
         setCustomErrors({ ...customErrors, errorSpecialization: true });
       } else {
-        console.log("Success");
+        clearCustomError();
+        createDoctor(userToCreate, hospitalToCreate, privatePractice);
       }
     } else {
-      console.log("Success user");
+      createPatient(userToCreate);
     }
-    console.log(data);
   };
 
   return (
@@ -360,7 +374,7 @@ const Register = () => {
                             <div
                               className={`invalid-feedback d-inline col-sm-8 `}
                             >
-                              Country cannot exceed 50 characters
+                              Country cannot exceed 20 characters
                             </div>
                           )}
                       </div>
@@ -416,7 +430,7 @@ const Register = () => {
                           name="zipcode"
                           ref={register({
                             required: true,
-                            pattern: /^\d{5}/,
+                            pattern: /^(?=(\D*\d){5}\D*$)/,
                           })}
                           id="inputZip"
                           placeholder={"80331"}
@@ -483,7 +497,7 @@ const Register = () => {
                           name="insurance_number"
                           ref={register({
                             required: true,
-                            pattern: /^\d{9}/,
+                            pattern: /^(?=(\D*\d){9}\D*$)/,
                           })}
                           id="inputInsuranceID"
                           placeholder={"123456789"}
@@ -612,15 +626,15 @@ const Register = () => {
                             <label htmlFor="inputDate4">Practice Name</label>
                             <input
                               type={"text"}
-                              onChange={onChange}
-                              value={userToCreate.nameHospital}
+                              onChange={onChangeHospital}
+                              value={hospitalToCreate.nameHospital}
                               className={`form-control ${
                                 errors.nameHospital && "is-invalid"
                               }`}
                               id={"date"}
                               ref={register({
                                 required: true,
-                                minLength: 10,
+                                minLength: 5,
                               })}
                               placeholder="Dr. Smith Consultation"
                               name="nameHospital"
@@ -630,7 +644,7 @@ const Register = () => {
                                 <div
                                   className={`pl-0 invalid-feedback d-inline col-md-6 `}
                                 >
-                                  Firstname is required.
+                                  Consultation name is required.
                                 </div>
                               )}
                             {errors.nameHospital &&
@@ -638,15 +652,16 @@ const Register = () => {
                                 <div
                                   className={`pl-0 invalid-feedback d-inline col-md-6 `}
                                 >
-                                  Firstname must be longer than two characters.
+                                  Consultation name must be longer than 5
+                                  characters.
                                 </div>
                               )}
                           </div>
                           <div className="form-group col-md-6">
                             <label htmlFor="example-tel-input">Telephone</label>
                             <input
-                              value={userToCreate.phoneHospital}
-                              onChange={onChange}
+                              value={hospitalToCreate.phoneHospital}
+                              onChange={onChangeHospital}
                               className={`form-control ${
                                 errors.phoneHospital && "is-invalid"
                               }`}
@@ -684,8 +699,8 @@ const Register = () => {
                             className={`form-control ${
                               errors.addressHospital && "is-invalid"
                             }`}
-                            onChange={onChange}
-                            value={userToCreate.addressHospital}
+                            onChange={onChangeHospital}
+                            value={hospitalToCreate.addressHospital}
                             name="addressHospital"
                             ref={register({
                               required: true,
@@ -722,38 +737,62 @@ const Register = () => {
                         </div>
                         <div className="form-row">
                           <div className="form-group col-lg-6">
-                            <label htmlFor="inputCity">Country</label>
+                            <label htmlFor="inputCountry">Country</label>
                             <input
                               type="text"
-                              value={userToCreate.countryHospital}
-                              onChange={onChange}
+                              value={hospitalToCreate.countryHospital}
+                              onChange={onChangeHospital}
                               className={`form-control ${
                                 errors.countryHospital && "is-invalid"
                               }`}
                               ref={register({
                                 required: true,
-                                minLength: 10,
-                                maxLength: 50,
+                                minLength: 5,
+                                maxLength: 20,
                               })}
-                              id="inputCity"
+                              id="inputCountry"
                               name="countryHospital"
                               placeholder={"Country"}
                             />
+                            {errors.countryHospital &&
+                              errors.countryHospital.type === "required" && (
+                                <div
+                                  className={`invalid-feedback d-inline d-inline d-inline  col-sm-8 `}
+                                >
+                                  Country is required.
+                                </div>
+                              )}
+                            {errors.countryHospital &&
+                              errors.countryHospital.type === "minLength" && (
+                                <div
+                                  className={`invalid-feedback d-inline d-inline d-inline col-sm-8 `}
+                                >
+                                  Country must be longer than 5 characters
+                                </div>
+                              )}
+                            {errors.countryHospital &&
+                              errors.countryHospital.type === "maxLength" && (
+                                <div
+                                  className={`invalid-feedback d-inline col-sm-8 `}
+                                >
+                                  Country cannot exceed 20 characters
+                                </div>
+                              )}
                           </div>
                           <div className="form-group col-lg-4">
                             <label htmlFor="inputState">City</label>
                             <input
                               type="text"
-                              value={userToCreate.cityHospital}
-                              onChange={onChange}
+                              value={hospitalToCreate.cityHospital}
+                              onChange={onChangeHospital}
                               className={`form-control ${
                                 errors.cityHospital && "is-invalid"
                               }`}
                               name="cityHospital"
                               ref={register({
                                 required: true,
-                                minLength: 10,
-                                maxLength: 50,
+                                minLength: 5,
+                                maxLength: 20,
                               })}
                               id="inputCity"
                               placeholder={"City"}
@@ -779,7 +818,7 @@ const Register = () => {
                                 <div
                                   className={`invalid-feedback d-inline col-sm-8 `}
                                 >
-                                  City cannot exceed 50 characters
+                                  City cannot exceed 20 characters
                                 </div>
                               )}
                           </div>
@@ -787,15 +826,15 @@ const Register = () => {
                             <label htmlFor="inputZip">Zip</label>
                             <input
                               type="text"
-                              onChange={onChange}
-                              value={userToCreate.zipcodeHospital}
+                              onChange={onChangeHospital}
+                              value={hospitalToCreate.zipcodeHospital}
                               className={`form-control ${
                                 errors.zipcodeHospital && "is-invalid"
                               }`}
                               name="zipcodeHospital"
                               ref={register({
                                 required: true,
-                                pattern: /^\d{5}/,
+                                pattern: /^(?=(\D*\d){5}\D*$)/,
                               })}
                               id="inputZip"
                               placeholder={"80331"}

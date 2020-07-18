@@ -126,17 +126,17 @@ const EditPersonalInfo = ({ user }) => {
               </textarea>
             </div>
             {errors.experience && errors.experience.type === "required" && (
-              <div className={`invalid-feedback d-flex col-sm-8 offset-4 `}>
+              <div className={` pl-0 invalid-feedback d-inline col-sm-8  `}>
                 Experience is required.
               </div>
             )}
             {errors.experience && errors.experience.type === "minLength" && (
-              <div className={`invalid-feedback d-flex col-sm-8 offset-4 `}>
+              <div className={` pl-0 invalid-feedback d-inline col-sm-8 `}>
                 Experience must be longer than 50 characters
               </div>
             )}
             {errors.experience && errors.experience.type === "maxLength" && (
-              <div className={`invalid-feedback d-flex col-sm-8 offset-4 `}>
+              <div className={` pl-0 invalid-feedback d-inline col-sm-8 `}>
                 Experience cannot exceed 300 characters
               </div>
             )}

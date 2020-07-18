@@ -24,6 +24,12 @@ export default (state, action) => {
         isEditing: action.payload,
       };
     }
+    case "SET_HOSPITAL_TO_CREATE": {
+      return {
+        ...state,
+        hospitalToCreate: action.payload
+      }
+    }
     case "SET_USER_TO_CREATE": {
       return {
         ...state,
@@ -47,6 +53,38 @@ export default (state, action) => {
         ...state,
         customErrors: action.payload,
       };
+    }
+    case "CLEAR_USER_TO_CREATE": {
+      return {
+        ...state,
+        userToCreate: {
+          zipcode: "",
+          address: "",
+          city: "",
+          country: "",
+          birthday: "",
+          languages: [],
+          specialization: "",
+          insurance_company: "TK",
+          insurance_number: "",
+          experience: "",
+          phone: "",
+          role: "user",
+        }
+      }
+    }
+    case "CLEAR_HOSPITAL_TO_CREATE": {
+      return {
+        ...state,
+        hospitalToCreate: {
+          nameHospital: "",
+          zipcodeHospital: "",
+          countryHospital: "",
+          cityHospital: "",
+          addressHospital: "",
+          phoneHospital: "",
+        }
+      }
     }
     case "LOGOUT_USER":
       Cookies.remove("bearer_token");

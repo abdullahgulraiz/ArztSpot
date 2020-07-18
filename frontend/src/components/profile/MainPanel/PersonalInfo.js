@@ -25,10 +25,10 @@ const PersonalInfo = ({user}) => {
         : <Fragment>
           <Info label="Name" value={`${user.firstname} ${user.lastname}`} />
           <Info label="Email" value={`${user.email}`} />
-          <Info
+          {user.hospital && <Info
             label="Address"
             value={`${user.hospital.address_geojson.formattedAddress}`}
-          />
+          />}
           {user.phone && <Info label="Phone Number" value={`${user.phone}`}/>}
           {user.experience && <Info label="Description" value={`${user.experience}`}/>}
         </Fragment> }

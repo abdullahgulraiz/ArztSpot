@@ -106,7 +106,7 @@ const UserSchema = new mongoose.Schema({
   },
   languages: [{
     type: String,
-    validate: [isDoctor, "Only Doctors can have field `specialization`"]
+    validate: [isDoctor, "Only Doctors can have field `languages`"]
   }],
   hospital: {
     type: mongoose.Schema.ObjectId,
@@ -115,7 +115,8 @@ const UserSchema = new mongoose.Schema({
   },
   arztNumber: {
     type: String,
-    validate: [isDoctor, "Only Doctors can have field `specialization`"]
+    validate: [isDoctor, "Only Doctors can have field `Doctor licence`"],
+    required: false
   },
 });
 
@@ -123,7 +124,7 @@ const UserSchema = new mongoose.Schema({
 // Since we cannot run `required: true` because
 // it would affect both roles (patients and doctors)
 UserSchema.pre("save", async function (next) {
-  const required_fields_doctor = ["specialization", "languages", "arztNumber"];
+  const required_fields_doctor = ["specialization", "languages"];
   const required_fields_patient = ["phone", "address"]
   if (this.role === "doctor") {
     requiredFields(this, required_fields_doctor, next);

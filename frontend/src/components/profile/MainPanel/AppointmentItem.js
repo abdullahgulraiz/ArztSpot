@@ -11,7 +11,7 @@ import SelectDateMain from "../../dashboard/SelectDate/SelectDateMain";
 
 const AppointmentItem = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
-  const { updating, alert, alertMsg } = profileContext;
+  const { updating, alert, alertMsg, setUpdating } = profileContext;
   const { doctor, hospital } = appointment;
   return (
     <div className="card mb-3">
@@ -32,8 +32,10 @@ const AppointmentItem = ({ appointment }) => {
             label="Address"
             value={hospital.address_geojson.formattedAddress}
           />
-          {(alert && alertMsg !== "") && <Alert msg={alertMsg} />}
-          {updating === appointment._id && <SelectDateMain doctor={doctor} hospital={hospital}/>}
+          {alert && alertMsg !== "" && <Alert msg={alertMsg} />}
+          {updating === appointment._id && (
+            <SelectDateMain doctor={doctor} hospital={hospital} />
+          )}
           <UpdateAppointment appointment={appointment} />
           {updating !== appointment._id && (
             <DeleteAppointment appointment={appointment} />

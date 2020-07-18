@@ -12,6 +12,18 @@ export default (state, action) => {
                 ...state,
                 user: action.payload
             }
+        case 'SET_UPDATE_INFO': {
+            return {
+                ...state,
+                infoToUpdate: action.payload
+            }
+        }
+        case 'SET_IS_EDITING': {
+            return {
+                ...state,
+                isEditing: action.payload
+            }
+        }
         case 'LOGOUT_USER':
             Cookies.remove("bearer_token");
             return {

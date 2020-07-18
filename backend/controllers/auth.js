@@ -48,7 +48,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/auth/me
 //@access Private
 exports.getCurrentUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+  // populate hospital in case it is a doctor (mongoose does not
+  // return an error if the field is not present)
+  const user = await User.findById(req.user.id).populate("hospital");
   res.status(200).json({
     success: true,
     data: user,
@@ -71,15 +73,19 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
       delete toUpdate[key];
     }
   });
-  console.log(toUpdate);
   if (Object.entries(toUpdate).length === 0) {
     return next(new ErrorResponse("Invalid update request", 400));
   }
-
-  const user = await User.findByIdAndUpdate(req.user.id, toUpdate, {
-    new: true,
-    runValidators: true,
-  });
+  let user = await User.findById(req.user.id).populate("hospital");
+  console.log(user)
+  Object.keys(toUpdate).forEach(key => {
+    user[key] = toUpdate[key]
+  })
+  user.save()
+  // const user = await User.findByIdAndUpdate(req.user.id, toUpdate, {
+  //   new: true,
+  //   runValidators: true,
+  // });
 
   res.status(200).json({
     success: true,

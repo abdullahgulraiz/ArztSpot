@@ -24,6 +24,12 @@ export default (state, action) => {
                 isEditing: action.payload
             }
         }
+        case "SET_USER_TO_CREATE": {
+            return {
+                ...state,
+                userToCreate:action.payload
+            }
+        }
         case 'LOGOUT_USER':
             Cookies.remove("bearer_token");
             return {

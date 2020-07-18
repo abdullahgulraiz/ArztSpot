@@ -10,7 +10,7 @@ import NotFound from "./general/notfound.component"
 import Unauthorized from "./general/unauthorized.component"
 /* Auth */
 import {Login} from "./auth/login.component"
-import Register from "./auth/register.component"
+import Register from "./auth/Register/register.component"
 import ForgotPassword from "./auth/forgot.component"
 /* Doctors */
 import {PrescriptionsSearch} from "./doctor/prescriptions/search.component"

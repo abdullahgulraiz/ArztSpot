@@ -13,6 +13,8 @@ const initialState = {
     insurance_company: "",
     insurance_number: "",
   },
+  userToCreateRole: "",
+  userToCreate: {}
 };
 
 // Create context
@@ -35,6 +37,10 @@ export const AuthProvider = ({ children }) => {
       type: "SET_USER",
       payload: user,
     });
+  }
+  // User to create in register
+  const setUserToCreate = (userToCreate) => {
+    dispatch({type: "SET_USER_TO_CREATE", payload: userToCreate})
   }
   const setUpdateInfo = (infoToUpdate) => {
     dispatch({
@@ -81,6 +87,9 @@ export const AuthProvider = ({ children }) => {
         bearerToken: state.bearerToken,
         infoToUpdate: state.infoToUpdate,
         isEditing: state.isEditing,
+        userToCreate: state.userToCreate,
+        userToCreateRole: state.userToCreateRole,
+        setUserToCreate,
         setUpdateInfo,
         setIsEditing,
         setBearerToken,

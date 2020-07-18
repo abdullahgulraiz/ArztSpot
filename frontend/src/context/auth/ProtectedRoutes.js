@@ -1,9 +1,9 @@
 import React, {useContext} from 'react'
 import { AuthContext } from './AuthState';
 import { reverse } from 'named-urls'
-import routes from "../routes";
+import routes from "../../routes";
 import {Redirect, Route} from 'react-router-dom';
-import Unauthorized from "../components/general/unauthorized.component";
+import Unauthorized from "../../components/general/unauthorized.component";
 
 export const DoctorRoute = (props) => {
     const { component: Component, ...props_rest } = props

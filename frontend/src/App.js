@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import routes from "./routes.js";
 import components from "./components/components";
-import { AuthProvider } from "./auth/AuthState";
+import { AuthProvider } from "./context/auth/AuthState";
 import SearchState from "./context/Search/SearchState";
 import DashboardState from "./context/Dashboard/DashboardState";
-import {DoctorRoute, AuthRoute, PatientRoute} from "./auth/ProtectedRoutes";
+import {DoctorRoute, AuthRoute, PatientRoute} from "./context/auth/ProtectedRoutes";
 import ProfileState from "./context/Profile/profileState";
 import {QuestionnaireProvider} from "./context/Questionnaire/QuestionnaireState";
 

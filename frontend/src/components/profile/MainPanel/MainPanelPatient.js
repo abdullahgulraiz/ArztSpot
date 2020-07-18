@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from "react";
-import { AuthContext } from "../../../auth/AuthState";
+import { AuthContext } from "../../../context/auth/AuthState";
 import Appointment from "./Appointment";
 import EditPersonalInfo from "./EditPersonalInfo";
 import PersonalInfo from "./PersonalInfo";

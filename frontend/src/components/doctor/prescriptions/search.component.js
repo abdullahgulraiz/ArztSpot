@@ -4,7 +4,7 @@ import { reverse } from 'named-urls'
 import routes from "../../../routes";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {AuthContext} from "../../../auth/AuthState";
+import {AuthContext} from "../../../context/auth/AuthState";
 import moment from "moment";
 
 export const PrescriptionsSearch = (props) => {

@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { reverse } from 'named-urls'
-import routes from "../../routes";
 
 export default class Register extends Component {
 
@@ -27,29 +24,6 @@ export default class Register extends Component {
 
   handleSubmit(event) {
     const { email, password, password_confirmation } = this.state;
-    console.log(this.state);
-    console.log(email, password);
-  /*
-    axios
-        .post(
-            "http://localhost:3001/sessions",
-            {
-              user: {
-                email: email,
-                password: password
-              }
-            },
-            { withCredentials: true }
-        )
-        .then(response => {
-          if (response.data.logged_in) {
-            this.props.handleSuccessfulAuth(response.data);
-          }
-        })
-        .catch(error => {
-          console.log("login error", error);
-        });
-    */
     event.preventDefault();
   }
 
@@ -59,10 +33,10 @@ export default class Register extends Component {
 
       <main id="main">
 
-        <section id="contact" class="contact">
-          <div class="container" data-aos="fade-up">
+        <section id="contact" className="contact">
+          <div className="container" data-aos="fade-up">
 
-            <div class="section-title">
+            <div className="section-title">
               <h2>Sign Up</h2>
               <p>Please enter your details to create an account with ArztSpot.</p>
             </div>
@@ -173,57 +147,19 @@ export default class Register extends Component {
                 </div>
               </div>
             </form>
-
-            {/*<div className="row">*/}
-            {/*  <div className="col-6 offset-3">*/}
-            {/*    <form onSubmit={this.handleSubmit}>*/}
-            {/*      <div className="form-group">*/}
-            {/*        <label htmlFor="name">Name</label>*/}
-            {/*        <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"name"} placeholder={"Name"} name={"name"} required={"required"} />*/}
-            {/*      </div>*/}
-            {/*      <div className="form-group">*/}
-            {/*        <label htmlFor="lastname">Last Name</label>*/}
-            {/*        <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"lastname"} placeholder={"Last Name"} name={"lastname"} required={"required"} />*/}
-            {/*      </div>*/}
-            {/*      <div className="form-group">*/}
-            {/*        <label htmlFor="email">Email</label>*/}
-            {/*        <input type={"text"} onChange={this.handleChange} className={"form-control"} id={"email"} placeholder={"Email"} name={"email"} required={"required"} />*/}
-            {/*      </div>*/}
-            {/*      <div className="form-group">*/}
-            {/*        <label htmlFor="password">Password</label>*/}
-            {/*        <input type={"password"} onChange={this.handleChange} className={"form-control"} id={"password"} placeholder={"Password"} name={"password"} required={"true"} />*/}
-            {/*      </div>*/}
-            {/*      <div className="form-group">*/}
-            {/*        <label htmlFor="password_confirmation">Confirm Password</label>*/}
-            {/*        <input type={"password"} onChange={this.handleChange} className={"form-control"} id={"password_confirmation"} placeholder={"Confirm Password"} name={"password_confirmation"} required={"true"} />*/}
-            {/*      </div>*/}
-            {/*      <div className="row" style={{marginTop: "3%"}}>*/}
-            {/*          <div className="col-6 offset-3 text-center">*/}
-            {/*              <button type="submit" className="btn btn-primary">Sign up</button>*/}
-            {/*              <div className="section-title" style={{marginTop: "3%"}}>*/}
-            {/*                  <p>By signing up, you agree to ArztSpot's <a href="#" className="alert-link">Terms of Use</a> and <a href="#" className="alert-link">Privacy Policy</a>.</p>*/}
-            {/*              </div>*/}
-            {/*              <div className="section-title" style={{marginTop: "3%"}}>*/}
-            {/*                  <p>Already signed up? <a href="auth/login" className="alert-link">Log in</a> with your account</p>*/}
-            {/*              </div>*/}
-            {/*          </div>*/}
-            {/*      </div>*/}
-            {/*    </form>*/}
-            {/*  </div>*/}
-            {/*</div>*/}
           </div>
         </section>
 
-        <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Terms of Use</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <div className="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLongTitle">Terms of Use</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
+              <div className="modal-body">
                 <h5>1. Use of Our Service</h5>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 

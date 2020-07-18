@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect } from "react";
-import { AuthContext } from "../../auth/AuthState";
+import { AuthContext } from "../../context/auth/AuthState";
 import ProfileContext from "../../context/Profile/profileContext";
 import MainPanelPatient from "./MainPanel/MainPanelPatient";
 import SidePanel from "./SidePanel";

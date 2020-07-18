@@ -12,12 +12,8 @@ const EditPersonalInfo = ({ user }) => {
   const onChange = (e) => {
     setUpdateInfo({ ...infoToUpdate, [e.target.name]: e.target.value });
   };
-  const onClick = (e) => {
-    console.log(e);
-    updateUser(bearerToken, infoToUpdate);
-  };
   const onSubmit = (data) => {
-    console.log(data);
+    updateUser(bearerToken, infoToUpdate);
   };
   return (
     <Fragment>
@@ -112,18 +108,16 @@ const EditPersonalInfo = ({ user }) => {
         {user.role === "doctor" && (
           <Fragment>
             <div className="form-group">
-              <label htmlFor="exampleFormControlTextarea1">
-                Example textarea
-              </label>
+              <label htmlFor="exampleFormControlTextarea1">Description</label>
               <textarea
                 className={`form-control ${errors.experience && "is-invalid"}`}
-                name="description"
+                name="experience"
                 onChange={onChange}
                 id="exampleFormControlTextarea1"
                 ref={register({
                   required: true,
                   minLength: 50,
-                  maxLength: 300,
+                  maxLength: 1000,
                 })}
                 value={infoToUpdate.experience}
                 rows="3"

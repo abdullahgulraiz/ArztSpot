@@ -1,9 +1,8 @@
 import React, { Fragment, useContext } from "react";
 import { AuthContext } from "../../../auth/AuthState";
-import ProfileContext from "../../../context/Profile/profileContext";
 import Appointment from "./Appointment";
-import Info from "./Info";
 import EditPersonalInfo from "./EditPersonalInfo";
+import PersonalInfo from "./PersonalInfo";
 
 const MainPanelPatient = ({ appointments }) => {
   const authContext = useContext(AuthContext);
@@ -31,19 +30,21 @@ const MainPanelPatient = ({ appointments }) => {
               Info
             </a>
           </li>
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              id="profile-tab"
-              data-toggle="tab"
-              href="#appointments"
-              role="tab"
-              aria-controls="profile"
-              aria-selected="false"
-            >
-              Upcoming Appointments
-            </a>
-          </li>
+          {user.role === "user" && (
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                id="profile-tab"
+                data-toggle="tab"
+                href="#appointments"
+                role="tab"
+                aria-controls="profile"
+                aria-selected="false"
+              >
+                Upcoming Appointments
+              </a>
+            </li>
+          )}
         </ul>
       </div>
       <div className="tab-content profile-tab" id="myTabContent">
@@ -56,23 +57,7 @@ const MainPanelPatient = ({ appointments }) => {
           {isEditing ? (
             <EditPersonalInfo user={user} />
           ) : (
-            <Fragment>
-              <Info label="Name" value={`${user.firstname} ${user.lastname}`} />
-              <Info label="Email" value={`${user.email}`} />
-              <Info
-                label="Address"
-                value={`${user.address_geojson.formattedAddress}`}
-              />
-              <Info
-                label="Insurance Company"
-                value={`${user.insurance_company}`}
-              />
-              <Info
-                label="Insurance Number"
-                value={`${user.insurance_number}`}
-              />
-              <Info label="Phone Number" value={`${user.phone}`} />
-            </Fragment>
+            <PersonalInfo user={user} />
           )}
           {isEditing ? (
             <button
@@ -98,7 +83,7 @@ const MainPanelPatient = ({ appointments }) => {
           role="tabpanel"
           aria-labelledby="profile-tab"
         >
-          <Appointment appointments={appointments} />
+          {user.role === "user" && <Appointment appointments={appointments} />}
         </div>
       </div>
     </Fragment>

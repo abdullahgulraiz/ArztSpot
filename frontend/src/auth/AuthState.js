@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.data);
       setIsEditing(false)
     } catch (e) {
-      console.log(e);
+      console.log(e.response);
     }
   };
 

@@ -3,7 +3,6 @@ import { AuthContext } from "../../auth/AuthState";
 import ProfileContext from "../../context/Profile/profileContext";
 import MainPanelPatient from "./MainPanel/MainPanelPatient";
 import SidePanel from "./SidePanel";
-import MainPanelDoctor from "./MainPanel/MainPanelDoctor";
 
 const UserProfile = () => {
   useEffect(() => {
@@ -24,7 +23,7 @@ const UserProfile = () => {
             <SidePanel />
           </div>
           <div className="col-md-8">
-            { user.role === "user" ? <MainPanelPatient appointments={appointments}/> : <MainPanelDoctor appointments={appointments}/>}
+            <MainPanelPatient appointments={appointments}/>
           </div>
         </div>
     </div>

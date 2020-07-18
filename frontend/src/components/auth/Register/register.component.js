@@ -1,16 +1,52 @@
 import React, { Fragment, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../context/auth/AuthState";
+import TypeaheadSearch from "../../search/TypeaheadSearch";
+import languages from "../../../data/languages";
+import specialization from "../../../data/specialization";
+import moment from "moment";
 const Register = () => {
   const authContext = useContext(AuthContext);
-  const { userToCreateRole, userToCreate, setUserToCreate } = authContext;
+  const {
+    privatePractice,
+    userToCreate,
+    setUserToCreate,
+    setPrivatePractice,
+    customErrors,
+    setCustomErrors,
+  } = authContext;
   const { register, handleSubmit, errors } = useForm();
 
   const onChange = (e) => {
+    // this is to hide the info about the practice
+    if (e.target.name === "role" && e.target.value === "user") {
+      setPrivatePractice(false);
+    }
     setUserToCreate({ ...userToCreate, [e.target.name]: e.target.value });
+  };
+  const onChangePracticeType = (e) => {
+    setPrivatePractice(!privatePractice);
+  };
+  const validateDate = (birthday) => {
+    // check age is between 18 and 95
+    return (
+      moment().diff(moment(birthday), "years") >= 18 &&
+      moment().diff(moment(birthday), "years") <= 95
+    );
   };
 
   const onSubmit = (data) => {
+    if (userToCreate.role === "doctor") {
+      if (userToCreate.languages.length === 0) {
+        setCustomErrors({ ...customErrors, errorLanguages: true });
+      } else if (userToCreate.specialization === "") {
+        setCustomErrors({ ...customErrors, errorSpecialization: true });
+      } else {
+        console.log("Success");
+      }
+    } else {
+      console.log("Success user");
+    }
     console.log(data);
   };
 
@@ -42,13 +78,17 @@ const Register = () => {
                     />
                     {errors.firstname &&
                       errors.firstname.type === "required" && (
-                        <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                        <div
+                          className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                        >
                           Firstname is required.
                         </div>
                       )}
                     {errors.firstname &&
                       errors.firstname.type === "minLength" && (
-                        <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                        <div
+                          className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                        >
                           Firstname must be longer than two characters.
                         </div>
                       )}
@@ -67,13 +107,17 @@ const Register = () => {
                       name={"lastname"}
                     />
                     {errors.lastname && errors.lastname.type === "required" && (
-                      <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
                         Lastname is required.
                       </div>
                     )}
                     {errors.lastname &&
                       errors.lastname.type === "minLength" && (
-                        <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                        <div
+                          className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                        >
                           Lastname must be longer than two characters.
                         </div>
                       )}
@@ -99,12 +143,16 @@ const Register = () => {
                       name={"email"}
                     />
                     {errors.email && errors.email.type === "required" && (
-                      <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
                         Email is required.
                       </div>
                     )}
                     {errors.email && errors.email.type === "pattern" && (
-                      <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
                         Introduce a valid email.
                       </div>
                     )}
@@ -131,142 +179,650 @@ const Register = () => {
                       name={"password"}
                     />
                     {errors.password && errors.password.type === "required" && (
-                      <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
                         Password is required.
                       </div>
                     )}
                     {errors.password && errors.password.type === "pattern" && (
-                      <div className={`pl-0 invalid-feedback d-inline col-md-6 `}>
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
                         {errors.password.message}
                       </div>
                     )}
                   </div>
-
                 </div>
-
-                <div className="form-group">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="gridCheck1"
-                      data-toggle="collapse"
-                      role="button"
-                      aria-expanded="true"
-                      aria-controls="multiCollapse"
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="gridCheck1"
-                      data-toggle="collapse"
-                      role="button"
-                      aria-expanded="true"
-                      aria-controls="multiCollapse"
-                    >
-                      I'm NOT a health professional
+                <div className="form-row">
+                  <div className="form-group col-md-6">
+                    <label className="form-check-label" id="inlineRadio1">
+                      I am a Doctor
                     </label>
-                  </div>
-                </div>
-                <div className="collapse multi-collapse" id="multiCollapse">
-                  <div className="form-row">
-                    <div className="form-group col-md-6">
-                      <label htmlFor="inputID4">Personal ID</label>
-                      <input
-                        type={"text"}
-                        onChange={onChange}
-                        className={"form-control"}
-                        id={"date"}
-                        placeholder={"48925338-D"}
-                        name={"ID"}
-                        required={"required"}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group col-md-6">
-                      <label htmlFor="inputDate4">Date of Birth</label>
-                      <input
-                        type={"text"}
-                        onChange={onChange}
-                        className={"form-control"}
-                        id={"date"}
-                        placeholder={"DD.MM.YYYY"}
-                        name={"date"}
-                        required={"required"}
-                      />
-                    </div>
-                    <div className="form-group col-md-6">
-                      <label htmlFor="inputPlace4">Place of Birth</label>
-                      <input
-                        type={"text"}
-                        onChange={onChange}
-                        className={"form-control"}
-                        id={"place"}
-                        placeholder={"City of Birth"}
-                        name={"place"}
-                        required={"required"}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="inputAddress">Address</label>
                     <input
-                      type="text"
-                      className="form-control"
-                      id="inputAddress"
-                      placeholder="Leopoldstraße 45"
+                      className="form-check-input ml-3"
+                      type="radio"
+                      name="role"
+                      value="doctor"
+                      checked={userToCreate.role === "doctor"}
+                      onChange={onChange}
                     />
                   </div>
-                  <div className="form-row">
-                    <div className="form-group col-md-6">
-                      <label htmlFor="inputCity">Country</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="inputCity"
-                        placeholder={"Country"}
-                      />
-                    </div>
-                    <div className="form-group col-md-4">
-                      <label htmlFor="inputState">City</label>
-                      <select id="inputState" className="form-control">
-                        <option selected>Choose...</option>
-                        <option>Aachen</option>
-                        <option>Berlin</option>
-                        <option>Munich</option>
-                      </select>
-                    </div>
-                    <div className="form-group col-md-2">
-                      <label htmlFor="inputZip">Zip</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="inputZip"
-                        placeholder={"80331"}
-                      />
-                    </div>
-                  </div>
-                  <div className="form-row">
-                    <div className="form-group col-md-4">
-                      <label htmlFor="inputInsurance">Insurance</label>
-                      <select id="inputInsurance" className="form-control">
-                        <option selected>Choose...</option>
-                        <option>AOK</option>
-                        <option>Barmer GEK</option>
-                        <option>TK</option>
-                      </select>
-                    </div>
-                    <div className="form-group col-md-6">
-                      <label htmlFor="inputCity">Insurance ID</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        id="inputInsuranceID"
-                        placeholder={"123 456789 K"}
-                      />
-                    </div>
+                  <div className="form-group col-md-6">
+                    <label className="form-check-label" id="inlineRadio1">
+                      I am a Patient
+                    </label>
+                    <input
+                      className="form-check-input ml-3"
+                      type="radio"
+                      name="role"
+                      value="user"
+                      checked={userToCreate.role === "user"}
+                      onChange={onChange}
+                    />
                   </div>
                 </div>
+                {userToCreate.role === "user" && (
+                  <div className="" id="multiCollapse">
+                    <div className="form-row">
+                      <div className="form-group col-md-6">
+                        <label htmlFor="example-tel-input">Telephone</label>
+                        <input
+                          className={`form-control ${
+                            errors.phone && "is-invalid"
+                          }`}
+                          name="phone"
+                          onChange={onChange}
+                          ref={register({
+                            required: true,
+                            pattern: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/,
+                          })}
+                          placeholder="+XX (XXX) XXX-XXX"
+                          value={userToCreate.phone}
+                          id="example-tel-input"
+                        />
+                        {errors.phone && errors.phone.type === "required" && (
+                          <div
+                            className={`invalid-feedback d-inline inlinecol-sm-8 `}
+                          >
+                            Phone number is required.
+                          </div>
+                        )}
+                        {errors.phone && errors.phone.type === "pattern" && (
+                          <div
+                            className={`invalid-feedback d-inline col-sm-8 `}
+                          >
+                            This format is required +XX (XXX) XXX-XXX.
+                          </div>
+                        )}
+                      </div>
+                      <div className="form-group col-md-6">
+                        <label htmlFor="inputDate4">Date of Birthday</label>
+                        <input
+                          type={"date"}
+                          onChange={onChange}
+                          className={`form-control ${
+                            errors.date && "is-invalid"
+                          }`}
+                          id="date"
+                          ref={register({ validate: validateDate })}
+                          placeholder={"DD.MM.YYYY"}
+                          name="birthday"
+                        />
+                        {errors.date && errors.date.type === "validate" && (
+                          <div
+                            className={`pl-0 invalid-feedback d-inline col-sm-8 `}
+                          >
+                            Must be older than 18 years old (and less than 95).
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-group mt-2">
+                      <label htmlFor="inputAddress">Address</label>
+                      <input
+                        type="text"
+                        onChange={onChange}
+                        className={`form-control ${
+                          errors.address && "is-invalid"
+                        }`}
+                        name="address"
+                        ref={register({
+                          required: true,
+                          minLength: 10,
+                          maxLength: 50,
+                        })}
+                        value={userToCreate.address}
+                        id="inputAddress"
+                        placeholder="Leopoldstraße 45"
+                      />
+                      {errors.address && errors.address.type === "required" && (
+                        <div
+                          className={`pl-0 invalid-feedback d-inlined-inline d-inline d-inlined-inline  col-sm-8`}
+                        >
+                          Address is required.
+                        </div>
+                      )}
+                      {errors.address &&
+                        errors.address.type === "minLength" && (
+                          <div
+                            className={`pl-0 invalid-feedback d-inlined-inline d-inline d-inlined-inline  col-sm-8`}
+                          >
+                            Address must be longer than 10 characters
+                          </div>
+                        )}
+                      {errors.address &&
+                        errors.address.type === "maxLength" && (
+                          <div
+                            className={`pl-0 invalid-feedback d-inline col-sm-8 `}
+                          >
+                            Address cannot exceed 50 characters
+                          </div>
+                        )}
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group col-lg-6">
+                        <label htmlFor="inputCity">Country</label>
+                        <input
+                          type="text"
+                          className={`form-control ${
+                            errors.country && "is-invalid"
+                          }`}
+                          onChange={onChange}
+                          name="country"
+                          ref={register({
+                            required: true,
+                            minLength: 5,
+                            maxLength: 20,
+                          })}
+                          value={userToCreate.country}
+                          id="Country"
+                          placeholder={"Country"}
+                        />
+                        {errors.country &&
+                          errors.country.type === "required" && (
+                            <div
+                              className={`invalid-feedback d-inline d-inline d-inline  col-sm-8 `}
+                            >
+                              Country is required.
+                            </div>
+                          )}
+                        {errors.country &&
+                          errors.country.type === "minLength" && (
+                            <div
+                              className={`invalid-feedback d-inline d-inline d-inline col-sm-8 `}
+                            >
+                              Country must be longer than 5 characters
+                            </div>
+                          )}
+                        {errors.country &&
+                          errors.country.type === "maxLength" && (
+                            <div
+                              className={`invalid-feedback d-inline col-sm-8 `}
+                            >
+                              Country cannot exceed 50 characters
+                            </div>
+                          )}
+                      </div>
+                      <div className="form-group col-lg-4">
+                        <label htmlFor="inputState">City</label>
+                        <input
+                          type="text"
+                          className={`form-control ${
+                            errors.city && "is-invalid"
+                          }`}
+                          onChange={onChange}
+                          value={userToCreate.city}
+                          id="inputCity"
+                          ref={register({
+                            required: true,
+                            minLength: 5,
+                            maxLength: 20,
+                          })}
+                          name="city"
+                          placeholder={"City"}
+                        />
+                        {errors.city && errors.city.type === "required" && (
+                          <div
+                            className={`invalid-feedback d-inline d-inline d-inline  col-sm-8 `}
+                          >
+                            City is required.
+                          </div>
+                        )}
+                        {errors.city && errors.city.type === "minLength" && (
+                          <div
+                            className={`invalid-feedback d-inline d-inline d-inline col-sm-8 `}
+                          >
+                            City must be longer than 5 characters
+                          </div>
+                        )}
+                        {errors.city && errors.city.type === "maxLength" && (
+                          <div
+                            className={`invalid-feedback d-inline col-sm-8 `}
+                          >
+                            City cannot exceed 50 characters
+                          </div>
+                        )}
+                      </div>
+                      <div className="form-group col-lg-2">
+                        <label htmlFor="inputZip">Zip</label>
+                        <input
+                          type="text"
+                          value={userToCreate.zipcode}
+                          onChange={onChange}
+                          className={`form-control ${
+                            errors.zipcode && "is-invalid"
+                          }`}
+                          name="zipcode"
+                          ref={register({
+                            required: true,
+                            pattern: /^\d{5}/,
+                          })}
+                          id="inputZip"
+                          placeholder={"80331"}
+                        />
+                        {errors.zipcode &&
+                          errors.zipcode.type === "required" && (
+                            <div
+                              className={`invalid-feedback d-inline col-sm-8 `}
+                            >
+                              Zipcode is required.
+                            </div>
+                          )}
+                        {errors.zipcode &&
+                          errors.zipcode.type === "pattern" && (
+                            <div
+                              className={`invalid-feedback d-inline col-sm-8 `}
+                            >
+                              Zipcode must be 5 numbers.
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group col-md-4">
+                        <label htmlFor="inputInsurance">Insurance</label>
+                        <select
+                          id="inputInsurance"
+                          name="insurance_company"
+                          className="form-control"
+                          onChange={onChange}
+                        >
+                          <option
+                            defaultChecked={
+                              userToCreate.insurance_company === "AOK"
+                            }
+                          >
+                            AOK
+                          </option>
+                          <option
+                            defaultChecked={
+                              userToCreate.insurance_company === "GEK"
+                            }
+                          >
+                            GEK
+                          </option>
+                          <option
+                            defaultChecked={
+                              userToCreate.insurance_company === "TK"
+                            }
+                          >
+                            TK
+                          </option>
+                        </select>
+                      </div>
+                      <div className="form-group col-md-8">
+                        <label htmlFor="inputCity">Insurance ID</label>
+                        <input
+                          type="text"
+                          onChange={onChange}
+                          value={userToCreate.insurance_number}
+                          className={`form-control ${
+                            errors.insurance_number && "is-invalid"
+                          }`}
+                          name="insurance_number"
+                          ref={register({
+                            required: true,
+                            pattern: /^\d{9}/,
+                          })}
+                          id="inputInsuranceID"
+                          placeholder={"123456789"}
+                        />
+                      </div>
+                    </div>
+                    {errors.insurance_number &&
+                      errors.insurance_number.type === "required" && (
+                        <div
+                          className={`invalid-feedback d-inline col-md-8 offset-md-4 offset-md-0`}
+                        >
+                          Insurance number is required.
+                        </div>
+                      )}
+                    {errors.insurance_number &&
+                      errors.insurance_number.type === "pattern" && (
+                        <div
+                          className={`invalid-feedback d-inline col-md-8 offset-md-4 offset-md-0`}
+                        >
+                          Insurance number must be 9 numbers.
+                        </div>
+                      )}
+                  </div>
+                )}
+                {userToCreate.role === "doctor" && (
+                  <Fragment>
+                    <label htmlFor="inputPassword4">Languages you speak</label>
+                    <TypeaheadSearch
+                      props={{
+                        data: languages,
+                        multiple: true,
+                        name: "languages",
+                        setFunction: setUserToCreate,
+                        state: userToCreate,
+                        placeholder: "Language...",
+                      }}
+                    />{" "}
+                    {customErrors.errorLanguages && (
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-8 offset-md-0`}
+                      >
+                        Languages is required
+                      </div>
+                    )}
+                    <label htmlFor="inputPassword4">Specialization</label>
+                    <TypeaheadSearch
+                      props={{
+                        data: specialization,
+                        multiple: false,
+                        name: "specialization",
+                        setFunction: setUserToCreate,
+                        state: userToCreate,
+                        placeholder: "Specialization...",
+                      }}
+                    />
+                    {customErrors.errorSpecialization && (
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-8 `}
+                      >
+                        Specialization is required
+                      </div>
+                    )}
+                    <div className="form-group">
+                      <label htmlFor="exampleFormControlTextarea1">
+                        What's your experience?
+                      </label>
+                      <textarea
+                        className={`form-control ${
+                          errors.experience && "is-invalid"
+                        }`}
+                        name="experience"
+                        onChange={onChange}
+                        id="exampleFormControlTextarea1"
+                        ref={register({
+                          required: true,
+                          minLength: 50,
+                          maxLength: 1000,
+                        })}
+                        value={userToCreate.experience}
+                        rows="3"
+                      >
+                        {userToCreate.experience}
+                      </textarea>
+                    </div>
+                    {errors.experience &&
+                      errors.experience.type === "required" && (
+                        <div
+                          className={`invalid-feedback d-inline d-inlined-inline col-sm-8`}
+                        >
+                          Experience is required.
+                        </div>
+                      )}
+                    {errors.experience &&
+                      errors.experience.type === "minLength" && (
+                        <div
+                          className={`invalid-feedback d-inline d-inlined-inline col-sm-8  `}
+                        >
+                          Experience must be longer than 50 characters
+                        </div>
+                      )}
+                    {errors.experience &&
+                      errors.experience.type === "maxLength" && (
+                        <div className={`invalid-feedback d-inline col-sm-8 `}>
+                          Experience cannot exceed 300 characters
+                        </div>
+                      )}
+                    <div className="form-group">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          name="privatePractice"
+                          value="true"
+                          defaultChecked={privatePractice === "true"}
+                          onChange={onChangePracticeType}
+                        />
+                        <label className="form-check-label" id="inlineRadio1">
+                          I work on my own practice
+                        </label>
+                      </div>
+                    </div>
+                    {privatePractice && (
+                      <Fragment>
+                        <div className="form-row">
+                          <div className="form-group col-md-6">
+                            <label htmlFor="inputDate4">Practice Name</label>
+                            <input
+                              type={"text"}
+                              onChange={onChange}
+                              value={userToCreate.nameHospital}
+                              className={`form-control ${
+                                errors.nameHospital && "is-invalid"
+                              }`}
+                              id={"date"}
+                              ref={register({
+                                required: true,
+                                minLength: 10,
+                              })}
+                              placeholder="Dr. Smith Consultation"
+                              name="nameHospital"
+                            />
+                            {errors.nameHospital &&
+                              errors.nameHospital.type === "required" && (
+                                <div
+                                  className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                                >
+                                  Firstname is required.
+                                </div>
+                              )}
+                            {errors.nameHospital &&
+                              errors.nameHospital.type === "minLength" && (
+                                <div
+                                  className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                                >
+                                  Firstname must be longer than two characters.
+                                </div>
+                              )}
+                          </div>
+                          <div className="form-group col-md-6">
+                            <label htmlFor="example-tel-input">Telephone</label>
+                            <input
+                              value={userToCreate.phoneHospital}
+                              onChange={onChange}
+                              className={`form-control ${
+                                errors.phoneHospital && "is-invalid"
+                              }`}
+                              name="phoneHospital"
+                              type="tel"
+                              ref={register({
+                                required: true,
+                                pattern: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/,
+                              })}
+                              placeholder="+XX (XXX) XXX-XXX"
+                              id="example-tel-input"
+                            />
+                            {errors.phoneHospital &&
+                              errors.phoneHospital.type === "required" && (
+                                <div
+                                  className={`invalid-feedback d-inlined-inline  col-sm-8 `}
+                                >
+                                  Phone number is required.
+                                </div>
+                              )}
+                            {errors.phoneHospital &&
+                              errors.phoneHospital.type === "pattern" && (
+                                <div
+                                  className={`invalid-feedback d-inline col-sm-8 `}
+                                >
+                                  This format is required +XX (XXX) XXX-XXX.
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                        <div className="form-group mt-2">
+                          <label htmlFor="inputAddress">Address</label>
+                          <input
+                            type="text"
+                            className={`form-control ${
+                              errors.addressHospital && "is-invalid"
+                            }`}
+                            onChange={onChange}
+                            value={userToCreate.addressHospital}
+                            name="addressHospital"
+                            ref={register({
+                              required: true,
+                              minLength: 10,
+                              maxLength: 50,
+                            })}
+                            id="inputAddress"
+                            placeholder="Leopoldstraße 45"
+                          />
+                          {errors.addressHospital &&
+                            errors.addressHospital.type === "required" && (
+                              <div
+                                className={`pl-0 invalid-feedback d-inlined-inline d-inline d-inlined-inline  col-sm-8`}
+                              >
+                                Address is required.
+                              </div>
+                            )}
+                          {errors.addressHospital &&
+                            errors.addressHospital.type === "minLength" && (
+                              <div
+                                className={`pl-0 invalid-feedback d-inlined-inline d-inline d-inlined-inline  col-sm-8`}
+                              >
+                                Address must be longer than 10 characters
+                              </div>
+                            )}
+                          {errors.addressHospital &&
+                            errors.addressHospital.type === "maxLength" && (
+                              <div
+                                className={`pl-0 invalid-feedback d-inline col-sm-8 `}
+                              >
+                                Address cannot exceed 50 characters
+                              </div>
+                            )}
+                        </div>
+                        <div className="form-row">
+                          <div className="form-group col-lg-6">
+                            <label htmlFor="inputCity">Country</label>
+                            <input
+                              type="text"
+                              value={userToCreate.countryHospital}
+                              onChange={onChange}
+                              className={`form-control ${
+                                errors.countryHospital && "is-invalid"
+                              }`}
+                              ref={register({
+                                required: true,
+                                minLength: 10,
+                                maxLength: 50,
+                              })}
+                              id="inputCity"
+                              name="countryHospital"
+                              placeholder={"Country"}
+                            />
+                          </div>
+                          <div className="form-group col-lg-4">
+                            <label htmlFor="inputState">City</label>
+                            <input
+                              type="text"
+                              value={userToCreate.cityHospital}
+                              onChange={onChange}
+                              className={`form-control ${
+                                errors.cityHospital && "is-invalid"
+                              }`}
+                              name="cityHospital"
+                              ref={register({
+                                required: true,
+                                minLength: 10,
+                                maxLength: 50,
+                              })}
+                              id="inputCity"
+                              placeholder={"City"}
+                            />
+                            {errors.cityHospital &&
+                              errors.cityHospital.type === "required" && (
+                                <div
+                                  className={`invalid-feedback d-inline d-inline d-inline  col-sm-8 `}
+                                >
+                                  City is required.
+                                </div>
+                              )}
+                            {errors.cityHospital &&
+                              errors.cityHospital.type === "minLength" && (
+                                <div
+                                  className={`invalid-feedback d-inline d-inline d-inline col-sm-8 `}
+                                >
+                                  City must be longer than 5 characters
+                                </div>
+                              )}
+                            {errors.cityHospital &&
+                              errors.cityHospital.type === "maxLength" && (
+                                <div
+                                  className={`invalid-feedback d-inline col-sm-8 `}
+                                >
+                                  City cannot exceed 50 characters
+                                </div>
+                              )}
+                          </div>
+                          <div className="form-group col-lg-2">
+                            <label htmlFor="inputZip">Zip</label>
+                            <input
+                              type="text"
+                              onChange={onChange}
+                              value={userToCreate.zipcodeHospital}
+                              className={`form-control ${
+                                errors.zipcodeHospital && "is-invalid"
+                              }`}
+                              name="zipcodeHospital"
+                              ref={register({
+                                required: true,
+                                pattern: /^\d{5}/,
+                              })}
+                              id="inputZip"
+                              placeholder={"80331"}
+                            />
+                            {errors.zipcodeHospital &&
+                              errors.zipcodeHospital.type === "required" && (
+                                <div
+                                  className={`invalid-feedback d-inline col-sm-8 `}
+                                >
+                                  Zipcode is required.
+                                </div>
+                              )}
+                            {errors.zipcodeHospital &&
+                              errors.zipcodeHospital.type === "pattern" && (
+                                <div
+                                  className={`invalid-feedback d-inline col-sm-8 `}
+                                >
+                                  Zipcode must be 5 numbers.
+                                </div>
+                              )}
+                          </div>
+                        </div>
+                      </Fragment>
+                    )}
+                  </Fragment>
+                )}
+
                 <div className="form-group">
                   <div className="form-check">
                     <input

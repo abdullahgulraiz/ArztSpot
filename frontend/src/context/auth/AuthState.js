@@ -13,8 +13,30 @@ const initialState = {
     insurance_company: "",
     insurance_number: "",
   },
-  userToCreateRole: "",
-  userToCreate: {}
+  privatePractice: false,
+  customErrors: {
+    errorLanguages: false,
+    errorSpecialization: false,
+  },
+  userToCreate: {
+    zipcode: "",
+    zipcodeHospital: "",
+    address: "",
+    city: "",
+    country: "",
+    countryHospital: "",
+    cityHospital: "",
+    addressHospital: "",
+    phoneHospital: "",
+    birthday: "",
+    languages: [],
+    specialization: "",
+    insurance_company: "TK",
+    insurance_number: "",
+    experience: "",
+    phone: "",
+    role: null,
+  },
 };
 
 // Create context
@@ -40,8 +62,13 @@ export const AuthProvider = ({ children }) => {
   }
   // User to create in register
   const setUserToCreate = (userToCreate) => {
-    dispatch({type: "SET_USER_TO_CREATE", payload: userToCreate})
-  }
+    dispatch({ type: "SET_USER_TO_CREATE", payload: userToCreate });
+  };
+  // Set the type of user to register to show one
+  // form or the other
+  const setPrivatePractice = (isPrivatePractice) => {
+    dispatch({ type: "SET_USER_PRACTICE", payload: isPrivatePractice });
+  };
   const setUpdateInfo = (infoToUpdate) => {
     dispatch({
       type: "SET_UPDATE_INFO",
@@ -66,12 +93,25 @@ export const AuthProvider = ({ children }) => {
     };
     try {
       const res = await axios.put(url, toUpdate, config);
-      console.log(res.data)
       setUser(res.data.data);
-      setIsEditing(false)
+      setIsEditing(false);
     } catch (e) {
       console.log(e.response);
     }
+  };
+  // Typehead component need
+  // custom validation
+  const setCustomErrors = (error) => {
+    dispatch({ type: "SET_CUSTOM_ERROR", payload: error });
+  };
+  const clearCustomError = () => {
+    dispatch({
+      type: "CLEAR_CUSTOM_ERROR",
+      payload: {
+        errorLanguages: false,
+        errorSpecialization: false,
+      },
+    });
   };
 
   function logoutUser() {
@@ -88,10 +128,14 @@ export const AuthProvider = ({ children }) => {
         infoToUpdate: state.infoToUpdate,
         isEditing: state.isEditing,
         userToCreate: state.userToCreate,
-        userToCreateRole: state.userToCreateRole,
+        privatePractice: state.privatePractice,
+        customErrors: state.customErrors,
+        setCustomErrors,
         setUserToCreate,
         setUpdateInfo,
         setIsEditing,
+        clearCustomError,
+        setPrivatePractice,
         setBearerToken,
         setUser,
         logoutUser,

@@ -44,7 +44,7 @@ const HospitalSchema = new mongoose.Schema({
   },
   practiceNumber: {
     type: String,
-    required: true,
+    required: false,
   },
 }, {
   toJSON: {virtuals: true},

@@ -31,11 +31,14 @@ function App() {
                 <Route path={routes.questionnaire} component={components.general.Questionnaire} />
                 {/*<Route path={routes.editQuestionnaire} component={components.general.EditQuestionnaire} />*/}
                 <AuthRoute path={routes.profile} component={components.general.UserProfilePage} />
-
                   {/* Doctor */}
+                <PatientRoute path={routes.profile} component={components.general.UserProfilePage} />
+                {/* Doctor */}
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
                 <DoctorRoute path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
                 <DoctorRoute path={routes.doctor.prescriptions.search} component={components.doctor.prescriptions.PrescriptionsSearch} />
+                {/* Patient */}
+                <PatientRoute path={routes.patient.prescriptions.main} component={components.patient.prescriptions.PrescriptionsMainPatient} />
                 {/* Auth */}
                 <Route path={routes.auth.login} component={components.auth.Login}/>
                 <Route path={routes.auth.register} component={components.auth.Register} />

@@ -5,7 +5,8 @@
     "address": "Ismaninger Str. 22, 81675, Munich, DE",
     "phone": "+49 (894) 140-000",
     "is_private_practice": "false",
-    "owner": "5ee7b96a3431feba57523d03"
+    "owner": "5ee7b96a3431feba57523d03",
+    "practiceNumber": "912141517181920"
   },
   {
     "_id": "5ee7b9683431feba57523d00",
@@ -13,7 +14,8 @@
     "address": "Leopold Str. 25, 80538, Munich, DE",
     "phone": "+49 (894) 666-555",
     "is_private_practice": "false",
-    "owner": "5ee7b96a3431feba57523d03"
+    "owner": "5ee7b96a3431feba57523d03",
+    "practiceNumber": "235710111418"
   },
   {
     "_id": "f96fac629434f6c24e01405f",
@@ -21,7 +23,8 @@
     "address": "Kaiser Str. 22, 80801, Munich, DE",
     "phone": "+49 (894) 854-555",
     "is_private_practice": "false",
-    "owner": "f96fac629434f6c24e01405f"
+    "owner": "f96fac629434f6c24e01405f",
+    "practiceNumber": "467910151617"
   },
   {
     "_id": "60df9bc79036533b64a97319",
@@ -29,7 +32,8 @@
     "address": "Steiningerweg 2, 85748, Garching bei München,, DE",
     "phone": "+49 (894) 555-112",
     "is_private_practice": "false",
-    "owner": "5ee7b96a3431feba57523d03"
+    "owner": "5ee7b96a3431feba57523d03",
+    "practiceNumber": "12459141819"
   },
   {
     "_id": "bd2b6f8a69fcd1f0b3db6ee8",
@@ -37,7 +41,8 @@
     "address": "Haiderweg 9-1 2, 82057, Icking, DE",
     "phone": "+49 (894) 555-112",
     "is_private_practice": "true",
-    "owner": "5ee7b96a3431feba57523d03"
+    "owner": "5ee7b96a3431feba57523d03",
+    "practiceNumber": "234712131517"
   },
   {
     "_id": "55e9b7b4d556758c53b2c1f9",
@@ -45,7 +50,8 @@
     "address": "Kantstraße 32 80809, Munich, DE",
     "phone": "+49 (894) 555-847",
     "is_private_practice": "true",
-    "owner": "5ee7b96a3431feba57523d03"
+    "owner": "5ee7b96a3431feba57523d03",
+    "practiceNumber": "47101314161820"
   },
   {
     "_id": "c423393477273fb3dd9f3596",
@@ -53,6 +59,7 @@
     "address": "Promenadenstraße 3-5, 12207, Berlin, DE",
     "phone": "+49 (300) 555-112",
     "is_private_practice": "false",
-    "owner": "75f46352eb8978f6aee0f9e4"
+    "owner": "75f46352eb8978f6aee0f9e4",
+    "practiceNumber": "23678121320"
   }
 ]

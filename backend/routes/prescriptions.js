@@ -4,6 +4,7 @@ const {
   createPrescription,
   getPrescription,
   getPrescriptionforUser,
+  getPrescriptionforPatient,
   updatePrescription,
   deletePrescription,
   downloadPrescription,
@@ -21,8 +22,13 @@ router
   .post(protectRoute, authorize("doctor", "admin"), createPrescription)
   .get(protectRoute,
       authorize("doctor", "admin"),
-      filterResults(Prescription, {path: "appointment", populate: { path: "symptoms"}}),
+      filterResults(Prescription, [{path: "appointment", populate: { path: "symptoms"}}]),
       getPrescriptionforUser);
+
+router
+    .route("/myprescriptions")
+    .get(protectRoute, authorize("user"), getPrescriptionforPatient);
+
 router
   .route("/:id")
   .get(protectRoute, authorize("doctor", "admin"), getPrescription)
@@ -31,7 +37,7 @@ router
 
 router
     .route("/:id/download")
-    .get(protectRoute,authorize("doctor", "admin"),downloadPrescription);
+    .get(protectRoute,authorize("doctor", "admin", "user"),downloadPrescription);
 
 router
     .route("/:id/send")

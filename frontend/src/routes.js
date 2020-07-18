@@ -30,4 +30,12 @@ export default {
             create: 'patient/:patientId/create'
         })
     }),
+
+    // patient
+    patient: include('/user', {
+        // prescriptions
+        prescriptions: include('prescriptions', {
+            main: ''
+        })
+    }),
 }

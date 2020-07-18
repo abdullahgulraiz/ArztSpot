@@ -27,13 +27,19 @@ const prescriptionSchema = new Schema({
             type: String,
             required: true
         },
+        details: {
+            type: String,
+            required: true
+        },
         quantity: {
             type: mongoose.Decimal128,
             required: true,
+            min: 0.0
         },
         recurrenceNum: {
             type: mongoose.Decimal128,
             required: true,
+            min: 0.0,
         },
         recurrenceType: {
             type: String,

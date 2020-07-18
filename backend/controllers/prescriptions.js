@@ -27,6 +27,10 @@ exports.createPrescription = asyncHandler(async (req, res, next) => {
   if (!appointment) {
     return next(new ErrorResponse(`Appointment not found with id of ${appointmentId}`, 404));
   }
+  if (appointment.doctor._id.toString() !== doctorId) {
+    return next(new ErrorResponse(`You are not authorized to create a prescription for appointment 
+    id of ${appointmentId}`, 403));
+  }
   // create prescription
   prescription = await Prescription.create({
     doctor: doctorId,
@@ -48,6 +52,18 @@ exports.getPrescriptionforUser = asyncHandler(async (req, res, next) => {
   await res.status(200).json(res.filterResults);
 });
 
+// @desc  Get Prescriptions made for logged-in patient
+// @route  GET /api/v1/prescriptions/myprescriptions
+// @access Private/patient
+exports.getPrescriptionforPatient = asyncHandler(async (req, res, next) => {
+  let prescriptions = await Prescription
+      .find({patient: req.user._id, isSent: true})
+      .sort('-date')
+      .populate({path: "appointment", populate: { path: "symptoms"}})
+      .populate({path: "doctor"});
+  await res.status(200).json({success: true, count: prescriptions.length, data: prescriptions});
+});
+
 // @desc  Get Prescription by Id
 //@route  GET /api/v1/prescriptions/:id
 //@access Private/doctor
@@ -61,7 +77,7 @@ exports.getPrescription = asyncHandler(async (req, res, next) => {
   // only doctor and patient of the prescription should have access to it
   if (
     prescription.doctor.toString() !== req.user.id &&
-    prescription.user.toString() !== req.user.id &&
+    prescription.patient.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return next(
@@ -86,7 +102,7 @@ exports.updatePrescription = asyncHandler(async (req, res, next) => {
   // only doctor and patient of that prescription should have access
   if (
     prescription.doctor.toString() !== req.user.id &&
-    prescription.user.toString() !== req.user.id &&
+    prescription.prescription.toString() !== req.user.id &&
     req.user.role !== "admin"
   ) {
     return next(
@@ -94,11 +110,11 @@ exports.updatePrescription = asyncHandler(async (req, res, next) => {
     );
   }
   prescription.prescriptionData = prescriptionData !== undefined ? prescriptionData : prescription.prescriptionData;
-  prescription.validity = validity !== undefined ? validity : prescription.validity;;
-  prescription.feeType = feeType !== undefined ? feeType : prescription.feeType;;
-  prescription.additionalNotes = additionalNotes !== undefined ? additionalNotes : prescription.additionalNotes;;
-  prescription.isSent = isSent !== undefined ? isSent : prescription.isSent;;
-  await prescription.save()
+  prescription.validity = validity !== undefined ? validity : prescription.validity;
+  prescription.feeType = feeType !== undefined ? feeType : prescription.feeType;
+  prescription.additionalNotes = additionalNotes !== undefined ? additionalNotes : prescription.additionalNotes;
+  prescription.isSent = isSent !== undefined ? isSent : prescription.isSent;
+  await prescription.save();
   await res.status(200).json({ success: true, prescription });
 });
 
@@ -120,6 +136,11 @@ exports.deletePrescription = asyncHandler(async (req, res, next) => {
   ) {
     return next(
         new ErrorResponse(`You are not authorized to update this prescription`, 401)
+    );
+  }
+  if (prescription.isSent) {
+    return next(
+        new ErrorResponse(`You cannot delete a prescription that has been sent to a user.`, 401)
     );
   }
   await prescription.remove();
@@ -206,8 +227,8 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
   }
   let prescriptionData = prescription.prescriptionData.map((p,idx) =>
       [
-          idx + 1,
-        p.name,
+        idx + 1,
+        p.name + " (" + p.details + ")",
         p.quantity.toString(),
         p.recurrenceNum.toString() + ' ' + p.recurrenceType,
         moment(p.until).format("YYYY-MM-DD")
@@ -216,7 +237,7 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
   // only doctor and patient of the prescription should have access to it
   if (
       prescription.doctor.toString() !== req.user.id &&
-      prescription.user.toString() !== req.user.id &&
+      prescription.patient.toString() !== req.user.id &&
       req.user.role !== "admin"
   ) {
     return next(

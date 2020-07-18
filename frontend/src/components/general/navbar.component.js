@@ -32,6 +32,8 @@ const DoctorButton = props => (
             <Link className="dropdown-item" to="#">Prescriptions</Link>
             <Link className="dropdown-item" to={reverse(routes.profile)}>Profile</Link>
             <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to={reverse(routes.auth.login)}>Logout</Link>
+            <Link className="dropdown-item" to={reverse(routes.patient.prescriptions.main)}>Prescriptions</Link>
+            <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to="#" >Logout</Link>
         </div>
     </div>
   )

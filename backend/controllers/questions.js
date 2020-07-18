@@ -86,11 +86,23 @@ exports.updateQuestion = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`You are not authorized to update this question`, 401)
     );
   }
+  // get symptom ids of each symptom
+  let symptomIds = [];
+  for (const symptom_ of symptoms) {
+    let symptom = await Symptom.findOne({ name: { $regex : new RegExp(symptom_, "i") } });
+    if (symptom) {
+      symptomIds.push(symptom._id.toString());
+    } else {
+      symptom = await Symptom.create({
+        name: symptom_,
+      });
+      symptomIds.push(symptom._id.toString());
+    }
+  }
   question.description = description !== undefined ? description : question.description;
   question.type = type !== undefined ? type : question.type;
-  question.symptoms = symptoms !== undefined ? symptoms : question.symptoms;
+  question.symptoms = symptomIds.length > 0 ? symptomIds : question.symptoms;
   question.choices = choices !== undefined ? choices : question.choices;
-  question.isDeleted = isDeleted !== undefined ? isDeleted : question.isDeleted;
   await question.save();
   await res.status(200).json({ success: true, question });
 });
@@ -114,8 +126,12 @@ exports.deleteQuestion = asyncHandler(async (req, res, next) => {
         new ErrorResponse(`You are not authorized to update this question`, 401)
     );
   }
-  question.isDeleted = true;
-  await question.save();
+  if (question.responses.length > 0) {
+    return next(
+        new ErrorResponse(`This question cannot be deleted because it already has responses.`, 500)
+    );
+  }
+  await question.remove();
   await res.status(200).json({
     success: true,
     data: {},

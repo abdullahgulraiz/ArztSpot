@@ -32,11 +32,7 @@ const questionSchema = new Schema({
     responses: [{
         type: mongoose.Schema.ObjectId,
         ref: "Response"
-    }],
-    isDeleted: {
-        type: Boolean,
-        default: false
-    },
+    }]
 })
 
 module.exports = mongoose.model('Question', questionSchema);

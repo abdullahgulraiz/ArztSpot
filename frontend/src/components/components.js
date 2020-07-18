@@ -16,7 +16,7 @@ import ForgotPassword from "./auth/forgot.component"
 import {PrescriptionsSearch} from "./doctor/prescriptions/search.component"
 import {PrescriptionsPatient} from "./doctor/prescriptions/patient.component"
 import {PrescriptionsCreate} from "./doctor/prescriptions/create.component"
-import {QuestionnairesMainDoctor} from "./doctor/questionnaires/main.component"
+import {QuestionsMainDoctor} from "./doctor/questionnaires/main.component"
 /* General Search (Doctors, Hospitals) */
 import Search from "./general/search.component";
 import DashboardPage from "./general/dashboard.component";
@@ -56,7 +56,7 @@ export default {
             PrescriptionsCreate
         },
         questionnaires: {
-            QuestionnairesMainDoctor
+            QuestionsMainDoctor
         },
     },
     patient: {

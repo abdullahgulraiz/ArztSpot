@@ -7,15 +7,17 @@ import NotFound from "../../general/notfound.component";
 import axios from "axios";
 import {AuthContext} from "../../../context/auth/AuthState";
 import moment from "moment";
+import {get} from "react-hook-form";
 
-export const QuestionnairesMainDoctor = (props) => {
+export const QuestionsMainDoctor = (props) => {
 
   const initial_state = {
     show: 'all',
-    symptoms: ["Asthma", "COPD"],
-    searchResults: [],
+    symptoms: [],
+    questions: [],
     error404: false,
-    errorMessage: ''
+    errorMessage: '',
+    infoMessage: '',
   }
 
   const [state, setState] = useState(initial_state);
@@ -23,175 +25,88 @@ export const QuestionnairesMainDoctor = (props) => {
   const { bearerToken } = useContext(AuthContext);
 
   useEffect(() => {
-    // const axiosInstance = axios.create({
-    //   timeout: 1000,
-    //   headers: {
-    //     'Authorization': `Bearer ${bearerToken}`
-    //   }
-    // });
-    // axiosInstance
-    //     .get("/api/v1/doctors/mypatients/" + props.match.params.patientId)
-    //     .then(response => {
-    //       if (response.data.success) {
-    //         setPatient(response.data.data);
-    //         return axiosInstance.get("/api/v1/prescriptions?patient=" + props.match.params.patientId);
-    //       } else {
-    //         setState({ ...state, error404: true });
-    //       }
-    //     })
-    //     .then(response => {
-    //       let search_results = [];
-    //       response.data.data.map(d => {
-    //         search_results.push({
-    //           'id': d._id,
-    //           'appointmentDate': moment(d.appointment.startTime).format("YYYY-MM-DD"),
-    //           'issuedOn': moment(d.date).format("YYYY-MM-DD"),
-    //           'symptoms': d.appointment.symptoms && d.appointment.symptoms.length > 0 ? d.appointment.symptoms.map(s => s.name) : ["Not defined"],
-    //           'status': d.isSent ? "Sent" : "Pending"
-    //         });
-    //       });
-    //       setState({...state, searchResults: search_results });
-    //     })
-    //     .catch(error => {
-    //       console.log("Error", error, error.response);
-    //       setState({ ...state, error404: true, patient: {} });
-    //     });
+    const axiosInstance = axios.create({
+      timeout: 1000,
+      headers: {
+        'Authorization': `Bearer ${bearerToken}`
+      }
+    });
+    axiosInstance
+        .get("/api/v1/questions")
+        .then(response => {
+          if (response.data.success) {
+            const questions = response.data.data;
+            let availableSymptoms = getSymptoms(questions);
+            setState({
+              ...state,
+              questions: questions,
+              symptoms: availableSymptoms
+            });
+          } else {
+            setState({
+              ...state,
+              errorMessage: "There was a problem retrieving questions from the server. Please try again later, or contact us if the problem persists.",
+              infoMessage: ''});
+          }
+        })
+        .catch(error => {
+          console.log("Error", error, error.response);
+          setState({
+            ...state,
+            errorMessage: "There was a problem retrieving questions from the server. Please try again later, or contact us if the problem persists.",
+            infoMessage: ''
+          });
+        });
   }, []);
+
+  const getSymptoms = (questions) => {
+    let availableSymptoms = [];
+    questions.map(q => {
+      q.symptoms.map(s => {
+        if (!availableSymptoms.includes(s.name)) {
+          availableSymptoms.push(s.name);
+        }
+      });
+    });
+    return availableSymptoms;
+  }
 
   const onChange = (e) => {
     setState({ ...state, [e.target.name]: e.target.value });
   }
-  //
-  // const downloadReport = (id) => {
-  //     const axiosInstance = axios.create({
-  //         headers: {
-  //             'Authorization': `Bearer ${bearerToken}`
-  //         }
-  //     });
-  //     axiosInstance
-  //         .get('/api/v1/prescriptions/'+id+'/download', {responseType: 'blob'})
-  //         .then(response => {
-  //             setState({
-  //                 ...state,
-  //                 errorDownload: false,
-  //                 errorSend: false,
-  //                 successSend: false,
-  //                 errorDelete: false,
-  //                 successDelete: false
-  //             })
-  //             //Create a Blob from the PDF Stream
-  //             const file = new Blob(
-  //                 [response.data],
-  //                 {type: 'application/pdf'});//Build a URL from the file
-  //             const fileURL = URL.createObjectURL(file);//Open the URL on new Window
-  //             window.open(fileURL);
-  //         })
-  //         .catch(error => {
-  //             console.log("Error generation PDF: ", error);
-  //             setState({
-  //                 ...state,
-  //                 errorDownload: true,
-  //                 errorSend: false,
-  //                 successSend: false,
-  //                 errorDelete: false,
-  //                 successDelete: false
-  //             })
-  //         });
-  // }
-  //
-  // const sendReport = (id) => {
-  //   console.log("Sending report for id", id);
-  //     const axiosInstance = axios.create({
-  //         headers: {
-  //             'Authorization': `Bearer ${bearerToken}`
-  //         }
-  //     });
-  //     axiosInstance
-  //         .post('/api/v1/prescriptions/'+id+'/send')
-  //         .then(response => {
-  //             setState({
-  //                 ...state,
-  //                 errorDownload: false,
-  //                 errorSend: false,
-  //                 successSend: false,
-  //                 errorDelete: false,
-  //                 successDelete: false
-  //             });
-  //             if (response.data.success) {
-  //                 let updatedSearchResults = state.searchResults.map(r => {
-  //                     if (r.id === id) {
-  //                         r.status = "Sent";
-  //                     }
-  //                     return r;
-  //                 });
-  //                 setState({
-  //                     ...state,
-  //                     errorDownload: false,
-  //                     errorSend: false,
-  //                     successSend: true,
-  //                     searchResults: updatedSearchResults,
-  //                     errorDelete: false,
-  //                     successDelete: false
-  //                 });
-  //             }
-  //         })
-  //         .catch(error => {
-  //             console.log("Error sending email: ", error);
-  //             setState({
-  //                 ...state,
-  //                 errorDownload: false,
-  //                 errorSend: true,
-  //                 successSend: false,
-  //                 errorDelete: false,
-  //                 successDelete: false
-  //             })
-  //         });
-  // }
-  //
-  const deleteQuestionnaire = (id) => {
+
+  const deleteQuestion = (id) => {
       console.log("Delete questionnaire", id);
-  //     const axiosInstance = axios.create({
-  //         headers: {
-  //             'Authorization': `Bearer ${bearerToken}`
-  //         }
-  //     });
-  //     axiosInstance
-  //         .delete('/api/v1/prescriptions/'+id)
-  //         .then(response => {
-  //             setState({
-  //                 ...state,
-  //                 errorDownload: false,
-  //                 errorSend: false,
-  //                 successSend: false,
-  //                 errorDelete: false,
-  //                 successDelete: false
-  //             });
-  //             if (response.data.success) {
-  //                 let updatedSearchResults = state.searchResults.filter(r => {
-  //                     return r.id !== id;
-  //                 });
-  //                 setState({
-  //                     ...state,
-  //                     errorDownload: false,
-  //                     errorSend: false,
-  //                     successSend: false,
-  //                     searchResults: updatedSearchResults,
-  //                     errorDelete: false,
-  //                     successDelete: true
-  //                 });
-  //             }
-  //         })
-  //         .catch(error => {
-  //             console.log("Error deleting prescription: ", error);
-  //             setState({
-  //                 ...state,
-  //                 errorDownload: false,
-  //                 errorSend: false,
-  //                 successSend: false,
-  //                 errorDelete: true,
-  //                 successDelete: false
-  //             })
-  //         });
+      const axiosInstance = axios.create({
+          headers: {
+              'Authorization': `Bearer ${bearerToken}`
+          }
+      });
+      axiosInstance
+          .delete('/api/v1/questions/'+id)
+          .then(response => {
+              if (response.data.success) {
+                  let questions = state.questions.filter(q => {
+                      return q._id !== id;
+                  });
+                  let availableSymptoms = getSymptoms(questions);
+                  setState({
+                    ...state,
+                    errorMessage: "",
+                    infoMessage: 'The question was deleted successfully.',
+                    questions: questions,
+                    symptoms: availableSymptoms
+                  });
+              }
+          })
+          .catch(error => {
+              console.log("Error deleting prescription: ", error);
+              setState({
+                ...state,
+                errorMessage: "There was a problem deleting the question from server. Please try again later, or contact us if the problem persists.",
+                infoMessage: ''
+              });
+          });
   }
 
   if (state.error404) {
@@ -208,7 +123,7 @@ export const QuestionnairesMainDoctor = (props) => {
           <div className="container" data-aos="fade-up">
 
             <div className="section-title">
-              <h2>Questionnaires</h2>
+              <h2>Questions</h2>
               <p>These are the questions your patients will be asked to answer when booking an appointment.</p>
             </div>
 
@@ -218,6 +133,11 @@ export const QuestionnairesMainDoctor = (props) => {
                   <div className="alert alert-danger" role="alert">
                       {state.errorMessage}
                   </div>
+              }
+              {state.infoMessage &&
+              <div className="alert alert-info" role="alert">
+                {state.infoMessage}
+              </div>
               }
               <h4>All Questions</h4>
               <div className="form-row">
@@ -251,18 +171,24 @@ export const QuestionnairesMainDoctor = (props) => {
               </tr>
               </thead>
               <tbody>
-              {state.searchResults.length > 0 &&
-                state.searchResults
-                    .filter(searchResult => {
-                      return searchResult;
+              {state.questions.length > 0 &&
+                state.questions
+                    .filter(question => {
+                      if (state.show !== 'all') {
+                        if (question.symptoms.map(s => s.name).includes(state.show)) {
+                          return question;
+                        }
+                      } else {
+                        return question;
+                      }
                     })
-                    .map((searchResult, index) => {
+                    .map((question, index) => {
                       return (
-                          <SearchResultRow result={searchResult} index={index} deleteQuestionnaire={deleteQuestionnaire} />
+                          <QuestionResultRow question={question} index={index} deleteQuestion={deleteQuestion} />
                       );
                     })
               }
-              {state.searchResults.length <= 0 &&
+              {state.questions.length <= 0 &&
                 <tr>
                   <td colSpan={6} className={"text-center"}>You have not added any questions yet.</td>
                 </tr>
@@ -281,17 +207,53 @@ export const QuestionnairesMainDoctor = (props) => {
     );
 }
 
-const SearchResultRow = props => {
-  const searchResult = props.result;
+const QuestionResultRow = props => {
+  const question = props.question;
   const index = props.index;
   return (
       <tr key={index}>
         <th scope="row">{index + 1}</th>
-        <td>{searchResult.question}</td>
-        <td>{searchResult.symptoms.join(", ")}</td>
         <td>
-          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {props.deleteQuestionnaire(searchResult.id)}}>
+          {question.description}
+          <div style={{paddingLeft: "1em", paddingTop: "0.5em"}}>
+          {
+            question.type === "Single Choice" &&
+              question.choices.map((c, idx) => {
+                return (
+                    <div className="form-check">
+                      <input className="form-check-input" type="radio" name={question._id} id={question._id + "_" + idx} checked={idx === 0} />
+                        <label className="form-check-label" htmlFor={question._id + "_" + idx}>
+                          {c}
+                        </label>
+                    </div>
+                )
+              })
+          }
+          {
+            question.type === "Multiple Choice" &&
+            question.choices.map((c, idx) => {
+              return (
+                  <div className="form-check">
+                    <input className="form-check-input" type="checkbox" id={question._id + "_" + idx} />
+                      <label className="form-check-label" htmlFor={question._id + "_" + idx}>
+                        {c}
+                      </label>
+                  </div>
+              )
+            })
+          }
+          {
+            question.type === "Text" &&
+            <input type={"text"} className={"form-control"} style={{width: "70%"}} />
+          }
+          </div>
+        </td>
+        <td>{question.symptoms.map(s => s.name).join(", ")}</td>
+        <td>
+          {question.responses.length <= 0 &&
+          <button type="button" className="btn btn-secondary btn-sm" onClick={() => {props.deleteQuestion(question._id)}}>
               <i className="icofont-trash"></i></button>
+          }
         </td>
       </tr>
   )

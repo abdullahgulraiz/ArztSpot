@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import { QuestionnaireContext } from "../../context/Questionnaire/QuestionnaireState";
+import { QuestionnaireContext } from "../../../../context/Questionnaire/QuestionnaireState";
 
 import {AddQuestion} from "./AddQuestion";
 import {Question} from "./question.component";

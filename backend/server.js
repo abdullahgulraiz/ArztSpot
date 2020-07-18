@@ -18,7 +18,7 @@ const hospitals = require("./routes/hospitals");
 const doctors = require("./routes/doctors");
 const appointments = require("./routes/appointments");
 const insurances = require("./routes/insurance");
-const questions = require('./routes/question');
+const questions = require('./routes/questions');
 const prescriptions = require('./routes/prescriptions');
 
 const app = express();

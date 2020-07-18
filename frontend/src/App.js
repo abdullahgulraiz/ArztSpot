@@ -37,6 +37,7 @@ function App() {
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
                 <DoctorRoute path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
                 <DoctorRoute path={routes.doctor.prescriptions.search} component={components.doctor.prescriptions.PrescriptionsSearch} />
+                <DoctorRoute path={routes.doctor.questionnaires.main} component={components.doctor.questionnaires.QuestionnairesMainDoctor} />
                 {/* Patient */}
                 <PatientRoute path={routes.patient.prescriptions.main} component={components.patient.prescriptions.PrescriptionsMainPatient} />
                 {/* Auth */}

@@ -48,7 +48,7 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   // get symptom ids of each symptom
   let symptomIds = [];
   for (const symptom_ of symptoms) {
-    let symptom = await Symptom.findOne({ name: symptom_ });
+    let symptom = await Symptom.findOne({ name: { $regex : new RegExp(symptom_, "i") } });
     if (symptom) {
       symptomIds.push(symptom._id.toString());
     } else {

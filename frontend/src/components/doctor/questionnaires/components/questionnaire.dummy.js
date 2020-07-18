@@ -5,7 +5,7 @@ import React, { useContext, useEffect } from 'react';
 import QuestionNeumology from "./QuestionNeumology";
 import QuestionTraumatology from "./QuestionTraumatology";
 
-import DashboardContext from "../../context/Dashboard/dashboardContext";
+import DashboardContext from "../../../../context/Dashboard/dashboardContext";
 
 export default function QuestionnaireDummy() {
 

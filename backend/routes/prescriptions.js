@@ -14,7 +14,7 @@ const {
 const router = express.Router();
 const Prescription = require("../models/Prescription");
 const filterResults = require("../middleware/filterResults");
-
+ 
 const { protectRoute, authorize } = require("../middleware/auth");
 
 router

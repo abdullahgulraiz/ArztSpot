@@ -1,8 +1,8 @@
 import React, {useState, useContext, Fragment} from 'react'
-import { QuestionnaireContext } from "../../context/Questionnaire/QuestionnaireState";
-import TypeaheadSearch from "../search/TypeaheadSearch";
-import symptoms from "../../data/symptoms";
-import specialization from "../../data/specialization";
+import { QuestionnaireContext } from "../../../../context/Questionnaire/QuestionnaireState";
+import TypeaheadSearch from "../../../search/TypeaheadSearch";
+import symptoms from "../../../../data/symptoms";
+import specialization from "../../../../data/specialization";
 import {useForm} from "react-hook-form";
 // import { uniqueId } from "react-bootstrap-typeahead";
 

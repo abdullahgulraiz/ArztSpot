@@ -28,6 +28,10 @@ export default {
             search: '',
             patient: 'patient/:patientId',
             create: 'patient/:patientId/create'
+        }),
+        // questionnaires
+        questionnaires: include('questionnaires', {
+            main: ''
         })
     }),
 

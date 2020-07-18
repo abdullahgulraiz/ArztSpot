@@ -1,35 +1,42 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const questionSchema = new Schema({
-    description: String,
-    alternatives: [
-        {
-            text: {
-                type: String,
-                required: true
-            },
-            selected: {
-                type: Boolean,
-                required: true,
-                default: false
-            }
-        }
-    ]
-})
+const shouldHaveChoices = function () {
+    return this.type === "Single Choice" || this.type === "Multiple Choice";
+};
 
-// const questionSchema = new Schema({
-//     text: { type: String, required: true },
-//     choices: {
-//         type: [String],
-//         required: true
-//     },
-//     ansDescription: String,
-//     category: String,
-//     published: {
-//         type: Boolean,
-//         default: false
-//     }
-// });
+const questionSchema = new Schema({
+    doctor: {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    type: {
+        type: String,
+        required: true,
+        enum: ["Text", "Single Choice", "Multiple Choice"]
+    },
+    symptoms: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "Symptom",
+        required: true
+    }],
+    choices: [{
+        type: String,
+        validate: [shouldHaveChoices, "This type of question cannot have choices."]
+    }],
+    responses: [{
+        type: mongoose.Schema.ObjectId,
+        ref: "Response"
+    }],
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+})
 
 module.exports = mongoose.model('Question', questionSchema);

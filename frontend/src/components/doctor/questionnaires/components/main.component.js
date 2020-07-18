@@ -1,11 +1,11 @@
 import React, {useContext} from 'react';
-import { QuestionnaireContext } from "../../context/Questionnaire/QuestionnaireState";
+import { QuestionnaireContext } from "../../../../context/Questionnaire/QuestionnaireState";
 
 import { Question } from "./question.component";
 import { AddQuestion } from "./AddQuestion";
-import SearchContext from "../../context/Search/searchContext";
+import SearchContext from "../../../../context/Search/searchContext";
 
-const Questionnaire = () => {
+export const QuestionnairesMainDoctor = () => {
     const { questions, setType, type } = useContext (QuestionnaireContext);
     // console.log(context);
     // const { search, setSearch, doctorSearch, pagination } = searchContext;
@@ -16,13 +16,18 @@ const Questionnaire = () => {
 
     return (
         <main id="main">
-            <div className="row" style={{marginTop: "3%"}}>
+
+            <section id="contact" className="contact">
+                <div className="container" data-aos="fade-up">
+
+                    <div className="section-title">
+                        <h2>Questionnaires</h2>
+                        <p>These are the questions your patients will be asked to answer when booking an appointment.</p>
+                    </div>
+
+                    <div className="row" style={{marginTop: "3%"}}>
                 <div className="col-6 offset-3">
                     <form>
-                        <div className="form-group justify-content-center">
-                            <h4>My questionnaire</h4>
-                            <h6>These are the questions your patients will be asked to answer when booking an appointment.</h6>
-                        </div>
                         <div className="form-group justify-content-center">
                             {questions.map(question => ( <Question key = {questions.id} question = {question}/>))}
                         </div>
@@ -49,8 +54,9 @@ const Questionnaire = () => {
                     </form>
                 </div>
             </div>
+
+                </div>
+            </section>
         </main>
     );
 }
-
-export default Questionnaire;

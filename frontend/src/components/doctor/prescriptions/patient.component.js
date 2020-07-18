@@ -5,7 +5,7 @@ import {Link, Redirect} from "react-router-dom";
 import {isEmptyObj} from "../../../utils/isEmptyObj";
 import NotFound from "../../general/notfound.component";
 import axios from "axios";
-import {AuthContext} from "../../../auth/AuthState";
+import {AuthContext} from "../../../context/auth/AuthState";
 import moment from "moment";
 
 export const PrescriptionsPatient = (props) => {

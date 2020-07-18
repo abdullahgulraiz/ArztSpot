@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../../auth/AuthState";
+import { AuthContext } from "../../context/auth/AuthState";
 import Cookies from "js-cookie";
 import { reverse } from "named-urls";
 import routes from "../../routes";

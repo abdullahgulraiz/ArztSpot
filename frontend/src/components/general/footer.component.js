@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { Link } from 'react-router-dom';
-import {AuthContext} from "../../auth/AuthState";
+import {AuthContext} from "../../context/auth/AuthState";
 import routes from "../../routes";
 import { reverse } from 'named-urls'
 

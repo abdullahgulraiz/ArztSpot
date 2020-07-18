@@ -2,7 +2,7 @@ import React, {Fragment, useContext, useEffect} from "react";
 import routes from "../../routes";
 import { Link } from "react-router-dom";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
-import { AuthContext } from "../../auth/AuthState";
+import { AuthContext } from "../../context/auth/AuthState";
 import { isEmptyObj } from "../../utils/isEmptyObj";
 
 const BookAppointment = () => {

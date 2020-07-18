@@ -1,6 +1,6 @@
 import React, { Fragment, useContext } from "react";
 import ProfileContext from "../../../context/Profile/profileContext";
-import { AuthContext } from "../../../auth/AuthState";
+import { AuthContext } from "../../../context/auth/AuthState";
 import DashboardContext from "../../../context/Dashboard/dashboardContext";
 
 const UpdateAppointment = ({ appointment }) => {

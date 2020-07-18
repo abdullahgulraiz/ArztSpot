@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect } from "react";
-import { AuthContext } from "../../../auth/AuthState";
+import { AuthContext } from "../../../context/auth/AuthState";
 import { useForm } from "react-hook-form";
 
 const EditPersonalInfo = ({ user }) => {

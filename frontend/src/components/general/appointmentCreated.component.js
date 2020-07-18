@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect } from "react";
-import { AuthContext } from "../../auth/AuthState";
+import { AuthContext } from "../../context/auth/AuthState";
 import NotFound from "./notfound.component";
 import { isEmptyObj } from "../../utils/isEmptyObj";
 import routes from "../../routes";

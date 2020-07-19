@@ -147,7 +147,7 @@ export const PrescriptionsMainPatient = (props) => {
               }
               {state.searchResults.length <= 0 &&
                 <tr>
-                  <td colSpan={6} className={"text-center"}>There are no Prescriptions available yet.</td>
+                  <td colSpan={8} className={"text-center"}>There are no Prescriptions available yet.</td>
                 </tr>
               }
               </tbody>

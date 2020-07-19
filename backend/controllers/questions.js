@@ -211,3 +211,30 @@ exports.symptomsOfQuestions = asyncHandler(async (req, res, next) => {
       .populate("symptoms");
   await res.status(200).json({ success: true, data: symptoms });
 });
+
+// @desc  Get questions and their responses by appointment ID
+//@route  POST /api/v1/questions/appointment/:appointmentId
+//@access Private/patient
+exports.questionsOfAppointment = asyncHandler(async (req, res, next) => {
+  // find the appointment for which prescription is being made
+  const appointment = await Appointment.findOne({ _id: req.params.appointmentId });
+  if (!appointment) {
+    return next(new ErrorResponse(`Appointment not found with id of ${appointmentId}`, 404));
+  }
+  const doctor = await User.findOne({ _id: req.user._id });
+  if (!doctor) {
+    return next(new ErrorResponse(`Doctor not found with id of ${doctorId}`, 404));
+  }
+  // only doctor of appointment should have access to it
+  if (
+      appointment.doctor.toString() !== req.user.id &&
+      req.user.role !== "admin"
+  ) {
+    return next(
+        new ErrorResponse(`You are not authorized to see responses for this appointment`, 401)
+    );
+  }
+  // get all responses related to the appointment
+  const responses = await Response.find({ appointment: appointment._id }).populate("question");
+  await res.status(200).json({ success: true, data: responses });
+});

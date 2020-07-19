@@ -7,7 +7,8 @@ const {
   deleteQuestion,
   answerQuestions,
   questionsByDoctor,
-  symptomsOfQuestions
+  symptomsOfQuestions,
+    questionsOfAppointment
 } = require("../controllers/questions");
 
 const router = express.Router();
@@ -38,5 +39,9 @@ router
 router
     .route("/symptoms/doctor/:doctorId")
     .get(symptomsOfQuestions);
+
+router
+    .route("/appointment/:appointmentId")
+    .get(protectRoute,authorize( "doctor"), questionsOfAppointment);
 
 module.exports = router;

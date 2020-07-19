@@ -7,7 +7,8 @@ const {
   updateDetails,
   resetPassword,
   forgotpassword,
-  getCurrentUser
+  getCurrentUser,
+  avatarUpload,
 } = require("../controllers/auth");
 
 const router = express.Router();
@@ -18,8 +19,8 @@ router.route("/login").post(login);
 router.route("/me").get(protectRoute, getCurrentUser);
 router.route("/password").put(protectRoute, updatePassword);
 router.route("/details").put(protectRoute, updateDetails);
+router.route("/photo").put(protectRoute, avatarUpload);
 router.route("/forgot-password").post(forgotpassword);
 router.route("/reset-password/:resettoken").put(resetPassword);
-
 
 module.exports = router;

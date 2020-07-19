@@ -3,6 +3,7 @@ const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/User");
+const path = require("path");
 
 // @desc  Register user
 //@route  POST /api/v1/auth/register
@@ -77,10 +78,10 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse("Invalid update request", 400));
   }
   let user = await User.findById(req.user.id).populate("hospital");
-  Object.keys(toUpdate).forEach(key => {
-    user[key] = toUpdate[key]
-  })
-  user.save()
+  Object.keys(toUpdate).forEach((key) => {
+    user[key] = toUpdate[key];
+  });
+  user.save();
   // const user = await User.findByIdAndUpdate(req.user.id, toUpdate, {
   //   new: true,
   //   runValidators: true,
@@ -208,3 +209,39 @@ const sendTokenResponse = (user, statusCode, res) => {
     .cookie("token", token, options)
     .json({ success: true, token, user });
 };
+
+// @desc  Upload photo for user
+//@route  PUT /api/v1/auth/photo
+//@access Private
+exports.avatarUpload = asyncHandler(async (req, res, next) => {
+  if (!req.files) {
+    return next(new ErrorResponse("Please upload a file", 400));
+  }
+  const avatar = req.files.avatar;
+  // is avatar a photo?
+  if (!avatar.mimetype.startsWith("image")) {
+    return next(new ErrorResponse("Please upload an image", 400));
+  }
+  // Check file size < 1MB
+  if (avatar.size > process.env.MAX_FILE_UPLOAD) {
+    return next(new ErrorResponse("Image must be less than 1MB", 400));
+  }
+
+  // Create unique name
+  avatar.name = `photo_${req.user._id}${path.parse(avatar.name).ext}`;
+
+  // move to public path
+  avatar.mv(`${process.env.FILE_UPLOAD_PATH}/${avatar.name}`, async (err) => {
+    if (err) {
+      console.log(err)
+      return next(new ErrorResponse("Please try again later", 500));
+    }
+    await User.findByIdAndUpdate(req.user._id, {photo: avatar.name})
+    res.status(200).json({
+      success:true,
+      data: avatar.name
+    })
+  });
+
+
+});

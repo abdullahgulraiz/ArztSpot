@@ -8,7 +8,6 @@ const filterResults = (model, populate) => async (req, res, next) => {
 
   // Copy the query from request object
   const requestQuery = { ...req.query };
-  console.log(requestQuery)
   // allowed models for location search
   const allowedLocSearch = ["Hospital", "User"];
   // address and zipcode are mandatory for location search
@@ -61,7 +60,6 @@ const filterResults = (model, populate) => async (req, res, next) => {
     /\b(gt|gte|lt|lte|in|exists)\b/g,
     (match) => `$${match}`
   );
-  console.log(queryStr)
 
   // Finding query in db
   if (locQuery) {

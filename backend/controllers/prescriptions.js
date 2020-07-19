@@ -61,6 +61,8 @@ exports.createPrescription = asyncHandler(async (req, res, next) => {
 // @route  GET /api/v1/prescriptions/
 // @access Private/doctor
 exports.getPrescriptionforUser = asyncHandler(async (req, res, next) => {
+  res.filterResults.data = res.filterResults.data.filter(p => p.appointment !== null && p.doctor !== null && p.patient !== null);
+  res.filterResults.count = res.filterResults.data.length;
   await res.status(200).json(res.filterResults);
 });
 
@@ -73,6 +75,7 @@ exports.getPrescriptionforPatient = asyncHandler(async (req, res, next) => {
       .sort('-date')
       .populate({path: "appointment", populate: { path: "symptoms"}})
       .populate({path: "doctor"});
+  prescriptions = prescriptions.filter(p => p.appointment !== null && p.doctor !== null && p.patient !== null);
   await res.status(200).json({success: true, count: prescriptions.length, data: prescriptions});
 });
 
@@ -80,7 +83,7 @@ exports.getPrescriptionforPatient = asyncHandler(async (req, res, next) => {
 //@route  GET /api/v1/prescriptions/:id
 //@access Private/doctor
 exports.getPrescription = asyncHandler(async (req, res, next) => {
-  const prescription = await Prescription.findById(req.params.id);
+  let prescription = await Prescription.findById(req.params.id);
   if (!prescription) {
     return next(
       new ErrorResponse(`Prescription not found with id ${req.params.id} `, 404)
@@ -96,6 +99,9 @@ exports.getPrescription = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`You are not authorized to see this prescription`, 401)
     );
   }
+  if (prescription.appointment === null || prescription.doctor === null || prescription.patient === null) {
+    prescription = null;
+  }
   await res.status(200).json({ success: true, prescription });
 });
 
@@ -105,6 +111,9 @@ exports.getPrescription = asyncHandler(async (req, res, next) => {
 exports.updatePrescription = asyncHandler(async (req, res, next) => {
   let prescription;
   prescription = await Prescription.findById(req.params.id);
+  if (prescription.appointment === null || prescription.doctor === null || prescription.patient === null) {
+    prescription = null;
+  }
   const { prescriptionData, validity, feeType, additionalNotes, isSent } = req.body;
   if (!prescription) {
     return next(
@@ -166,7 +175,7 @@ exports.deletePrescription = asyncHandler(async (req, res, next) => {
 //@route  POST /api/v1/prescriptions/:id/send
 //@access Private/doctor
 exports.sendPrescription = asyncHandler(async (req, res, next) => {
-  const prescription = await Prescription.findById(req.params.id)
+  let prescription = await Prescription.findById(req.params.id)
       .populate({
         path: "appointment",
         populate: [
@@ -180,6 +189,9 @@ exports.sendPrescription = asyncHandler(async (req, res, next) => {
       }).populate({
         path: "doctor"
       });
+  if (prescription.appointment === null || prescription.doctor === null || prescription.patient === null) {
+    prescription = null;
+  }
   if (!prescription) {
     return next(
         new ErrorResponse(`Prescription not found with id ${req.params.id} `, 404)
@@ -210,7 +222,7 @@ exports.sendPrescription = asyncHandler(async (req, res, next) => {
 //@route  GET /api/v1/prescriptions/:id/download
 //@access Private/doctor
 exports.downloadPrescription = asyncHandler(async (req, res, next) => {
-  const prescription = await Prescription.findById(req.params.id)
+  let prescription = await Prescription.findById(req.params.id)
       .populate({
         path: "appointment",
         populate: [
@@ -219,6 +231,9 @@ exports.downloadPrescription = asyncHandler(async (req, res, next) => {
             { path: "hospital" },
           ]
       });
+  if (prescription.appointment === null || prescription.doctor === null || prescription.patient === null) {
+    prescription = null;
+  }
   if (!prescription) {
     return next(
         new ErrorResponse(`Prescription not found with id ${req.params.id} `, 404)

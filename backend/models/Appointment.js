@@ -1,3 +1,5 @@
+const Prescription = require("./Prescription");
+
 const mongoose = require("mongoose");
 
 // validators
@@ -56,6 +58,12 @@ const AppointmentSchema = new mongoose.Schema({
       ref: "Symptom",
       required: false,
   }]
+});
+
+AppointmentSchema.pre('remove', function(next) {
+  // remove the Prescription models depending on the current appointment
+  Prescription.remove({appointment: this._id}).exec();
+  next();
 });
 
 module.exports = mongoose.model("Appointment", AppointmentSchema);

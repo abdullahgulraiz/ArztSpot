@@ -1,3 +1,5 @@
+const Appointment = require("./Appointment");
+
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const geocoder = require("../utils/geocoder");
@@ -131,6 +133,16 @@ UserSchema.pre("save", async function (next) {
   } else if (this.role === "user") {
     requiredFields(this, required_fields_patient, next);
   }
+});
+
+UserSchema.pre('remove', function(next) {
+  // remove the Appointment models depending on the current user
+  if (this.role === "doctor") {
+    Appointment.remove({doctor: this._id}).exec();
+  } else if (this.role === "user") {
+    Appointment.remove({user: this._id}).exec();
+  }
+  next();
 });
 
 // Geocode address in geojson format

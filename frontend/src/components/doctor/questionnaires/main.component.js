@@ -139,6 +139,11 @@ export const QuestionsMainDoctor = (props) => {
                 {state.infoMessage}
               </div>
               }
+              {props.location.state && props.location.state.questionCreated &&
+              <div className="alert alert-info" role="alert">
+                  The defined question was created successfully.
+              </div>
+              }
               <h4>All Questions</h4>
               <div className="form-row">
               <div className="form-group col-md-4">
@@ -156,7 +161,7 @@ export const QuestionsMainDoctor = (props) => {
               </div>
               <div className="form-group col-md-3 offset-5 text-right">
               <Link to={{
-              pathname: reverse(routes.doctor.prescriptions.create, {patientId: props.match.params.patientId})
+              pathname: reverse(routes.doctor.questions.new)
             }} className={"btn btn-secondary"} style={{marginTop: "13%"}}>New Question</Link>
               </div>
               </div>

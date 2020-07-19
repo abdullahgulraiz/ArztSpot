@@ -28,8 +28,6 @@ function App() {
                 <Route path={routes.search} component={components.general.Search} />
                 <Route path={routes.dashboard} component={components.general.DashboardPage} />
                 <Route path={routes.appointmentCreated} component={components.general.Success} />
-                <Route path={routes.questionnaire} component={components.general.Questionnaire} />
-                {/*<Route path={routes.editQuestionnaire} component={components.general.EditQuestionnaire} />*/}
                 <AuthRoute path={routes.profile} component={components.general.UserProfilePage} />
                   {/* Doctor */}
                 <PatientRoute path={routes.profile} component={components.general.UserProfilePage} />
@@ -37,7 +35,8 @@ function App() {
                 <DoctorRoute path={routes.doctor.prescriptions.create} component={components.doctor.prescriptions.PrescriptionsCreate} />
                 <DoctorRoute path={routes.doctor.prescriptions.patient} component={components.doctor.prescriptions.PrescriptionsPatient} />
                 <DoctorRoute path={routes.doctor.prescriptions.search} component={components.doctor.prescriptions.PrescriptionsSearch} />
-                <DoctorRoute path={routes.doctor.questionnaires.main} component={components.doctor.questionnaires.QuestionsMainDoctor} />
+                <DoctorRoute path={routes.doctor.questions.new} component={components.doctor.questions.QuestionsNewDoctor} />
+                <DoctorRoute path={routes.doctor.questions.main} component={components.doctor.questions.QuestionsMainDoctor} />
                 {/* Patient */}
                 <PatientRoute path={routes.patient.prescriptions.main} component={components.patient.prescriptions.PrescriptionsMainPatient} />
                 {/* Auth */}

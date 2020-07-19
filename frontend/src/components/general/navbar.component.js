@@ -14,7 +14,7 @@ const DoctorButton = props => (
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <Link className="dropdown-item" to="#">Appointments</Link>
             <Link className="dropdown-item" to="#">Patients</Link>
-            <Link className="dropdown-item" to={reverse(routes.doctor.questionnaires.main)}>Questionnaires</Link>
+            <Link className="dropdown-item" to={reverse(routes.doctor.questions.main)}>Questions</Link>
             <Link className="dropdown-item" to={reverse(routes.doctor.prescriptions.search)}>Prescriptions</Link>
             <Link className="dropdown-item" to={reverse(routes.profile)}>Profile</Link>
             <Link className="dropdown-item" onClick={ () => {props.handleLogoutClick()} } to={reverse(routes.auth.login)} >Logout</Link>

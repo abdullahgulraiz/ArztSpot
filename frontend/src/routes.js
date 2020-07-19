@@ -29,9 +29,10 @@ export default {
             patient: 'patient/:patientId',
             create: 'patient/:patientId/create'
         }),
-        // questionnaires
-        questionnaires: include('questionnaires', {
-            main: ''
+        // questions
+        questions: include('questions', {
+            main: '',
+            new: 'new'
         })
     }),
 

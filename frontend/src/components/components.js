@@ -17,10 +17,10 @@ import {PrescriptionsSearch} from "./doctor/prescriptions/search.component"
 import {PrescriptionsPatient} from "./doctor/prescriptions/patient.component"
 import {PrescriptionsCreate} from "./doctor/prescriptions/create.component"
 import {QuestionsMainDoctor} from "./doctor/questionnaires/main.component"
+import {QuestionsNewDoctor} from "./doctor/questionnaires/new.component"
 /* General Search (Doctors, Hospitals) */
 import Search from "./general/search.component";
 import DashboardPage from "./general/dashboard.component";
-// import EditQuestionnaire from ".questionnaire/editQuestionnaire.component";
 import Success from "./general/appointmentCreated.component";
 import UserProfilePage from "./general/userprofile.component";
 /* Patients */
@@ -39,8 +39,6 @@ export default {
         Unauthorized,
         Search,
         DashboardPage,
-        // Questionnaire,
-        // EditQuestionnaire,
         Success,
         UserProfilePage
     },
@@ -55,8 +53,9 @@ export default {
             PrescriptionsPatient,
             PrescriptionsCreate
         },
-        questionnaires: {
-            QuestionsMainDoctor
+        questions: {
+            QuestionsMainDoctor,
+            QuestionsNewDoctor
         },
     },
     patient: {

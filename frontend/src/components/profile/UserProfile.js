@@ -3,7 +3,6 @@ import { AuthContext } from "../../context/auth/AuthState";
 import ProfileContext from "../../context/Profile/profileContext";
 import MainPanelPatient from "./MainPanel/MainPanelPatient";
 import SidePanel from "./SidePanel";
-import Pagination from "../general/Pagination";
 
 const UserProfile = () => {
   useEffect(() => {

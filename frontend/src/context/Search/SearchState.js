@@ -50,7 +50,8 @@ const SearchState = (props) => {
 
   // Doctor Search
   const doctorSearch = async (search, page) => {
-    let queryStr = "?";
+    // Show only doctors with consultation rooms
+    let queryStr = "?hospital[exists]=true&";
     const {
       query,
       street,

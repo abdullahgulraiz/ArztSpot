@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../context/auth/AuthState";
+import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
 import { reverse } from "named-urls";
 import routes from "../../routes";
@@ -9,6 +10,7 @@ import { isEmptyObj } from "../../utils/isEmptyObj";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
 
 export const Login = (props) => {
+  const { register, handleSubmit, errors } = useForm();
   const dashboardContext = useContext(DashboardContext);
   const {
     selectedDate,
@@ -44,7 +46,7 @@ export const Login = (props) => {
     if (bearerToken && isEmptyObj(user)) {
       getUser();
     }
-  }, );
+  });
 
   const getUser = () => {
     const axiosInstance = axios.create({
@@ -67,8 +69,7 @@ export const Login = (props) => {
       });
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const onSubmit = (data) => {
     let credentials = {
       email: email,
       password: password,
@@ -98,9 +99,11 @@ export const Login = (props) => {
           }}
         />
       )}
-      {bearerToken && !isEmptyObj(user) && selectedDate.day && selectedDate.timeSlot && doctor._id && (
-        <Redirect to={'/doctors/' + doctor._id} />
-      )}
+      {bearerToken &&
+        !isEmptyObj(user) &&
+        selectedDate.day &&
+        selectedDate.timeSlot &&
+        doctor._id && <Redirect to={"/doctors/" + doctor._id} />}
 
       {bearerToken && isEmptyObj(user) && (
         <section id="contact" className="contact">
@@ -130,18 +133,39 @@ export const Login = (props) => {
                     Could not sign in. Please check your credentials.
                   </div>
                 )}
-                <form onSubmit={onSubmit}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <input
                       type={"text"}
-                      className={"form-control"}
+                      className={`form-control ${errors.email && "is-invalid"}`}
                       id={"email"}
                       placeholder={"Email"}
                       name={"email"}
+                      ref={register({
+                        required: "Required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "invalid email address",
+                        },
+                      })}
                       required={"required"}
                       onChange={(e) => setEmail(e.target.value)}
                     />
+                    {errors.email && errors.email.type === "required" && (
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
+                        Email is required.
+                      </div>
+                    )}
+                    {errors.email && errors.email.type === "pattern" && (
+                      <div
+                        className={`pl-0 invalid-feedback d-inline col-md-6 `}
+                      >
+                        Introduce a valid email.
+                      </div>
+                    )}
                   </div>
                   <div className="form-group">
                     <label htmlFor="password">Password</label>

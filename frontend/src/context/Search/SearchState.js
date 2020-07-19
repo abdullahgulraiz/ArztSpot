@@ -2,6 +2,7 @@ import React, { useReducer } from "react";
 import axios from "axios";
 import SearchContext from "./searchContext";
 import searchReducer from "./searchReducer";
+import moment from "moment";
 
 const SearchState = (props) => {
   const initialState = {
@@ -76,18 +77,24 @@ const SearchState = (props) => {
     if (page !== 1) {
       queryStr += `page=${page}&`;
     }
-    const url = encodeURI("/api/v1/doctors" + queryStr);
+    if (query) {
+      // case insensitive search in lastname
+      queryStr += `lastname[regex]=${query}&lastname[options]=i`
+    }
+    let url = "/api/v1/doctors" + queryStr;
     try {
-      const res = await axios.get(url);
-      const doctors = res.data.data.filter((doctor) => {
-        const regex = new RegExp(`${query}`, "gi");
-        const completeName = doctor.firstname + " " + doctor.lastname;
-        return (
-          doctor.firstname.match(regex) ||
-          doctor.lastname.match(regex) ||
-          completeName.match(regex)
-        );
-      });
+      let res = await axios.get(encodeURI(url));
+      // the following can happen if we search for the last doctor
+      // of the page, we should show the first page.
+      if (res.data.data.length === 0 && page > 1) {
+        url = url.replace(`page=${page}`, `page=${1}`)
+        res = await axios.get(url);
+      }
+      let doctors = res.data.data.map((doctor) => {
+        const name = doctor.photo || "default.png"
+        doctor.photo =`/uploads/${name}`
+        return doctor
+      })
       const pagination = {
         page: page,
         count: res.data.count,

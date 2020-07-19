@@ -115,6 +115,10 @@ const UserSchema = new mongoose.Schema({
     ref: "Hospital",
     required: false
   },
+  photo: {
+    type: String,
+    required: false
+  },
   arztNumber: {
     type: String,
     validate: [isDoctor, "Only Doctors can have field `Doctor licence`"],

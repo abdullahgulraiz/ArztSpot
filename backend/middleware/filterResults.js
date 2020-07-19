@@ -58,7 +58,7 @@ const filterResults = (model, populate) => async (req, res, next) => {
 
   // Create query operators ($gt, $gte, $or etc)
   queryStr = queryStr.replace(
-    /\b(gt|gte|lt|lte|in|exists)\b/g,
+    /\b(gt|gte|lt|lte|in|exists|regex|options)\b/g,
     (match) => `$${match}`
   );
   console.log(queryStr)

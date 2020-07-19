@@ -16,39 +16,12 @@ const SearchBar = () => {
   return (
     <div className="row">
       <form onSubmit={onSubmit} className="form-inline col-xs-8 col-sm-12" >
-        <div className="form-group form-check-inline">
-          Search for:{" "}
-          <label className="form-check-label mr-2 ml-2" id="inlineRadio1">
-            Doctors
-          </label>
-          <input
-            className="form-check-input"
-            htmlFor="inlineRadio1"
-            type="radio"
-            name="type"
-            value="doctor"
-            checked = {type === "doctor"}
-            onChange={onChange}
-          />
-        </div>
-        <div className="form-group form-check-inline">
-          <label className="form-check-label mr-2" id="inlineRadio2">
-            Hospitals
-          </label>
-          <input
-            className="form-check-input"
-            htmlFor="inlineRadio2"
-            type="radio"
-            name="type"
-            value="hospital"
-            checked = {type === "hospital"}
-            onChange={onChange}
-          />
-        </div>
         <div className="form-group form-inline">
+          <label className="form-check-label mr-2" id="inlineRadio2">
+            Search by lastname
+          </label>
           <input
             className="form-input"
-            htmlFor="inlineRadio2"
             type="text"
             name="query"
             value={query}

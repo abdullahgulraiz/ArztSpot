@@ -21,7 +21,7 @@ const DoctorItem = ({doctor}) => {
     <div className="card mb-3">
       <div className="row no-gutters">
         <div className="col-1 mt-5 offset-1 offset-0">
-          <img src={require('../../../default.png')} className="rounded-circle" style={{ width: "60px" }} alt="..."/>
+          <img src={doctor.photo} className="rounded-circle" style={{ width: "60px" }} alt="..."/>
         </div>
         <div className="col-9 offset-1 offset-0">
           <div className="card-body">

@@ -7,7 +7,6 @@ export default (state, action) => {
         pagination: action.payload.pagination
       }
     case "SET_SEARCH":
-      console.log(action.payload)
       return {
         ...state,
         search: action.payload

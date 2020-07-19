@@ -18,6 +18,12 @@ export default (state, action) => {
         infoToUpdate: action.payload,
       };
     }
+    case "SET_IS_FILE_UPLOAD": {
+      return {
+        ...state,
+        isFileUpload: action.payload
+      }
+    }
     case "SET_IS_EDITING": {
       return {
         ...state,

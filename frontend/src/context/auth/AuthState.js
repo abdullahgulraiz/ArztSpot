@@ -20,6 +20,7 @@ const initialState = {
     errorLanguages: false,
     errorSpecialization: false,
   },
+  isFileUpload: true,
   hospitalToCreate: {
     nameHospital: "",
     zipcodeHospital: "",
@@ -59,12 +60,12 @@ export const AuthProvider = ({ children }) => {
     });
   }
 
-  function setUser(user) {
+  const setUser = (user) => {
     dispatch({
       type: "SET_USER",
       payload: user,
     });
-  }
+  };
   // User to create in register
   const setUserToCreate = (userToCreate) => {
     dispatch({ type: "SET_USER_TO_CREATE", payload: userToCreate });
@@ -251,6 +252,34 @@ export const AuthProvider = ({ children }) => {
       },
     });
   };
+  const setIsFileUpload = (isFileUpload) => {
+    dispatch({ type: "SET_IS_FILE_UPLOAD", payload: isFileUpload });
+  };
+  const uploadAvatarPhoto = async (bearerToken, file) => {
+    console.log(bearerToken);
+    let formData = new FormData();
+    formData.append("avatar", file[0]);
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    };
+    console.log(config);
+    console.log(formData);
+    try {
+      const res = await axios.put("/api/v1/auth/photo", formData, config);
+      // const userToSet = {
+      //   ...res.data.user,
+      //   photo:`/uploads/${res.data.data.photo}`
+      // }
+      console.log(res.data.data);
+      // setUser(userToSet);
+    } catch (e) {
+      console.log(e);
+      console.log(e.response);
+    }
+  };
 
   function logoutUser() {
     dispatch({
@@ -282,6 +311,7 @@ export const AuthProvider = ({ children }) => {
         hospitalToCreate: state.hospitalToCreate,
         alert: state.alert,
         alertMsg: state.alertMsg,
+        isFileUpload: state.isFileUpload,
         createPatient,
         createHospital,
         createDoctor,
@@ -293,8 +323,10 @@ export const AuthProvider = ({ children }) => {
         clearCustomError,
         setPrivatePractice,
         setAlert,
+        uploadAvatarPhoto,
         setBearerToken,
         setUser,
+        setIsFileUpload,
         logoutUser,
         updateUser,
       }}

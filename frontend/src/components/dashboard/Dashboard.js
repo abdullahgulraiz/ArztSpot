@@ -7,6 +7,7 @@ import NotFound from "../general/notfound.component";
 import { useLocation } from "react-router-dom";
 import Alert from "../dashboard/Alert";
 import BookAppointment from "../dashboard/BookAppointment";
+import SelectSymptoms from "../dashboard/SelectSymptoms";
 import SelectDateMain from "./SelectDate/SelectDateMain";
 
 const Dashboard = () => {
@@ -17,7 +18,9 @@ const Dashboard = () => {
     alert,
     alertMsg,
     doctor,
-    selectedDate
+    selectedDate,
+    allSymptoms,
+    getDoctorQuestionSymptoms
   } = dashboardContext;
   const location = useLocation();
   useEffect(() => {
@@ -31,6 +34,7 @@ const Dashboard = () => {
     if(!doctor._id) {
       getDoctorById(doctorId);
     }
+    getDoctorQuestionSymptoms(doctorId);
     // avoid warning because missing dependency
     // eslint-disable-next-line
   }, []);
@@ -50,6 +54,7 @@ const Dashboard = () => {
             <div className="col-md-6 mt-5">
               {alert && <Alert msg={alertMsg}/>}
               <SelectDateMain doctor={doctor} hospital={doctor.hospital}/>
+              {selectedDate.timeSlot && allSymptoms.length > 0 && <SelectSymptoms />}
               {selectedDate.timeSlot && <BookAppointment />}
             </div>
           </div>

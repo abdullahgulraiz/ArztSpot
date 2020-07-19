@@ -53,6 +53,16 @@ export default (state, action) => {
         ...state,
         alert: action.payload.alert,
         alertMsg: action.payload.alertMsg
+      };
+    case "SET_SELECTED_SYMPTOMS":
+      return {
+        ...state,
+        selectedSymptoms: action.payload,
+      };
+    case "SET_ALL_SYMPTOMS":
+      return {
+        ...state,
+        allSymptoms: action.payload,
       }
     default:
       return state;

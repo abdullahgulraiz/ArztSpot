@@ -22,6 +22,7 @@ export const QuestionsMainPatient = (props) => {
 
   const doctor = props.doctor;
   const appointment = props.appointment;
+  const symptoms = props.symptoms;
 
   useEffect(() => {
       if (doctor && !isEmptyObj(doctor)) {
@@ -31,8 +32,12 @@ export const QuestionsMainPatient = (props) => {
             'Authorization': `Bearer ${bearerToken}`
           }
         });
+        let url = "/api/v1/questions/doctor/" + doctor._id;
+        if (symptoms && symptoms.length > 0) {
+            url += "?symptoms=" + symptoms.join(",");
+        }
         axiosInstance
-            .get("/api/v1/questions/doctor/" + doctor._id)
+            .get(url)
             .then(response => {
               if (response.data.success) {
                   if (response.data.count > 0) {

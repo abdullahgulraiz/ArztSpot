@@ -9,7 +9,7 @@ import {QuestionsMainPatient} from "../patient/questionnaires/main.component";
 const Success = () => {
   const authContext = useContext(AuthContext);
   const dashboardContext = useContext(DashboardContext);
-  const { setAppointmentCreated, clearSelectedDate, doctor, appointment } = dashboardContext;
+  const { setAppointmentCreated, clearSelectedDate, doctor, appointment, selectedSymptoms } = dashboardContext;
   const { user } = authContext;
   useEffect(() => {
     // reset original state
@@ -23,7 +23,7 @@ const Success = () => {
       {isEmptyObj(user) ? (
         <NotFound />
       ) : (
-          <QuestionsMainPatient doctor={doctor} appointment={appointment} />
+          <QuestionsMainPatient doctor={doctor} appointment={appointment} symptoms={selectedSymptoms.data} />
         // <div className="container mt-5" data-aos="fade-up">
         //   <div className="section-title">
         //     <i className="icofont-bullseye" style={{"fontSize": "60px"}}/>

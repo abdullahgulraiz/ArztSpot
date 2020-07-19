@@ -5,6 +5,7 @@ const asyncHandler = require("../middleware/async");
 const Symptom = require("../models/Symptom");
 const Appointment = require("../models/Appointment");
 const moment = require('moment');
+const User = require("../models/User");
 
 // @desc  Create new question
 // @route  POST /api/v1/questions
@@ -172,9 +173,11 @@ exports.questionsByDoctor = asyncHandler(async (req, res, next) => {
   // get symptom ids of each symptom
   let symptomIds = [];
   for (const symptom_ of symptoms) {
-    let symptom = await Symptom.findOne({ name: { $regex : new RegExp(symptom_, "i") } });
-    if (symptom) {
-      symptomIds.push(symptom._id.toString());
+    let symptoms = await Symptom.find({ name: { $regex : new RegExp(symptom_, "i") } });
+    if (symptoms) {
+      symptoms.map(symptom => {
+        symptomIds.push(symptom._id.toString());
+      });
     }
   }
   let query = {doctor: req.params.doctorId};
@@ -183,11 +186,28 @@ exports.questionsByDoctor = asyncHandler(async (req, res, next) => {
   }
   const questions = await Question
       .find(query)
-      .select("-responses");
+      .select("-responses")
+      .populate("symptoms");
   if (!questions) {
     return next(
         new ErrorResponse(`Question not found with id ${req.params.id} `, 404)
     );
   }
   await res.status(200).json({ success: true, count: questions.length, data: questions });
+});
+
+// @desc  Get symptoms of questions by a certain doctor
+//@route  POST /api/v1/questions/symptoms/doctor/:doctorId
+//@access Private/patient
+exports.symptomsOfQuestions = asyncHandler(async (req, res, next) => {
+  let query = {doctor: req.params.doctorId};
+  const doctor = await User.findOne({ _id: req.params.doctorId });
+  if (!doctor) {
+    return next(new ErrorResponse(`Doctor not found with id of ${doctorId}`, 404));
+  }
+  const symptoms = await Question
+      .find(query)
+      .select("symptoms")
+      .populate("symptoms");
+  await res.status(200).json({ success: true, data: symptoms });
 });

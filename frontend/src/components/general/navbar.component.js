@@ -12,8 +12,6 @@ const DoctorButton = props => (
             {props.user.firstname}  {props.user.lastname}
         </Link>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <Link className="dropdown-item" to="#">Appointments</Link>
-            <Link className="dropdown-item" to="#">Patients</Link>
             <Link className="dropdown-item" to={reverse(routes.doctor.questions.main)}>Questions</Link>
             <Link className="dropdown-item" to={reverse(routes.doctor.prescriptions.search)}>Prescriptions</Link>
             <Link className="dropdown-item" to={reverse(routes.profile)}>Profile</Link>

@@ -115,6 +115,9 @@ const DashboardState = (props) => {
   const setAppointmentCreated = (appointmentCreated) => {
     dispatch({ type: "SET_APPOINTMENT_CREATED", payload: appointmentCreated });
   };
+  const setCreatedAppointment = (appointment) => {
+    dispatch({ type: "CREATE_APPOINTMENT", payload: appointment });
+  };
   const setAlert = (alert, msg) => {
     dispatch({ type: "SET_ALERT", payload: { alert: alert, alertMsg: msg } });
     setTimeout(
@@ -148,8 +151,11 @@ const DashboardState = (props) => {
     };
     const url = "/api/v1/appointments";
     try {
-      await axios.post(url, reqBody, config);
+      let response = await axios.post(url, reqBody, config);
       setAppointmentCreated(true);
+      if (response.data.success) {
+        setCreatedAppointment(response.data.appointment);
+      }
     } catch (e) {
       setAlert(
         true,

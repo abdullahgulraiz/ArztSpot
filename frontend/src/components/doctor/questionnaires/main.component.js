@@ -226,7 +226,7 @@ const QuestionResultRow = props => {
               question.choices.map((c, idx) => {
                 return (
                     <div className="form-check">
-                      <input className="form-check-input" type="radio" name={question._id} id={question._id + "_" + idx} checked={idx === 0} />
+                      <input className="form-check-input" type="radio" name={question._id} id={question._id + "_" + idx} />
                         <label className="form-check-label" htmlFor={question._id + "_" + idx}>
                           {c}
                         </label>

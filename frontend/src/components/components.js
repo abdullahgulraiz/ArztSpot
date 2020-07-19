@@ -25,6 +25,7 @@ import Success from "./general/appointmentCreated.component";
 import UserProfilePage from "./general/userprofile.component";
 /* Patients */
 import {PrescriptionsMainPatient} from "./patient/prescriptions/main.component"
+import {QuestionsMainPatient} from "./patient/questionnaires/main.component"
 
 export default {
     general: {
@@ -60,7 +61,10 @@ export default {
     },
     patient: {
         prescriptions: {
-            PrescriptionsMainPatient
+            PrescriptionsMainPatient,
+        },
+        questions: {
+            QuestionsMainPatient
         }
     },
 }

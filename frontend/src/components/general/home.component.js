@@ -28,15 +28,7 @@ export default class Home extends Component {
                 </div>
               </div>
       
-              {/*<div className="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="300">*/}
-              {/*  <div className="icon-box">*/}
-              {/*    <div className="icon"><i className="ri-palette-line"></i></div>*/}
-              {/*    <h4 className="title"><Link to={routes.search}>Book your dashboard now</Link></h4>*/}
-              {/*    <p className="description">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore</p>*/}
-              {/*  </div>*/}
-              {/*</div>*/}
-      
-              <div className="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
+              <div className="col-md-6 col-lg-3 offset-1 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="400">
                 <div className="icon-box">
                   <div className="icon"><i className="ri-user-search-line"></i></div>
                   <h4 className="title"><Link to={routes.search}>Book your appointment now</Link></h4>
@@ -44,7 +36,7 @@ export default class Home extends Component {
                 </div>
               </div>
       
-              <div className="col-md-6 col-lg-3 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
+              <div className="col-md-6 col-lg-3 offset-1 d-flex align-items-stretch mb-5 mb-lg-0" data-aos="zoom-in" data-aos-delay="500">
                 <div className="icon-box">
                   <div className="icon"><i className="ri-hospital-line"></i></div>
                   <h4 className="title"><Link to={routes.auth.register}>Are you a health professional?</Link></h4>

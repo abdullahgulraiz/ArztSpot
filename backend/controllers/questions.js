@@ -138,30 +138,56 @@ exports.deleteQuestion = asyncHandler(async (req, res, next) => {
   });
 })
 
-// @desc  Answer question by Id
-//@route  POST /api/v1/questions/:id/answer
+// @desc  Answer questions
+//@route  POST /api/v1/questions/answer
 //@access Private/patient
-exports.answerQuestion = asyncHandler(async (req, res, next) => {
-  const { response } = req.body;
-  const question = await Question.findById(req.params.id);
-  if (!question) {
+exports.answerQuestions = asyncHandler(async (req, res, next) => {
+  const { responses } = req.body;
+  for (const response of responses) {
+    let question = await Question.findById(response.question);
+    if (!question) {
+      return next(
+          new ErrorResponse(`Question not found with id ${response.question} `, 404)
+      );
+    }
+    const appointment = await Appointment.findById(response.appointment);
+    if (!appointment) {
+      return next(
+          new ErrorResponse(`Appointment not found with id ${response.appointment} `, 404)
+      );
+    }
+    let response_ = await Response.create(response);
+  }
+  await res.status(200).json({ success: true });
+});
+
+// @desc  Get questions by a certain doctor
+//@route  POST /api/v1/questions/doctor/:doctorId
+//@access Private/patient
+exports.questionsByDoctor = asyncHandler(async (req, res, next) => {
+  let symptoms = [];
+  if (req.query.symptoms) {
+    symptoms = req.query.symptoms.split(',');
+  }
+  // get symptom ids of each symptom
+  let symptomIds = [];
+  for (const symptom_ of symptoms) {
+    let symptom = await Symptom.findOne({ name: { $regex : new RegExp(symptom_, "i") } });
+    if (symptom) {
+      symptomIds.push(symptom._id.toString());
+    }
+  }
+  let query = {doctor: req.params.doctorId};
+  if (symptomIds.length > 0) {
+    query["symptoms"] = { $in: symptomIds }
+  }
+  const questions = await Question
+      .find(query)
+      .select("-responses");
+  if (!questions) {
     return next(
         new ErrorResponse(`Question not found with id ${req.params.id} `, 404)
     );
   }
-  // only doctor and patient of the question should have access to it
-  if (
-      question.doctor._id.toString() !== req.user.id &&
-      req.user.role !== "admin"
-  ) {
-    return next(
-        new ErrorResponse(`You are not authorized to see this question`, 401)
-    );
-  }
-  // create response
-  let response_ = await Response.create({
-    question: question._id.toString(),
-    response: response,
-  });
-  await res.status(200).json({ success: true, question });
+  await res.status(200).json({ success: true, count: questions.length, data: questions });
 });

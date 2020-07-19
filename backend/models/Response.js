@@ -1,14 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const validateResponseLength = function () {
-    if (this.question.type !== "Single Choice" || this.type !== "Multiple Choice") {
-        if (this.response.length > 1) {
-            return false;
-        }
-    }
-};
-
 const responseSchema = new Schema({
     question: {
         type: mongoose.Schema.ObjectId,
@@ -17,9 +9,13 @@ const responseSchema = new Schema({
     },
     response: [{
         type: String,
-        required: true,
-        validate: [validateResponseLength, "This type of question cannot have multiple answers as a response."]
-    }]
+        required: true
+    }],
+    appointment: {
+        type: mongoose.Schema.ObjectId,
+        ref: "Appointment",
+        required: true
+    },
 })
 
 module.exports = mongoose.model('Response', responseSchema);

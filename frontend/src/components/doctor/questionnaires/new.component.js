@@ -56,7 +56,7 @@ export const QuestionsNewDoctor = (props) => {
       let newQuestion = {
           description: state.description,
           type: state.type,
-          choices: state.type !== 'Text' ? state.choices.split(",").filter(c => c.length > 0) : [],
+          choices: state.type !== 'Text' ? state.choices.trim().split(",").filter(c => c.length > 0) : [],
           symptoms: state.symptoms.split(',')
       }
       const axiosInstance = axios.create({

@@ -5,7 +5,8 @@ const {
   getQuestionforUser,
   updateQuestion,
   deleteQuestion,
-  answerQuestion
+  answerQuestions,
+  questionsByDoctor
 } = require("../controllers/questions");
 
 const router = express.Router();
@@ -20,13 +21,17 @@ router
   .get(protectRoute,authorize("doctor", "admin"),filterResults(Question, ["doctor", "symptoms", "responses"]), getQuestionforUser);
 
 router
+    .route("/answer")
+    .post(protectRoute,authorize("user"),answerQuestions);
+
+router
   .route("/:id")
   .get(protectRoute, authorize("doctor", "admin"), getQuestion)
   .put(protectRoute, authorize("doctor", "admin"), updateQuestion)
   .delete(protectRoute, authorize("doctor", "admin"), deleteQuestion);
 
 router
-    .route("/:id/answer")
-    .post(protectRoute,authorize("user"),answerQuestion);
+    .route("/doctor/:doctorId")
+    .get(protectRoute,authorize("user", "doctor"),questionsByDoctor);
 
 module.exports = router;

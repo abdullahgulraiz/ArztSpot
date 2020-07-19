@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
 // Load .env vars
-dotenv.config({ path: "./config/..env" });
+dotenv.config({ path: "./config/.env" });
 
 // Load models
 const Hospital = require("./models/Hospital");

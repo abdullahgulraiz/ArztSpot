@@ -151,6 +151,7 @@ const DashboardState = (props) => {
       await axios.post(url, reqBody, config);
       setAppointmentCreated(true);
     } catch (e) {
+      console.log(e.response)
       setAlert(
         true,
         "It seems this appointment has already been taken. Please reload the page"

@@ -6,7 +6,7 @@ import DashboardContext from "../../../context/Dashboard/dashboardContext";
 
 const SelectDateMain = ({ doctor, hospital }) => {
   const dashboardContext = useContext(DashboardContext);
-  const { selectedDate, alert, alertMsg } = dashboardContext;
+  const { selectedDate } = dashboardContext;
   return (
     <Fragment>
         <br />

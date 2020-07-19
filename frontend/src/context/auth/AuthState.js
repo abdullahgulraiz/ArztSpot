@@ -119,10 +119,10 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       setBearerToken(res.data.token);
     } catch (e) {
-      if (e.response.data.error.includes("Duplicate") ){
-        setAlert(true, "Email is already taken")
+      if (e.response.data.error.includes("Duplicate")) {
+        setAlert(true, "Email is already taken");
       } else {
-        setAlert(true, "Error please try again later")
+        setAlert(true, "Error please try again later");
       }
     }
   };
@@ -163,14 +163,12 @@ export const AuthProvider = ({ children }) => {
       clearUserToCreate();
       clearHospitalToCreate();
     } catch (e) {
-      if (e.response.data.error.includes("Duplicate") ){
-        setAlert(true, "Email is already taken")
+      if (e.response.data.error.includes("Duplicate")) {
+        setAlert(true, "Email is already taken");
       } else {
-        setAlert(true, "Error please try again later")
+        setAlert(true, "Error please try again later");
       }
     }
-
-
   };
   // clear userToCreate when finished
   const clearUserToCreate = () => {
@@ -204,7 +202,10 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/api/v1/hospitals", hospitalToPost, config);
     } catch (e) {
-      console.log(e.response);
+      setAlert(
+        true,
+        "User created, but not clinic, go to your profile and try again"
+      );
     }
   };
   const clearHospitalToCreate = () => {
@@ -229,10 +230,10 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.data);
       setIsEditing(false);
     } catch (e) {
-      if (e.response.data.error.includes("Duplicate") ){
-        setAlert(true, "Email is already taken")
+      if (e.response.data.error.includes("Duplicate")) {
+        setAlert(true, "Email is already taken");
       } else {
-        setAlert(true, "Error please try again later")
+        setAlert(true, "Error please try again later");
       }
     }
   };

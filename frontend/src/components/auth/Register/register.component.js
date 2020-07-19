@@ -74,7 +74,7 @@ const Register = () => {
             <p>Please enter your details to create an account with ArztSpot.</p>
           </div>
 
-          <form>
+          <form noValidate>
             <div className="row">
               <div className="col-6 offset-3">
                 {alert && <Alert msg={alertMsg} />}
@@ -87,10 +87,11 @@ const Register = () => {
                       className={`form-control ${
                         errors.firstname && "is-invalid"
                       }`}
+                      name="firstname"
                       ref={register({ required: true, minLength: 2 })}
                       id={"name"}
                       placeholder="First Name"
-                      name="firstname"
+
                     />
                     {errors.firstname &&
                       errors.firstname.type === "required" && (
@@ -254,7 +255,6 @@ const Register = () => {
                             pattern: /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{3}$/,
                           })}
                           placeholder="+XX (XXX) XXX-XXX"
-                          value={userToCreate.phone}
                           id="example-tel-input"
                         />
                         {errors.phone && errors.phone.type === "required" && (
@@ -308,7 +308,6 @@ const Register = () => {
                           minLength: 10,
                           maxLength: 50,
                         })}
-                        value={userToCreate.address}
                         id="inputAddress"
                         placeholder="Leopoldstraße 45"
                       />
@@ -351,7 +350,6 @@ const Register = () => {
                             minLength: 5,
                             maxLength: 20,
                           })}
-                          value={userToCreate.country}
                           id="Country"
                           placeholder={"Country"}
                         />
@@ -388,7 +386,6 @@ const Register = () => {
                             errors.city && "is-invalid"
                           }`}
                           onChange={onChange}
-                          value={userToCreate.city}
                           id="inputCity"
                           ref={register({
                             required: true,
@@ -424,7 +421,6 @@ const Register = () => {
                         <label htmlFor="inputZip">Zip</label>
                         <input
                           type="text"
-                          value={userToCreate.zipcode}
                           onChange={onChange}
                           className={`form-control ${
                             errors.zipcode && "is-invalid"
@@ -492,7 +488,6 @@ const Register = () => {
                         <input
                           type="text"
                           onChange={onChange}
-                          value={userToCreate.insurance_number}
                           className={`form-control ${
                             errors.insurance_number && "is-invalid"
                           }`}
@@ -578,7 +573,6 @@ const Register = () => {
                           minLength: 50,
                           maxLength: 1000,
                         })}
-                        value={userToCreate.experience}
                         rows="3"
                       >
                         {userToCreate.experience}
@@ -629,7 +623,6 @@ const Register = () => {
                             <input
                               type={"text"}
                               onChange={onChangeHospital}
-                              value={hospitalToCreate.nameHospital}
                               className={`form-control ${
                                 errors.nameHospital && "is-invalid"
                               }`}
@@ -662,7 +655,6 @@ const Register = () => {
                           <div className="form-group col-md-6">
                             <label htmlFor="example-tel-input">Telephone</label>
                             <input
-                              value={hospitalToCreate.phoneHospital}
                               onChange={onChangeHospital}
                               className={`form-control ${
                                 errors.phoneHospital && "is-invalid"
@@ -702,7 +694,6 @@ const Register = () => {
                               errors.addressHospital && "is-invalid"
                             }`}
                             onChange={onChangeHospital}
-                            value={hospitalToCreate.addressHospital}
                             name="addressHospital"
                             ref={register({
                               required: true,
@@ -742,7 +733,6 @@ const Register = () => {
                             <label htmlFor="inputCountry">Country</label>
                             <input
                               type="text"
-                              value={hospitalToCreate.countryHospital}
                               onChange={onChangeHospital}
                               className={`form-control ${
                                 errors.countryHospital && "is-invalid"
@@ -785,7 +775,6 @@ const Register = () => {
                             <label htmlFor="inputState">City</label>
                             <input
                               type="text"
-                              value={hospitalToCreate.cityHospital}
                               onChange={onChangeHospital}
                               className={`form-control ${
                                 errors.cityHospital && "is-invalid"
@@ -829,7 +818,6 @@ const Register = () => {
                             <input
                               type="text"
                               onChange={onChangeHospital}
-                              value={hospitalToCreate.zipcodeHospital}
                               className={`form-control ${
                                 errors.zipcodeHospital && "is-invalid"
                               }`}

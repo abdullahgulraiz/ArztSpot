@@ -217,7 +217,9 @@ exports.avatarUpload = asyncHandler(async (req, res, next) => {
   if (!req.files) {
     return next(new ErrorResponse("Please upload a file", 400));
   }
+  console.log(req.files.avatar)
   const avatar = req.files.avatar;
+
   // is avatar a photo?
   if (!avatar.mimetype.startsWith("image")) {
     return next(new ErrorResponse("Please upload an image", 400));
@@ -233,15 +235,13 @@ exports.avatarUpload = asyncHandler(async (req, res, next) => {
   // move to public path
   avatar.mv(`${process.env.FILE_UPLOAD_PATH}/${avatar.name}`, async (err) => {
     if (err) {
-      console.log(err)
       return next(new ErrorResponse("Please try again later", 500));
     }
-    await User.findByIdAndUpdate(req.user._id, {photo: avatar.name})
-    res.status(200).json({
-      success:true,
-      data: avatar.name
+    const user = await User.findByIdAndUpdate(req.user._id, {photo: avatar.name})
+    await res.status(200).json({
+      success: true,
+      data: user
     })
   });
-
 
 });

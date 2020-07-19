@@ -1,4 +1,5 @@
 import React, { Fragment, useContext } from "react";
+import routes from "../../../routes";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../../context/auth/AuthState";
 import TypeaheadSearch from "../../search/TypeaheadSearch";
@@ -6,6 +7,7 @@ import Alert from "../../dashboard/Alert";
 import languages from "../../../data/languages";
 import specialization from "../../../data/specialization";
 import moment from "moment";
+import {Link} from "react-router-dom";
 const Register = () => {
   const authContext = useContext(AuthContext);
   const {
@@ -44,6 +46,10 @@ const Register = () => {
   };
   const validateDate = (birthday) => {
     // check age is between 18 and 95
+    console.log(
+      moment().diff(moment(birthday), "years") >= 18 &&
+      moment().diff(moment(birthday), "years") <= 95
+    )
     return (
       moment().diff(moment(birthday), "years") >= 18 &&
       moment().diff(moment(birthday), "years") <= 95
@@ -285,7 +291,7 @@ const Register = () => {
                           placeholder={"DD.MM.YYYY"}
                           name="birthday"
                         />
-                        {errors.date && errors.date.type === "validate" && (
+                        {errors.birthday && errors.birthday.type === "validate" && (
                           <div
                             className={`pl-0 invalid-feedback d-inline col-sm-8 `}
                           >
@@ -862,7 +868,7 @@ const Register = () => {
                     </button>
                     <div className="section-title" style={{ marginTop: "6%" }}>
                       <p>
-                        Already signed up? <a className="alert-link">Log in</a>{" "}
+                        Already signed up? <Link to={routes.auth.login} className="alert-link">Log in</Link>{" "}
                         with your account
                       </p>
                     </div>

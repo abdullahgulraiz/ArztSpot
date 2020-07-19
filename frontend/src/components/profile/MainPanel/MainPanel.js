@@ -4,7 +4,7 @@ import Appointment from "./Appointment";
 import EditPersonalInfo from "./EditPersonalInfo";
 import PersonalInfo from "./PersonalInfo";
 
-const MainPanelPatient = ({ appointments }) => {
+const MainPanel = ({ appointments }) => {
   const authContext = useContext(AuthContext);
   const { user, isEditing, setIsEditing, bearerToken } = authContext;
   const onClick = (e) => {
@@ -30,7 +30,7 @@ const MainPanelPatient = ({ appointments }) => {
               Info
             </a>
           </li>
-          {user.role === "user" && (
+
             <li className="nav-item">
               <a
                 className="nav-link"
@@ -44,7 +44,7 @@ const MainPanelPatient = ({ appointments }) => {
                 Upcoming Appointments
               </a>
             </li>
-          )}
+
         </ul>
       </div>
       <div className="tab-content profile-tab" id="myTabContent">
@@ -83,11 +83,11 @@ const MainPanelPatient = ({ appointments }) => {
           role="tabpanel"
           aria-labelledby="profile-tab"
         >
-          {user.role === "user" && <Appointment appointments={appointments} bearerToken={bearerToken}/>}
+          <Appointment appointments={appointments} bearerToken={bearerToken}/>
         </div>
       </div>
     </Fragment>
   );
 };
 
-export default MainPanelPatient;
+export default MainPanel;

@@ -6,8 +6,8 @@ import Loading from "../general/loading.component";
 
 const SearchResults = () => {
   const searchContext = useContext(SearchContext);
-  const { search, doctorSearch, pagination } = searchContext;
-  if (search.hasSearched && search.resultsLoaded) {
+  const { search, doctorSearch, pagination, doctors } = searchContext;
+  if (search.hasSearched && search.resultsLoaded && doctors.length >= 1) {
     return (
       <Fragment>
         <Doctors />
@@ -18,15 +18,17 @@ const SearchResults = () => {
         />
       </Fragment>
     );
-  } else if (search.hasSearched) {
+  } else if (search.hasSearched && !search.resultsLoaded) {
     return (
       <div className="offset-6 text-primary" >
         <Loading />
       </div>
     );
+  } else if (search.hasSearched && search.resultsLoaded && doctors.length === 0){
+    return (<p className="p-0"><strong>0 results</strong></p>);
   } else {
     // if user has not search return nothing
-    return null;
+    return null
   }
 };
 

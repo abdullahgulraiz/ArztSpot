@@ -14,13 +14,17 @@ const ProfileState = (props) => {
       limit: 5,
     },
     updating: "",
+    isLoading: false,
     error: false,
     alert: false,
     alertMsg: "",
   };
 
   const [state, dispatch] = useReducer(profileReducer, initialState);
-
+  // Set loading (when fetching data from backend)
+  const setIsLoading = (isLoading)=> {
+    dispatch({type: "SET_IS_LOADING", payload: isLoading})
+  }
   // get appointments for user
   const getAppointments = async ( bearerToken, page) => {
     const config = {
@@ -62,6 +66,7 @@ const ProfileState = (props) => {
     } catch (e) {
       console.log(e.response);
     }
+    setIsLoading(false)
   };
   // If we are updating we want to show
   // the calendar of the doctor so first we need to
@@ -120,6 +125,7 @@ const ProfileState = (props) => {
         "It seems this appointment has already been taken. Please reload the page"
       );
     }
+    setIsLoading(false)
   };
   // delete appointments
   const deleteAppointment = async (bearerToken, appointment) => {
@@ -137,6 +143,7 @@ const ProfileState = (props) => {
       console.log(e);
       // dispatch({type: ""})
     }
+    setIsLoading(false)
   };
 
   return (
@@ -147,6 +154,8 @@ const ProfileState = (props) => {
         alert: state.alert,
         alertMsg: state.alertMsg,
         pagination: state.pagination,
+        isLoading: state.isLoading,
+        setIsLoading,
         getAppointments,
         updateAppointment,
         deleteAppointment,

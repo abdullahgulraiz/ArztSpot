@@ -8,10 +8,7 @@ const DoctorItem = ({doctor}) => {
   const {
     firstname,
     lastname,
-    email,
-    phone,
     specialization,
-    avatar,
     languages,
     hospital
   } = doctor;

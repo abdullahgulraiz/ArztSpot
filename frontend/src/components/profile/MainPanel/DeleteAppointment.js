@@ -6,8 +6,9 @@ const DeleteAppointment = ({ appointment }) => {
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
   const { bearerToken } = authContext;
-  const { deleteAppointment } = profileContext;
+  const { deleteAppointment, setIsLoading } = profileContext;
   const onClick = (e) => {
+    setIsLoading(appointment._id);
     deleteAppointment(bearerToken, appointment);
   };
   return (

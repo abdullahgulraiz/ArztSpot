@@ -4,15 +4,10 @@ export default (state, action) => {
       return {
         ...state,
         doctors: action.payload.doctors,
-        pagination: action.payload.pagination,
-        hasSearched: true
+        pagination: action.payload.pagination
       }
     case "SET_SEARCH":
-      return {
-        ...state,
-        search: action.payload
-      }
-    case "SET_LOADED":
+      console.log(action.payload)
       return {
         ...state,
         search: action.payload

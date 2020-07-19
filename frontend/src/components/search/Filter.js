@@ -15,7 +15,7 @@ const Filter = () => {
       (!data.street && !data.country && !data.zipcode) ||
       (data.street && data.country && data.zipcode)
     ) {
-      setSearch({ ...search, hasSearched: true, errorLocation: false });
+      setSearch({ ...search, hasSearched: true, resultsLoaded: false, errorLocation: false });
       doctorSearch(search, pagination.page);
     } else {
       setSearch({ ...search, errorLocation: true });

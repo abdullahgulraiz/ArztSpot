@@ -43,10 +43,6 @@ const SearchState = (props) => {
   const setSearch = (search) => {
     dispatch({ type: "SET_SEARCH", payload: search });
   };
-  // Search Results have loaded
-  const setResultsLoaded = (search) => {
-    dispatch({ type: "SET_LOADED", payload: search });
-  };
 
   // Doctor Search
   const doctorSearch = async (search, page) => {
@@ -98,6 +94,7 @@ const SearchState = (props) => {
         limit: 5,
       };
       dispatch({ type: "GET_DOCTORS", payload: { doctors, pagination } });
+      setSearch({...search, resultsLoaded: true, hasSearched: true})
     } catch (e) {
       console.log(e);
     }
@@ -113,7 +110,6 @@ const SearchState = (props) => {
         pagination: state.pagination,
         setSearch,
         doctorSearch,
-        setResultsLoaded,
       }}
     >
       {props.children}

@@ -7,7 +7,7 @@ const SearchBar = () => {
   const { type, query } = search;
   const onSubmit = (e) => {
     e.preventDefault()
-    setSearch({ ...search, hasSearched: true, errorLocation: false });
+    setSearch({ ...search, hasSearched: true, resultsLoaded: false, errorLocation: false });
     doctorSearch(search, pagination.page);
   };
   const onChange = (e) =>

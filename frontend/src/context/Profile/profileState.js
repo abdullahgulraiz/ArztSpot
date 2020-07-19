@@ -29,7 +29,8 @@ const ProfileState = (props) => {
       },
     };
     try {
-      let res = await axios.get(`/api/v1/appointments?page=${page}`, config);
+      // show only future appointments
+      let res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&page=${page}`, config);
       console.log(res);
       // convert from string to moment for better handling in frontend
       res.data.data.map((appointment) => {
@@ -42,13 +43,9 @@ const ProfileState = (props) => {
           new Date(appointment.finishTime).getTime()
         );
       });
-      // only future appointments
-      res.data.data.filter((appointment) => {
-        appointment.startTime.isAfter();
-      });
       const pagination = {
         page: page,
-        count: res.data.data.length,
+        count: res.data.count,
         limit: 5,
       };
       dispatch({
@@ -57,7 +54,6 @@ const ProfileState = (props) => {
           appointments: res.data.data.sort((a, b) => {
             return moment(a.startTime).diff(b.startTime);
           }),
-
           pagination,
         },
       });

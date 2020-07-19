@@ -182,16 +182,16 @@ const Register = () => {
                   </div>
 
                   <div className="form-group col-md-6">
-                    <label htmlFor="inputPassword4">Password</label>
+                    <label>Password</label>
                     <input
                       type={"password"}
                       onChange={onChange}
                       ref={register({
                         required: "Required",
                         pattern: {
-                          value: /^(?=.*[0-9]+.*)(?=.*[a-zA-Z]+.*)[0-9a-zA-Z]{6,}$/,
+                          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/,
                           message:
-                            "Password must have at least a letter a number and be longer than 6 characters",
+                            "Password must have at least one uppercase, a number, and be longer than 6 characters",
                         },
                       })}
                       className={`form-control ${
@@ -527,7 +527,7 @@ const Register = () => {
                 )}
                 {userToCreate.role === "doctor" && (
                   <Fragment>
-                    <label htmlFor="inputPassword4">Languages you speak</label>
+                    <label htmlFor="inputLanguage">Languages you speak</label>
                     <TypeaheadSearch
                       props={{
                         data: languages,
@@ -545,7 +545,7 @@ const Register = () => {
                         Languages is required
                       </div>
                     )}
-                    <label htmlFor="inputPassword4">Specialization</label>
+                    <label>Specialization</label>
                     <TypeaheadSearch
                       props={{
                         data: specialization,

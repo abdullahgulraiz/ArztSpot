@@ -40,7 +40,7 @@ const filterResults = (model, populate) => async (req, res, next) => {
     "limit",
     "address",
     "zipcode",
-    "distance"
+    "distance",
   ];
 
   // Remove mongoose keywords before querying database
@@ -49,7 +49,7 @@ const filterResults = (model, populate) => async (req, res, next) => {
   // if we search for Users we can only get doctors
   // Future change in case doctors need to search for Users
   // Probably the best way is to add more parameters to the filter function.
-  if(model.modelName === "User") {
+  if (model.modelName === "User") {
     requestQuery.role = "doctor";
   }
   // Create query string
@@ -64,24 +64,32 @@ const filterResults = (model, populate) => async (req, res, next) => {
   // Finding query in db
   if (locQuery) {
     if (model.modelName === "Hospital") {
+      queryStr = JSON.stringify({ ...JSON.parse(queryStr), ...locQuery });
       query = model.find({ ...JSON.parse(queryStr), ...locQuery });
     } else if (model.modelName === "User") {
       // if we are finding doctors, first we need to find the hospitals by location and use these hospitals to filter
       // doctors
       const hospitals = await Hospital.find(locQuery);
+      queryStr = JSON.stringify({
+        ...JSON.parse(queryStr),
+        role: "doctor",
+        hospital: { $in: hospitals },
+      });
       query = model.find({
         role: "doctor",
         hospital: { $in: hospitals },
         ...JSON.parse(queryStr),
       });
     }
-  }
-  else {
+  } else {
     // we want to be able to fetch data that is related to doctors and patients
     // Ex: doctors want to get their search, users want
     // to get their prescriptions
     if (req.user) {
-      query = model.find({[req.user.role]: [req.user.id], ...JSON.parse(queryStr)})
+      query = model.find({
+        [req.user.role]: [req.user.id],
+        ...JSON.parse(queryStr),
+      });
     } else {
       query = model.find(JSON.parse(queryStr));
     }
@@ -111,17 +119,14 @@ const filterResults = (model, populate) => async (req, res, next) => {
   const limit = parseInt(req.query.limit, 10) || 5;
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
-  const total = await model.countDocuments(JSON.parse(queryStr));
+  const total = await model.countDocuments(query);
 
   query = query.skip(startIndex).limit(limit);
 
-  // if (populate) {
-  //   query = query.populate(populate);
-  // }
   if (populate.length >= 1) {
     populate.map((modelToPopulate) => {
-      query = query.populate(modelToPopulate)
-    })
+      query = query.populate(modelToPopulate);
+    });
   }
 
   // Executing query

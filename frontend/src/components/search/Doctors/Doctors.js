@@ -14,7 +14,8 @@ const Doctors = () => {
     <Fragment>
       {
       doctors.map(
-        (doctor, i) => doctor.id !== "" && <DoctorItem key={i} doctor={doctor} />
+        // if doctors do not have a hospital assigned yet, do not show them on the search results
+        (doctor, i) => (doctor.id !== "" && doctor.hospital) && <DoctorItem key={i} doctor={doctor} />
       )}
     </Fragment>
   );

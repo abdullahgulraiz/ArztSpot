@@ -8,6 +8,11 @@ import createStartAndFinishTime from "../../utils/createStartAndFinishTime";
 const ProfileState = (props) => {
   const initialState = {
     appointments: [],
+    pagination: {
+      page: 1,
+      count: 0,
+      limit: 5,
+    },
     updating: "",
     error: false,
     alert: false,
@@ -17,16 +22,15 @@ const ProfileState = (props) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
 
   // get appointments for user
-  const getAppointments = async (userId, bearerToken) => {
-    const url = "/api/v1/appointments";
+  const getAppointments = async ({ bearerToken }, page) => {
     const config = {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
     };
     try {
-      let res = await axios.get(url, config);
-      console.log(res)
+      let res = await axios.get(`/api/v1/appointments?page=${page}`, config);
+      console.log(res);
       // convert from string to moment for better handling in frontend
       res.data.data.map((appointment) => {
         appointment.startTime = moment(
@@ -38,11 +42,24 @@ const ProfileState = (props) => {
           new Date(appointment.finishTime).getTime()
         );
       });
+      // only future appointments
+      res.data.data.filter((appointment) => {
+        appointment.startTime.isAfter();
+      });
+      const pagination = {
+        page: page,
+        count: res.data.data.length,
+        limit: 5,
+      };
       dispatch({
         type: "SET_APPOINTMENTS_FOR_USER",
-        payload: res.data.data.sort((a, b) => {
-          return moment(a.startTime).diff(b.startTime);
-        }),
+        payload: {
+          appointments: res.data.data.sort((a, b) => {
+            return moment(a.startTime).diff(b.startTime);
+          }),
+
+          pagination,
+        },
       });
     } catch (e) {
       console.log(e);
@@ -130,6 +147,7 @@ const ProfileState = (props) => {
         updating: state.updating,
         alert: state.alert,
         alertMsg: state.alertMsg,
+        pagination: state.pagination,
         getAppointments,
         updateAppointment,
         deleteAppointment,

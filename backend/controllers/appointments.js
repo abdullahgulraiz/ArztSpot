@@ -3,7 +3,6 @@ const Appointment = require("../models/Appointment");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
-const Hospital = require("../models/Hospital");
 const Symptom = require("../models/Symptom");
 const sendEmail = require("../utils/sendEmail");
 

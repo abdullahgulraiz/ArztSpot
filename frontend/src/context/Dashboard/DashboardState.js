@@ -35,6 +35,8 @@ const DashboardState = (props) => {
     error: null,
     alert: null,
     alertMsg: "",
+    allSymptoms: [],
+    selectedSymptoms: {data: []}
   };
   const [state, dispatch] = useReducer(dashboardReducer, initialState);
 
@@ -129,6 +131,35 @@ const DashboardState = (props) => {
       5000
     );
   };
+  const setSelectedSymptoms = (symptoms) => {
+    dispatch({ type: "SET_SELECTED_SYMPTOMS", payload: symptoms });
+  };
+  // get doctor question symptoms by doctor id
+  const getDoctorQuestionSymptoms = async (doctorId) => {
+    const url = encodeURI("/api/v1/questions/symptoms/doctor/" + doctorId);
+    try {
+      const res = await axios.get(url);
+      if (res.data.success && res.data.data.length > 0) {
+        let all_symptoms = [];
+        res.data.data.map(o => {
+          o.symptoms.map(s => {
+            if (!all_symptoms.includes(s.name)) {
+              all_symptoms.push(s.name);
+            }
+          });
+        });
+        all_symptoms = all_symptoms.map(s => {
+          return {label: s}
+        });
+        dispatch({ type: "SET_ALL_SYMPTOMS", payload: all_symptoms });
+      } else {
+        dispatch({ type: "SET_ALL_SYMPTOMS", payload: [] });
+      }
+    } catch (e) {
+      dispatch({ type: "DOCTOR_ERROR_404", payload: e });
+      dispatch({ type: "SET_ALL_SYMPTOMS", payload: [] });
+    }
+  };
   // book appointment
   const createAppointment = async (doctor, user, selectedDate, bearerToken) => {
     const { startTime, finishTime } = createStartAndFinishTime(
@@ -147,7 +178,7 @@ const DashboardState = (props) => {
       doctorId: doctor._id,
       startTime: startTime.toDate(),
       finishTime: finishTime.toDate(),
-      symptoms: [],
+      symptoms: state.selectedSymptoms.data,
     };
     const url = "/api/v1/appointments";
     try {
@@ -177,6 +208,8 @@ const DashboardState = (props) => {
         error: state.error,
         alert: state.alert,
         alertMsg: state.alertMsg,
+        selectedSymptoms: state.selectedSymptoms,
+        allSymptoms: state.allSymptoms,
         clearSelectedDate,
         clearSlots,
         setCurrentDoctor,
@@ -186,6 +219,8 @@ const DashboardState = (props) => {
         setAppointmentCreated,
         createAppointment,
         setAlert,
+        setSelectedSymptoms,
+        getDoctorQuestionSymptoms
       }}
     >
       {props.children}

@@ -6,7 +6,8 @@ const {
   updateQuestion,
   deleteQuestion,
   answerQuestions,
-  questionsByDoctor
+  questionsByDoctor,
+  symptomsOfQuestions
 } = require("../controllers/questions");
 
 const router = express.Router();
@@ -33,5 +34,9 @@ router
 router
     .route("/doctor/:doctorId")
     .get(protectRoute,authorize("user", "doctor"),questionsByDoctor);
+
+router
+    .route("/symptoms/doctor/:doctorId")
+    .get(symptomsOfQuestions);
 
 module.exports = router;

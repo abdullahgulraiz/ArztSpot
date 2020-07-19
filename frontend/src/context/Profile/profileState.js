@@ -22,16 +22,15 @@ const ProfileState = (props) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
 
   // get appointments for user
-  const getAppointments = async ({ bearerToken }, page) => {
+  const getAppointments = async ( bearerToken, page) => {
     const config = {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
     };
     try {
-      // show only future appointments
-      let res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&page=${page}`, config);
-      console.log(res);
+      // show only future appointments and sorted by time
+      let res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&sort=startTime&page=${page}`, config);
       // convert from string to moment for better handling in frontend
       res.data.data.map((appointment) => {
         appointment.startTime = moment(
@@ -51,14 +50,12 @@ const ProfileState = (props) => {
       dispatch({
         type: "SET_APPOINTMENTS_FOR_USER",
         payload: {
-          appointments: res.data.data.sort((a, b) => {
-            return moment(a.startTime).diff(b.startTime);
-          }),
+          appointments: res.data.data,
           pagination,
         },
       });
     } catch (e) {
-      console.log(e);
+      console.log(e.response);
     }
   };
   // If we are updating we want to show

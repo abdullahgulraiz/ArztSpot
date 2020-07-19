@@ -11,7 +11,7 @@ const UserProfile = () => {
     if (user.role === "user") {
       // page to go
       const page = 1
-      getAppointments({bearerToken}, page);
+      getAppointments(bearerToken, page);
     }
   }, []);
   const profileContext = useContext(ProfileContext);
@@ -27,7 +27,6 @@ const UserProfile = () => {
           </div>
           <div className="col-md-8">
             <MainPanelPatient appointments={appointments}/>
-            {pagination.count !== 0 && <Pagination searchFunc={getAppointments} pagination={pagination} searchParams={bearerToken}/>}
           </div>
         </div>
     </div>

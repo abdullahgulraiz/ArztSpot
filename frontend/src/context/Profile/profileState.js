@@ -8,6 +8,11 @@ import createStartAndFinishTime from "../../utils/createStartAndFinishTime";
 const ProfileState = (props) => {
   const initialState = {
     appointments: [],
+    pagination: {
+      page: 1,
+      count: 0,
+      limit: 5,
+    },
     updating: "",
     error: false,
     alert: false,
@@ -17,16 +22,20 @@ const ProfileState = (props) => {
   const [state, dispatch] = useReducer(profileReducer, initialState);
 
   // get appointments for user
-  const getAppointments = async (userId, bearerToken) => {
-    const url = "/api/v1/appointments";
+  const getAppointments = async ( bearerToken, page) => {
     const config = {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
     };
     try {
-      let res = await axios.get(url, config);
-      console.log(res)
+      // show only future appointments and sorted by time
+      let res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&sort=startTime&page=${page}`, config);
+      // the following can happen if we delete the last
+      // appointment of the page, we should show the previous page.
+      if (res.data.data.length === 0 && page > 1) {
+        res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&sort=startTime&page=${page-1}`, config);
+      }
       // convert from string to moment for better handling in frontend
       res.data.data.map((appointment) => {
         appointment.startTime = moment(
@@ -38,14 +47,20 @@ const ProfileState = (props) => {
           new Date(appointment.finishTime).getTime()
         );
       });
+      const pagination = {
+        page: page,
+        count: res.data.count,
+        limit: 5,
+      };
       dispatch({
         type: "SET_APPOINTMENTS_FOR_USER",
-        payload: res.data.data.sort((a, b) => {
-          return moment(a.startTime).diff(b.startTime);
-        }),
+        payload: {
+          appointments: res.data.data,
+          pagination,
+        },
       });
     } catch (e) {
-      console.log(e);
+      console.log(e.response);
     }
   };
   // If we are updating we want to show
@@ -116,7 +131,8 @@ const ProfileState = (props) => {
     };
     try {
       await axios.delete(url, config);
-      dispatch({ type: "DELETE_APPOINTMENT", payload: appointment._id });
+      await getAppointments(bearerToken, state.pagination.page)
+      // dispatch({ type: "DELETE_APPOINTMENT", payload: appointment._id });
     } catch (e) {
       console.log(e);
       // dispatch({type: ""})
@@ -130,6 +146,7 @@ const ProfileState = (props) => {
         updating: state.updating,
         alert: state.alert,
         alertMsg: state.alertMsg,
+        pagination: state.pagination,
         getAppointments,
         updateAppointment,
         deleteAppointment,

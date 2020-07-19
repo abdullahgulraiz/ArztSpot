@@ -2,5 +2,5 @@
 .idea
 /frontend/node_modules
 /node_modules
-
+/backend/config/.env
 .env

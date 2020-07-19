@@ -5,7 +5,6 @@ import "react-calendar/dist/Calendar.css";
 import DashboardContext from "../../context/Dashboard/dashboardContext";
 import NotFound from "../general/notfound.component";
 import { useLocation } from "react-router-dom";
-import TimeSlot from "./SelectDate/TimeSlot";
 import Alert from "../dashboard/Alert";
 import BookAppointment from "../dashboard/BookAppointment";
 import SelectDateMain from "./SelectDate/SelectDateMain";
@@ -15,6 +14,8 @@ const Dashboard = () => {
   const {
     error,
     getDoctorById,
+    alert,
+    alertMsg,
     doctor,
     selectedDate
   } = dashboardContext;
@@ -47,6 +48,7 @@ const Dashboard = () => {
               <Description />
             </div>
             <div className="col-md-6 mt-5">
+              {alert && <Alert msg={alertMsg}/>}
               <SelectDateMain doctor={doctor} hospital={doctor.hospital}/>
               {selectedDate.timeSlot && <BookAppointment />}
             </div>

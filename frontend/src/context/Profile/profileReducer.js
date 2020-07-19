@@ -3,9 +3,8 @@ export default (state, action) => {
     case "SET_APPOINTMENTS_FOR_USER":
       return {
         ...state,
-        appointments: action.payload.filter((appointment) =>
-          appointment.startTime.isAfter()
-        ),
+        appointments: action.payload.appointments,
+        pagination: action.payload.pagination
       };
     case "SET_UPDATING": {
       return {
@@ -34,6 +33,7 @@ export default (state, action) => {
         ),
       };
     case "SET_ALERT":
+      console.log(action.payload)
       return {
         ...state,
         alert: action.payload.alert,

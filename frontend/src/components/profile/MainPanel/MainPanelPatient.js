@@ -6,7 +6,7 @@ import PersonalInfo from "./PersonalInfo";
 
 const MainPanelPatient = ({ appointments }) => {
   const authContext = useContext(AuthContext);
-  const { user, isEditing, setIsEditing } = authContext;
+  const { user, isEditing, setIsEditing, bearerToken } = authContext;
   const onClick = (e) => {
     e.preventDefault();
     setIsEditing(!isEditing);
@@ -83,7 +83,7 @@ const MainPanelPatient = ({ appointments }) => {
           role="tabpanel"
           aria-labelledby="profile-tab"
         >
-          {user.role === "user" && <Appointment appointments={appointments} />}
+          {user.role === "user" && <Appointment appointments={appointments} bearerToken={bearerToken}/>}
         </div>
       </div>
     </Fragment>

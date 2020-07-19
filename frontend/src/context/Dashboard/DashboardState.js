@@ -157,6 +157,7 @@ const DashboardState = (props) => {
         setCreatedAppointment(response.data.appointment);
       }
     } catch (e) {
+      console.log(e.response)
       setAlert(
         true,
         "It seems this appointment has already been taken. Please reload the page"

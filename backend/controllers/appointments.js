@@ -1,9 +1,10 @@
+const moment = require("moment");
 const Appointment = require("../models/Appointment");
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/User");
-const Hospital = require("../models/Hospital");
 const Symptom = require("../models/Symptom");
+const sendEmail = require("../utils/sendEmail");
 
 // @desc  Create new appointment
 //@route  POST /api/v1/appointments
@@ -21,7 +22,10 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   } = req.body;
   const user = await User.findById(userId);
   // find the doctor that works in the given hospital
-  const doctor = await User.findOne({ hospital: hospitalId, _id: doctorId });
+  const doctor = await User.findOne({
+    hospital: hospitalId,
+    _id: doctorId,
+  }).populate("hospital");
   if (!doctor) {
     return next(
       new ErrorResponse(
@@ -61,14 +65,39 @@ exports.createAppointment = asyncHandler(async (req, res, next) => {
   // create appointment
   appointment = await Appointment.create({
     hospital: hospitalId,
-    user: user,
     doctor: doctorId,
     user: userId,
     startTime: startTime,
     finishTime: finishTime,
     symptoms: symptomIds,
   });
-  res.status(200).json({ success: true, appointment });
+  // notify user
+  const message = `
+  Dear ${user.firstname} ${user.lastname},
+  
+  You have booked an appointment with ${doctor.firstname} ${
+    doctor.lastname
+  }, on ${moment(appointment.startTime).format("YYYY-MM-DD kk:mm")}.
+  As a friendly remainder, the address of the consultation room is ${
+    doctor.hospital.address_geojson.formattedAddress
+  }.
+  
+  Best regards,
+  The ArztSpot Team
+  `;
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: `You have a new appointment with Dr. ${doctor.lastname}`,
+      message,
+    });
+    return res.status(200).json({ success: true, appointment, email: "Sent" });
+  } catch (err) {
+    // could not send email but appointment was created
+    return res
+      .status(200)
+      .json({ success: true, appointment, email: "Not sent" });
+  }
 });
 
 // @desc  Get Appointments for a given Doctor
@@ -86,7 +115,6 @@ exports.getAppointmentForDoctor = asyncHandler(async (req, res, next) => {
       )
     );
   }
-  // TODO: Add validation is the appointment starting at :00 or :30
   const appointment = await Appointment.find({
     hospital: hospitalId,
     doctor: doctorId,
@@ -134,6 +162,7 @@ exports.updateAppointment = asyncHandler(async (req, res, next) => {
   appointment = await Appointment.findById(req.params.id)
     .populate("doctor")
     .populate("hospital");
+  const oldTime = appointment.startTime;
   const { startTime, finishTime } = req.body;
   if (!appointment) {
     return next(
@@ -171,14 +200,44 @@ exports.updateAppointment = asyncHandler(async (req, res, next) => {
   appointment.startTime = startTime;
   appointment.finishTime = finishTime;
   await appointment.save();
-  res.status(200).json({ success: true, appointment });
+  // notify user
+  const message = `
+  Dear ${req.user.firstname} ${req.user.lastname},
+  
+  You have updated an appointment with ${appointment.doctor.firstname} ${
+    appointment.doctor.lastname
+  }, from ${moment(oldTime).format("YYYY-MM-DD kk:mm")} to ${moment(
+    appointment.startTime
+  ).format("YYYY-MM-DD kk:mm")}.
+  As a friendly remainder, the address of the consultation room is ${
+    appointment.hospital.address_geojson.formattedAddress
+  }.
+  
+  Best regards,
+  The ArztSpot Team
+  `;
+  try {
+    await sendEmail({
+      email: req.user.email,
+      subject: `You have updated your appointment with Dr. ${appointment.doctor.lastname}`,
+      message,
+    });
+    return res.status(200).json({ success: true, appointment, email: "Sent" });
+  } catch (err) {
+    // could not send email but appointment was updated
+    return res
+      .status(200)
+      .json({ success: true, appointment, email: "Not sent" });
+  }
 });
 
 // @desc  Delete Appointment
 //@route  DELETE /api/v1/appointments/:id
 //@access Private
 exports.deleteAppointment = asyncHandler(async (req, res, next) => {
-  const appointment = await Appointment.findById(req.params.id);
+  const appointment = await Appointment.findById(req.params.id).populate(
+    "doctor"
+  );
   if (!appointment) {
     return next(
       new ErrorResponse(`Appointment not found with id ${req.params.id} `, 404)
@@ -197,11 +256,53 @@ exports.deleteAppointment = asyncHandler(async (req, res, next) => {
       )
     );
   }
+  // take some values for email sending
+  const { startTime, doctor } = appointment;
   await appointment.remove();
-  res.status(200).json({
-    success: true,
-    data: {},
-  });
+  // notify user
+  const message = `
+  Dear ${req.user.firstname} ${req.user.lastname},
+  
+  You have canceled an appointment with ${appointment.doctor.firstname} ${
+    appointment.doctor.lastname
+  } on ${moment(startTime).format("YYYY-MM-DD kk:mm")}.
+  Please contact us with you think this is a mistake.
+  
+  Best regards,
+  The ArztSpot Team
+  `;
+  // notify doctor also
+  const messageDoctor = `
+  Dear Dr. ${appointment.doctor.lastname},
+  
+  Your patient ${req.user.firstname} ${
+    req.user.lastname
+  } have canceled their appointment on ${moment(startTime).format(
+    "YYYY-MM-DD kk:mm"
+  )}.
+  
+  Best regards,
+  The ArztSpot Team
+  `;
+  try {
+    // this should be done in parallel
+    await Promise.all([
+      sendEmail({
+        email: req.user.email,
+        subject: `Canceled appointment with ${appointment.doctor.firstname}`,
+        message,
+      }),
+      sendEmail({
+        email: doctor.email,
+        subject: "Deleted appointment",
+        message: messageDoctor,
+      }),
+    ]);
+    return res.status(200).json({ success: true, data: {}, email: "Sent" });
+  } catch (err) {
+    // could not send email but appointment was deleted
+    return res.status(200).json({ success: true, data: {}, email: "Not sent" });
+  }
 });
 
 const findClashQuery = (startTime, finishTime) => {

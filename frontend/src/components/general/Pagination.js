@@ -18,7 +18,7 @@ const Pagination = ({searchFunc, pagination, searchParams}) => {
   const numberPages = Math.ceil(count / limit)
   let output = []
   // If there is more than one page
-  if(count >= limit) {
+  if(count > limit) {
     output.push(<li key={0} className={`page-item ${page===1 && "disabled"}`}>
       <div className="page-link" tabIndex="-1" onClick={onClick} id="previous">Previous</div>
     </li>)

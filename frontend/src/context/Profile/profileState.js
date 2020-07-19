@@ -31,6 +31,11 @@ const ProfileState = (props) => {
     try {
       // show only future appointments and sorted by time
       let res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&sort=startTime&page=${page}`, config);
+      // the following can happen if we delete the last
+      // appointment of the page, we should show the previous page.
+      if (res.data.data.length === 0 && page > 1) {
+        res = await axios.get(`/api/v1/appointments?startTime[gte]=${moment.now()}&sort=startTime&page=${page-1}`, config);
+      }
       // convert from string to moment for better handling in frontend
       res.data.data.map((appointment) => {
         appointment.startTime = moment(
@@ -126,7 +131,8 @@ const ProfileState = (props) => {
     };
     try {
       await axios.delete(url, config);
-      dispatch({ type: "DELETE_APPOINTMENT", payload: appointment._id });
+      await getAppointments(bearerToken, state.pagination.page)
+      // dispatch({ type: "DELETE_APPOINTMENT", payload: appointment._id });
     } catch (e) {
       console.log(e);
       // dispatch({type: ""})

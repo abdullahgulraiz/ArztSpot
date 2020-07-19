@@ -16,7 +16,7 @@ const UserProfile = () => {
   }, []);
   const profileContext = useContext(ProfileContext);
   const authContext = useContext(AuthContext);
-  const { appointments, getAppointments, pagination } = profileContext;
+  const { appointments, getAppointments } = profileContext;
   const { user, bearerToken } = authContext;
 
   return (

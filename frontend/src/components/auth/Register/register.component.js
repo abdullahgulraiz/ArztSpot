@@ -19,7 +19,6 @@ const Register = () => {
     setCustomErrors,
     setHospitalToCreate,
     hospitalToCreate,
-    createHospital,
     createDoctor,
     createPatient,
     clearCustomError,
@@ -864,16 +863,6 @@ const Register = () => {
                     )}
                   </Fragment>
                 )}
-
-                <div className="form-group">
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="gridCheck2"
-                    />
-                  </div>
-                </div>
                 <div className="row" style={{ marginTop: "6%" }}>
                   <div className="col-6 offset-3 text-center">
                     <button

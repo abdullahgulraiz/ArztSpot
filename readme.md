@@ -24,7 +24,7 @@ A web project made for partial fulfillment of requirements of course *IN2087: So
 
    Open a terminal inside *Arztspot/backend*/ directory, and run
 
-   `nodemon start`
+   `npm run dev`
 
 4. Run the frontend
 

@@ -82,6 +82,7 @@ const SearchState = (props) => {
       queryStr += `lastname[regex]=${query}&lastname[options]=i`
     }
     let url = "/api/v1/doctors" + queryStr;
+    console.log(url)
     try {
       let res = await axios.get(encodeURI(url));
       // the following can happen if we search for the last doctor

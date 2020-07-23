@@ -140,8 +140,8 @@ export const AuthProvider = ({ children }) => {
       lastname: doctor.lastname,
       email: doctor.email,
       password: doctor.password,
-      languages: doctor.languages,
-      specialization: doctor.specialization,
+      languages: doctor.languages.map(language => language.toLowerCase()),
+      specialization: doctor.specialization.map(language => language.toLowerCase()),
       experience: doctor.experience,
       role: doctor.role,
     };
@@ -155,6 +155,7 @@ export const AuthProvider = ({ children }) => {
       setBearerToken(res.data.token);
       // Create hospital also if isHospital
       if (isHospital) {
+        console.log(isHospital)
         await createHospital(
           hospitalToCreate,
           res.data.token,
@@ -203,6 +204,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await axios.post("/api/v1/hospitals", hospitalToPost, config);
     } catch (e) {
+      console.log(e.response)
       setAlert(
         true,
         "User created, but not clinic, go to your profile and try again"

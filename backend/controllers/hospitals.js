@@ -1,15 +1,21 @@
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const Hospital = require("../models/Hospital");
+const User = require("../models/User")
 
 // @desc  Create Hospital
 //@route  POST /api/v1/hospitals
 //@access Private/doctors
 exports.createHospital = asyncHandler(async (req, res, next) => {
   // add owner to body
-  req.body.owner = req.user.id;
+  if(!req.body.owner) {
+    req.body.owner = req.user.id;
+  }
   const hospital = await Hospital.create(req.body);
-
+  // add owner to hospital
+  const doctor = await User.findById(req.user.id);
+  doctor.hospital = hospital
+  doctor.save()
   res.status(201).json({
     success: true,
     data: hospital,
